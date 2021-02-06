@@ -5,7 +5,7 @@ Twitter replica for DevOps course.
 
 
 # To be able to sudo bash scripts
-https://stackoverflow.com/questions/12996397/command-not-found-when-using-sudo
+https://stackoverflow.com/a/37559157
 
 # Setup
 
