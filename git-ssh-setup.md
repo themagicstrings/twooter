@@ -14,6 +14,9 @@ Get user email
 Generate key
 `ssh-keygen -t rsa -C "account@yourdomain.com"`
 
+When asked don't input a file name
+
+See public key
 `cat ~/.ssh/id_rsa.pub`
 
 ## Add public key to
