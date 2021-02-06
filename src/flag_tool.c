@@ -1,7 +1,7 @@
 #include <sqlite3.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <strin g.h>
 
 char *docStr = "ITU-Minitwit Tweet Flagging Tool\n\n"
                "Usage:\n"
