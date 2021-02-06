@@ -124,7 +124,7 @@ def user_timeline(username):
                             [username], one=True)
     if profile_user is None:
         abort(404)
-    followd = False
+    followed = False
     if g.user:
         followed = query_db('''select 1 from follower where
             follower.who_id = ? and follower.whom_id = ?''',
