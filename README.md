@@ -1,23 +1,17 @@
 # twooter
 Twitter replica for DevOps course.
 
-[Week log](LOG.md)
+- [Week log](LOG.md)
 
+## Setup
 
-# To be able to sudo bash scripts
-https://stackoverflow.com/a/37559157
-
-# Setup
-
-Run
-
-
+### Update and install dependancies
 ```
-sudo setup.sh
+sudo ./setup.sh
 ```
 
-Database:
+### Add a database with sample data
 
-[Download minitwit.db](https://github.com/themagicstrings/twooter/blob/124351635a81895ba5d488335600f2144712f8d4/tmp/minitwit.db?raw=true)
+Download [minitwit.db](https://github.com/themagicstrings/twooter/blob/124351635a81895ba5d488335600f2144712f8d4/tmp/minitwit.db?raw=true)
 
-This needs to be located in `/tmp/`
+Place `minitwit.db` in `/tmp/`
