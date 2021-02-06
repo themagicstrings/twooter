@@ -1,7 +1,7 @@
 # Week 1
 
 ## Summary
-In this week, we SSH'ed into a running ITUMinitwit server, to have a look around. Afterwards, we secure copied the server contents, in order to gain a copy of the running code and database.
+In this week, we SSH'ed into a running ITUMinitwit server, to have a look around. Afterwards, we secure copied (`scp`) the server contents, in order to gain a copy of the running code and database.
 
 ## ./control.sh
 
