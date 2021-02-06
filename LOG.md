@@ -19,6 +19,8 @@ View database contents
 ## Basic unix commands
 
 ## `ssh user@host`
+
+**Don't ssh to this anymore**
 ```
 ssh student@159.65.125.12
 uiuiui
