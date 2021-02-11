@@ -18,17 +18,17 @@ namespace Controllers
         }
 
         [HttpGet("{username}")]
-        public async Task<ActionResult<UserReadDTO>> GetUser(string username) 
+        public async Task<ActionResult<UserReadDTO>> GetUserAsync(string username) 
         {
             return await repository.ReadAsync(username);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostUser([FromBody] UserCreateDTO user)
+        public async Task<IActionResult> PostUserAsync([FromBody] UserCreateDTO user)
         {
             var res = await repository.CreateAsync(user);
 
-            return CreatedAtAction(nameof(GetUser), new { res }, default);
+            return CreatedAtAction(nameof(GetUserAsync), new { res }, default);
         }
     }
 }

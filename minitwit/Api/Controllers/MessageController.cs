@@ -10,15 +10,15 @@ namespace Controllers
     [Route("[Controller]")]
     public class MessageController : ControllerBase
     {
-        private readonly IUserRepository repository;
+        private readonly IMessageRepository repository;
         
-        public MessageController(IUserRepository repository)
+        public MessageController(IMessageRepository repository)
         {
             this.repository = repository;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserReadDTO>> GetMessage(int id)
+        public async Task<ActionResult<MessageReadDTO>> GetMessage(int id)
         {
             var message = await repository.ReadAsync(id);
             if (message == null) return NotFound();

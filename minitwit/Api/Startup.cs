@@ -33,7 +33,7 @@ namespace Api
             services.AddScoped<IMinitwitContext, MinitwitContext>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
-            services.AddControllers();
+            services.AddControllers( o => o.SuppressAsyncSuffixInActionNames = false);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });

@@ -13,6 +13,5 @@ namespace Entities
         public string email { get;set; }
         [Required]
         public string pw_hash { get;set; }
-        public ICollection<User> followers { get;set; }
     }
 }
