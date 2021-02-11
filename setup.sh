@@ -2,10 +2,12 @@
 # Update apt-get
 apt-get update
 
-# Update apt
-apt update
+# Setup .NET 5
 
-apt install gcc python3 libsqlite3-dev sqlitebrowser sqlite3 python3-pip
-pip3 install flask
-# Allows all to execute control.sh
-chmod a+x ./src/control.sh
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+dpkg -i packages-microsoft-prod.deb
+
+sudo apt-get update
+sudo apt-get install -y apt-transport-https
+sudo apt-get update
+sudo apt-get install -y dotnet-sdk-5.0
