@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Shared;
+using System.Collections.Generic;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Controllers
@@ -23,6 +24,14 @@ namespace Controllers
             var message = await repository.ReadAsync(id);
             if (message == null) return NotFound();
             return message;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<MessageReadDTO>>> GetMessage()
+        {
+            var messages = await repository.ReadAllAsync();
+            if (messages is null) return NotFound();
+            return messages;
         }
     }
 }

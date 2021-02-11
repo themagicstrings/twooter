@@ -3,6 +3,7 @@ using Entities;
 using Shared;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace Models
 {
@@ -61,6 +62,27 @@ namespace Models
                 };
 
             return await query.FirstOrDefaultAsync();
+        }
+
+        public async Task<List<MessageReadDTO>> ReadAllAsync()
+        {
+            var query =
+                from message in context.messages
+                select new MessageReadDTO {
+                    id = message.message_id,
+                    text = message.text,
+                    pub_date = message.pub_date,
+                    flagged = message.flagged,
+                    author = (from user in context.users 
+                             where user.user_id == message.author_id 
+                             select new UserReadDTO { 
+                                 user_id = user.user_id,
+                                 username = user.username,
+                                 email = user.email
+                             }).FirstOrDefault()
+                };
+
+            return await query.ToListAsync();
         }
     }
 }
