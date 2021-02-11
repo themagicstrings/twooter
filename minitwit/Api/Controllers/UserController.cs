@@ -19,7 +19,9 @@ namespace Controllers
 
         [HttpGet("{id}")]
         public async Task<ActionResult<UserReadDTO>> GetUser(int id) {
-            return NotFound();
+            var user = await repository.ReadAsync(id);
+            if (user == null) return NotFound();
+            return user;
         }
     }
 }

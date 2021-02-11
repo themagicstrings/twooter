@@ -2,7 +2,8 @@ namespace Shared
 {
     public class UserReadDTO
     {
-        string username { get; set; }
-        string email { get; set; }
+        public int user_id { get; set; }
+        public string username { get; set; }
+        public string email { get; set; }
     }
 }

@@ -2,8 +2,8 @@ namespace Shared
 {
     public class UserCreateDTO
     {
-        string username { get;set; }
-        string email { get;set; }
-        string pw_hash { get;set; }
+        public string username { get;set; }
+        public string email { get;set; }
+        public string pw_hash { get;set; }
     }
 }

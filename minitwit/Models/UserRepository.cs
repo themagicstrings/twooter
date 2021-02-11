@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
 using Entities;
 using Shared;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Models
 {
@@ -12,19 +14,50 @@ namespace Models
         {
         this.context = context;
         }
-        public Task<int> CreateAsync(UserCreateDTO user)
+        public async Task<int> CreateAsync(UserCreateDTO user)
         {
-            throw new System.NotImplementedException();
+            var newUser = new User
+            {
+                username = user.username,
+                email = user.email,
+                pw_hash = user.pw_hash
+            };
+
+            await context.users.AddAsync(newUser);
+            await context.SaveChangesAsync();
+
+            return newUser.user_id;
         }
 
-        public Task<int> DeleteAsync(int id)
+        public async Task<int> DeleteAsync(int id)
         {
-            throw new System.NotImplementedException();
+            var query =
+                from user in context.users
+                where user.user_id == id
+                select user;
+            // var query2 = context.users.Where(u => u.user_id == id).Select(u => u);
+            if (!query.Any()) return -1;
+            var foundUser = await query.FirstOrDefaultAsync();
+            context.users.Remove(foundUser);
+            await context.SaveChangesAsync();
+            return foundUser.user_id;
         }
 
-        public Task<User> ReadAsync(int id)
+        public async Task<UserReadDTO> ReadAsync(int id)
         {
-            throw new System.NotImplementedException();
+            var query = 
+                from user in context.users
+                where user.user_id == id
+                select user;
+            var foundUser = await query.FirstOrDefaultAsync();
+            return new UserReadDTO
+            {
+                user_id = foundUser.user_id,
+                username = foundUser.username,
+                email = foundUser.email
+            };
+
+
         }
     }
 }
