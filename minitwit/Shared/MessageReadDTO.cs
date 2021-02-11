@@ -3,9 +3,9 @@ namespace Shared
 {
     public class MessageReadDTO
     {
-        UserReadDTO author { get; set; }
-        string text { get; set; }
-        int pub_date { get; set; }
-        int flagged { get; set; }
+        public UserReadDTO author { get; set; }
+        public string text { get; set; }
+        public int pub_date { get; set; }
+        public int flagged { get; set; }
     }
 }

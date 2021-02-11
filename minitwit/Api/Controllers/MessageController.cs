@@ -18,8 +18,11 @@ namespace Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserReadDTO>> GetMessage(int id) {
-            return NotFound();
+        public async Task<ActionResult<UserReadDTO>> GetMessage(int id)
+        {
+            var message = await repository.ReadAsync(id);
+            if (message == null) return NotFound();
+            return message;
         }
     }
 }

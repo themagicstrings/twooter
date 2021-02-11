@@ -16,21 +16,31 @@ namespace Models
         }
         public async Task<int> CreateAsync(UserCreateDTO user)
         {
-            var User = new User {
+            var newUser = new User
+            {
                 username = user.username,
                 email = user.email,
                 pw_hash = user.pw_hash
             };
 
-            await context.users.AddAsync(User);
+            await context.users.AddAsync(newUser);
             await context.SaveChangesAsync();
 
-            return 0;
+            return newUser.user_id;
         }
 
-        public Task<int> DeleteAsync(int id)
+        public async Task<int> DeleteAsync(int id)
         {
-            throw new System.NotImplementedException();
+            var query =
+                from user in context.users
+                where user.user_id == id
+                select user;
+            // var query2 = context.users.Where(u => u.user_id == id).Select(u => u);
+            if (!query.Any()) return -1;
+            var foundUser = await query.FirstOrDefaultAsync();
+            context.users.Remove(foundUser);
+            await context.SaveChangesAsync();
+            return foundUser.user_id;
         }
 
         public async Task<UserReadDTO> ReadAsync(string username)
