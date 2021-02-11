@@ -12,6 +12,7 @@ namespace twooter
 {
     public class Program
     {
+
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
