@@ -6,13 +6,13 @@ namespace Entities
     public class User
     {
         [Key]
-        int user_id { get;set; }
+        public int user_id { get;set; }
         [Required]
-        string username { get;set; }
+        public string username { get;set; }
         [Required]
-        string email { get;set; }
+        public string email { get;set; }
         [Required]
-        string pw_hash { get;set; }
-        ICollection<User> followers { get;set; }
+        public string pw_hash { get;set; }
+        public ICollection<User> followers { get;set; }
     }
 }

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Sqlite;
+using Microsoft.EntityFrameworkCore.SqlServer;
 
 namespace Entities
 {
@@ -18,8 +19,8 @@ namespace Entities
         {
             if(!optionsBuilder.IsConfigured)
             {
-                var connectionString = @"Filename=:memory:";
-                optionsBuilder.UseSqlite(connectionString);
+                var connectionString = @"Server=localhost;Database=twooter;Trusted_Connection=True";
+                optionsBuilder.UseSqlServer(connectionString);
             }
         }
 

@@ -17,9 +17,18 @@ namespace Controllers
             this.repository = repository;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserReadDTO>> GetUser(int id) {
-            return NotFound();
+        [HttpGet("{username}")]
+        public async Task<ActionResult<UserReadDTO>> GetUser(string username) 
+        {
+            return await repository.ReadAsync(username);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostUser([FromBody] UserCreateDTO user)
+        {
+            var res = await repository.CreateAsync(user);
+
+            return CreatedAtAction(nameof(GetUser), new { res }, default);
         }
     }
 }

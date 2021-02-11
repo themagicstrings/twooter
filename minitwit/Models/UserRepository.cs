@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
 using Entities;
 using Shared;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Models
 {
@@ -10,11 +12,20 @@ namespace Models
 
         public UserRepository(IMinitwitContext context)
         {
-        this.context = context;
+            this.context = context;
         }
-        public Task<int> CreateAsync(UserCreateDTO user)
+        public async Task<int> CreateAsync(UserCreateDTO user)
         {
-            throw new System.NotImplementedException();
+            var User = new User {
+                username = user.username,
+                email = user.email,
+                pw_hash = user.pw_hash
+            };
+
+            await context.users.AddAsync(User);
+            await context.SaveChangesAsync();
+
+            return 0;
         }
 
         public Task<int> DeleteAsync(int id)
@@ -22,9 +33,15 @@ namespace Models
             throw new System.NotImplementedException();
         }
 
-        public Task<User> ReadAsync(int id)
+        public async Task<UserReadDTO> ReadAsync(string username)
         {
-            throw new System.NotImplementedException();
+            var query = from u in context.users where u.username.Equals(username) select
+                new UserReadDTO { 
+                    username = u.username,
+                    email = u.email
+                };
+            
+            return await query.FirstOrDefaultAsync();
         }
     }
 }

@@ -7,9 +7,8 @@ namespace Models
 {
     public interface IUserRepository
     {
-        Task<User> ReadAsync(int id);
+        Task<UserReadDTO> ReadAsync(string name);
         Task<int> CreateAsync(UserCreateDTO user);
         Task<int> DeleteAsync(int id);
-        
     }
 }
