@@ -27,11 +27,18 @@ namespace Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<MessageReadDTO>>> GetMessage()
+        public async Task<ActionResult<List<MessageReadDTO>>> GetMessages()
         {
-            var messages = await repository.ReadAllAsync();
-            if (messages is null) return NotFound();
-            return messages;
+            return await repository.ReadAllAsync();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostMessage([FromBody] MessageCreateDTO message)
+        {
+            var id = await repository.CreateAsync(message);
+
+            if (id == -1) return BadRequest();
+            return CreatedAtAction(nameof(GetMessage), new { id }, default);
         }
     }
 }

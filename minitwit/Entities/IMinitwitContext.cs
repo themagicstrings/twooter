@@ -8,6 +8,7 @@ namespace Entities
     {
         public DbSet<User> users { get; }
         public DbSet<Message> messages { get; }
+        public DbSet<Follower> followers { get; }
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }
