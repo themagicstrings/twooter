@@ -35,6 +35,14 @@ namespace Entities
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.email)
                 .IsUnique();
+            
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Messages)
+                .WithOne(m => m.User);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.User)
+                .WithMany(u => u.Messages);
 
             modelBuilder.Entity<Follow>()
                 .HasKey(f => new {f.FollowerId, f.FollowedId});

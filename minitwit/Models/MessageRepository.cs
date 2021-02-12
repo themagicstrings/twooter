@@ -26,7 +26,7 @@ namespace Models
 
             var newMessage = new Message
             {
-                author_id = user.user_id,
+                User = user,
                 text = message.text,
                 pub_date = DateTime.Now,
                 flagged = 0
@@ -60,7 +60,7 @@ namespace Models
                     pub_date = message.pub_date,
                     flagged = message.flagged,
                     author = (from user in context.users 
-                             where user.user_id == message.author_id 
+                             where user.user_id == message.User.user_id 
                              select new UserReadDTO { 
                                  user_id = user.user_id,
                                  username = user.username,
@@ -81,7 +81,7 @@ namespace Models
                     pub_date = message.pub_date,
                     flagged = message.flagged,
                     author = (from user in context.users 
-                             where user.user_id == message.author_id 
+                             where user.user_id == message.User.user_id 
                              select new UserReadDTO { 
                                  user_id = user.user_id,
                                  username = user.username,

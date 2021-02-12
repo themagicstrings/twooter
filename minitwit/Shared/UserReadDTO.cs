@@ -9,5 +9,6 @@ namespace Shared
         public string email { get; set; }
         public List<string> following { get; set; }
         public List<string> followers { get; set; }
+        public List<MessageReadDTO> messages { get; set; }
     }
 }

@@ -16,5 +16,6 @@ namespace Entities
         public string pw_hash { get; set; }
         public List<Follow> Following { get; set; }
         public List<Follow> FollowedBy { get; set; }
+        public List<Message> Messages { get; set; }
     }
 }

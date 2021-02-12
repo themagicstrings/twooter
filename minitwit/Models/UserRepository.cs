@@ -71,7 +71,13 @@ namespace Models
                     username = u.username,
                     email = u.email,
                     followers = (u.FollowedBy.Select(f => f.Followed.username)).ToList(),
-                    following = (u.Following.Select(f => f.Follower.username)).ToList()
+                    following = (u.Following.Select(f => f.Follower.username)).ToList(),
+                    messages = (from m in u.Messages select new MessageReadDTO{
+                        id = m.message_id,
+                        text = m.text,
+                        pub_date = m.pub_date,
+                        flagged = m.flagged
+                    }).ToList()
                 };
             
             return await query.FirstOrDefaultAsync();
@@ -85,7 +91,13 @@ namespace Models
                     username = u.username,
                     email = u.email,
                     followers = (u.FollowedBy.Select(f => f.Followed.username)).ToList(),
-                    following = (u.Following.Select(f => f.Follower.username)).ToList()
+                    following = (u.Following.Select(f => f.Follower.username)).ToList(),
+                    messages = (from m in u.Messages select new MessageReadDTO{
+                        id = m.message_id,
+                        text = m.text,
+                        pub_date = m.pub_date,
+                        flagged = m.flagged
+                    }).ToList()
                 };
             
             return await query.ToListAsync();

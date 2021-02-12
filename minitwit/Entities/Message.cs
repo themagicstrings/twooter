@@ -7,7 +7,8 @@ namespace Entities
     {
         [Key]
         public int message_id { get; set; }
-        public int author_id { get; set; }
+        //public int UserId { get; set; }
+        public User User { get; set; }
         [Required]
         public string text { get; set; }
         public DateTime pub_date { get; set; }
