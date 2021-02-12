@@ -39,8 +39,8 @@ namespace Models
 
             var newFollow = new Follow
             {
-                FollowedId = (await followerQuery.FirstOrDefaultAsync()).user_id,
-                FollowerId = (await followedQuery.FirstOrDefaultAsync()).user_id
+                FollowedId = (await followedQuery.FirstOrDefaultAsync()).user_id,
+                FollowerId = (await followerQuery.FirstOrDefaultAsync()).user_id
             };
 
             await context.follows.AddAsync(newFollow);
@@ -59,7 +59,7 @@ namespace Models
             var followedUser = await unfollowedQuery.FirstAsync();
             var followerUser = await unfollowerQuery.FirstAsync();
 
-            var followQuery = from f in context.follows where f.FollowerId == followedUser.user_id && f.FollowedId == followerUser.user_id select f;
+            var followQuery = from f in context.follows where f.FollowedId == followedUser.user_id && f.FollowerId == followerUser.user_id select f;
             if(!await followQuery.AnyAsync()) return -3;
 
             var followEntity = await followQuery.FirstAsync();
