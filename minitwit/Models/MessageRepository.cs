@@ -4,6 +4,7 @@ using Shared;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System;
 
 namespace Models
 {
@@ -21,8 +22,8 @@ namespace Models
             {
                 author_id = message.user.user_id,
                 text = message.text,
-                pub_date = message.pub_date,
-                flagged = message.flagged
+                pub_date = DateTime.Now,
+                flagged = 0
             };
             await context.messages.AddAsync(newMessage);
             await context.SaveChangesAsync();

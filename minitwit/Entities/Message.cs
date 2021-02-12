@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace Entities
 {
@@ -9,7 +10,7 @@ namespace Entities
         public int author_id { get; set; }
         [Required]
         public string text { get; set; }
-        public int? pub_date { get; set; }
+        public DateTime pub_date { get; set; }
         public int? flagged { get; set; }
     }
 }

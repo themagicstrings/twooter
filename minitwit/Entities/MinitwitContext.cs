@@ -30,6 +30,14 @@ namespace Entities
         {
             modelBuilder.Entity<Follower>()
                 .HasKey(f => new {f.who_id, f.whom_id});
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.username)
+                .IsUnique();
+            
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.email)
+                .IsUnique();
         }
 
     }
