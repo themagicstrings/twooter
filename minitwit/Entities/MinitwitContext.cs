@@ -10,7 +10,7 @@ namespace Entities
 
         public DbSet<Message> messages { get; set; }
 
-        public DbSet<Follower> followers { get; set; }
+        public DbSet<Follow> follows { get; set; }
 
         public MinitwitContext() {}
 
@@ -28,9 +28,6 @@ namespace Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Follower>()
-                .HasKey(f => new {f.who_id, f.whom_id});
-
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.username)
                 .IsUnique();
@@ -38,7 +35,20 @@ namespace Entities
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.email)
                 .IsUnique();
-        }
 
+            modelBuilder.Entity<Follow>()
+                .HasKey(f => new {f.FollowerId, f.FollowedId});
+
+            modelBuilder.Entity<Follow>()
+                .HasOne(pt => pt.Followed)
+                .WithMany(p => p.Following)
+                .HasForeignKey(pt => pt.FollowedId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Follow>()
+                .HasOne(pt => pt.Follower)
+                .WithMany(p => p.FollowedBy)
+                .HasForeignKey(pt => pt.FollowerId);
+        }
     }
 }

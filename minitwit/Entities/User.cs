@@ -6,13 +6,15 @@ namespace Entities
     public class User
     {
         [Key]
-        public int user_id { get;set; }
+        public int user_id { get; set; }
         [StringLength(20)]
         [Required]
-        public string username { get;set; }
+        public string username { get; set; }
         [Required]
-        public string email { get;set; }
+        public string email { get; set; }
         [Required]
-        public string pw_hash { get;set; }
+        public string pw_hash { get; set; }
+        public List<Follow> Following { get; set; }
+        public List<Follow> FollowedBy { get; set; }
     }
 }

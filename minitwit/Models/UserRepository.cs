@@ -37,13 +37,13 @@ namespace Models
             var followerQuery = from u in context.users where u.username == follower select u;
             if(!await followerQuery.AnyAsync()) return -2;
 
-            var newFollow = new Follower
+            var newFollow = new Follow
             {
-                who_id = (await followerQuery.FirstOrDefaultAsync()).user_id,
-                whom_id = (await followedQuery.FirstOrDefaultAsync()).user_id
+                FollowedId = (await followerQuery.FirstOrDefaultAsync()).user_id,
+                FollowerId = (await followedQuery.FirstOrDefaultAsync()).user_id
             };
 
-            await context.followers.AddAsync(newFollow);
+            await context.follows.AddAsync(newFollow);
             await context.SaveChangesAsync();
 
             return 0;
@@ -67,8 +67,11 @@ namespace Models
         {
             var query = from u in context.users where u.username.Equals(username) select
                 new UserReadDTO { 
+                    user_id = u.user_id,
                     username = u.username,
-                    email = u.email
+                    email = u.email,
+                    followers = (u.FollowedBy.Select(f => f.Followed.username)).ToList(),
+                    following = (u.Following.Select(f => f.Follower.username)).ToList()
                 };
             
             return await query.FirstOrDefaultAsync();
@@ -78,8 +81,11 @@ namespace Models
         {
             var query = from u in context.users select
                 new UserReadDTO { 
+                    user_id = u.user_id,
                     username = u.username,
-                    email = u.email
+                    email = u.email,
+                    followers = (u.FollowedBy.Select(f => f.Followed.username)).ToList(),
+                    following = (u.Following.Select(f => f.Follower.username)).ToList()
                 };
             
             return await query.ToListAsync();

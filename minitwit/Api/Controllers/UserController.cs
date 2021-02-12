@@ -44,7 +44,6 @@ namespace Controllers
             var res = await repository.FollowAsync(follower, followed);
 
             if (res == -1) return BadRequest();
-            if (res == -2) return NoContent();
             return Ok();
         }
     }
