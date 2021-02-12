@@ -43,7 +43,17 @@ namespace Controllers
         {
             var res = await repository.FollowAsync(follower, followed);
 
-            if (res == -1) return BadRequest();
+            if (res != 0) return BadRequest();
+            return Ok();
+        }
+
+        [HttpDelete("unfollow/{unfollowed}")]
+        public async Task<IActionResult> UnfollowUserAsync([FromBody] string unfollower, string unfollowed)
+        {
+            var res = await repository.UnfollowAsync(unfollower, unfollowed);
+
+            if (res == -3) return NotFound();
+            if (res != 0) return BadRequest();
             return Ok();
         }
     }

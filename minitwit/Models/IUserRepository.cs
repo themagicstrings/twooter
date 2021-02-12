@@ -13,5 +13,6 @@ namespace Models
         Task<int> CreateAsync(UserCreateDTO user);
         Task<int> DeleteAsync(int id);
         Task<int> FollowAsync(string follower, string followed);
+        Task<int> UnfollowAsync(string follower, string followed);
     }
 }

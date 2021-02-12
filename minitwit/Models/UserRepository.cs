@@ -30,7 +30,7 @@ namespace Models
             return newUser.user_id;
         }
 
-        public async Task<int> FollowAsync(string follower, string followed )
+        public async Task<int> FollowAsync(string follower, string followed)
         {
             var followedQuery = from u in context.users where u.username == followed select u;
             if(!await followedQuery.AnyAsync()) return -1;
@@ -44,6 +44,26 @@ namespace Models
             };
 
             await context.follows.AddAsync(newFollow);
+            await context.SaveChangesAsync();
+
+            return 0;
+        }
+
+        public async Task<int> UnfollowAsync(string unfollower, string unfollowed)
+        {
+            var unfollowedQuery = from u in context.users where u.username == unfollowed select u;
+            if(!await unfollowedQuery.AnyAsync()) return -1;
+            var unfollowerQuery = from u in context.users where u.username == unfollower select u;
+            if(!await unfollowerQuery.AnyAsync()) return -2;
+
+            var followedUser = await unfollowedQuery.FirstAsync();
+            var followerUser = await unfollowerQuery.FirstAsync();
+
+            var followQuery = from f in context.follows where f.FollowerId == followedUser.user_id && f.FollowedId == followerUser.user_id select f;
+            if(!await followQuery.AnyAsync()) return -3;
+
+            var followEntity = await followQuery.FirstAsync();
+            context.follows.Remove(followEntity);
             await context.SaveChangesAsync();
 
             return 0;
