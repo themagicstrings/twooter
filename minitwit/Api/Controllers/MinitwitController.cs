@@ -4,8 +4,10 @@ using Models;
 using Shared;
 using System.Collections.Generic;
 using static Microsoft.AspNetCore.Http.StatusCodes;
-
+using System.Web;
 using System;
+using Westwind.Web.Mvc;
+using Api;
 
 namespace Controllers
 {
@@ -60,6 +62,16 @@ namespace Controllers
             throw new NotImplementedException();
         }
 
+        // Post a message
+        [HttpPost("add_message")]
+        public async Task<IActionResult> PostMessageAsync([FromBody] MessageCreateDTO message)
+        {
+            var id = await MessageRepo.CreateAsync(message);
+
+            if (id == -1) return BadRequest();
+            return Ok("Your message was recorded");
+        }
+
 
         // Attemps to follow a user
         [HttpPost("{followed}/follow")]
@@ -86,7 +98,11 @@ namespace Controllers
         [HttpGet("/public")]
         public async Task<IActionResult> GetPublicTimeline()
         {
-            throw new NotImplementedException();
+            return new ContentResult {
+                ContentType = "text/html",
+                StatusCode = (int) Status200OK,
+                Content = BasicTemplater.GeneratePublicTimeline( await MessageRepo.ReadAllAsync() )
+            };
         }
 
         // Attempts to login a user
