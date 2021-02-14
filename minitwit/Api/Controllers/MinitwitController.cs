@@ -37,7 +37,17 @@ namespace Controllers
         [HttpPost("/register")]
         public async Task<IActionResult> CreateUserAsync(UserCreateDTO user)
         {
-            throw new NotImplementedException();
+            if(user.username == "" || user.username is null) return BadRequest("You have to enter a username");
+            if(!user.email.Contains('@')) return BadRequest("You have to enter a valid email address");
+            if(user.password1 == "" || user.password1 is null) return BadRequest("You have to enter a password");
+            if(user.password1 != user.password2) return BadRequest("The two passwords do not match");
+
+            var exist = await UserRepo.ReadAsync(user.username);
+
+            if(exist is not null) return BadRequest("The username is already taken");
+
+            await UserRepo.CreateAsync(user);
+            return Ok("You were succesfully registered and can login now");
         }
         
         [HttpGet("/register")]

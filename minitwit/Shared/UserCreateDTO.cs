@@ -4,6 +4,7 @@ namespace Shared
     {
         public string username { get; set; }
         public string email { get; set; }
-        public string pw_hash { get; set; }
+        public string password1 { get; set; }
+        public string password2 { get; set; }
     }
 }

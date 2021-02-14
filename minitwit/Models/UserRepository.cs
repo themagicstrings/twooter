@@ -1,9 +1,11 @@
 using System.Threading.Tasks;
+using System.Text;
 using Entities;
 using Shared;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Security.Cryptography; 
 
 namespace Models
 {
@@ -21,13 +23,25 @@ namespace Models
             {
                 username = user.username,
                 email = user.email,
-                pw_hash = user.pw_hash
+                pw_hash = HashPassword(user.password1)
             };
 
             await context.users.AddAsync(newUser);
             await context.SaveChangesAsync();
 
             return newUser.user_id;
+        }
+
+        private string HashPassword(string password)
+        {
+            using (SHA256 sha = SHA256.Create())
+            {
+                byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+                StringBuilder sb = new StringBuilder();
+                foreach(byte b in bytes) sb.Append(b.ToString());
+                return sb.ToString();
+            }
         }
 
         public async Task<int> FollowAsync(string follower, string followed)
