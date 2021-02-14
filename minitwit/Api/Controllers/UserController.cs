@@ -4,9 +4,10 @@ using Models;
 using Shared;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 using System.Collections.Generic;
-
+/*
 namespace Controllers
 {
+    
     [ApiController]
     [Route("/")]
     public class UserController : ControllerBase
@@ -58,3 +59,4 @@ namespace Controllers
         }
     }
 }
+*/

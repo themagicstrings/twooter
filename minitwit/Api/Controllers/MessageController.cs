@@ -4,7 +4,7 @@ using Models;
 using Shared;
 using System.Collections.Generic;
 using static Microsoft.AspNetCore.Http.StatusCodes;
-
+/*
 namespace Controllers
 {
     [ApiController]
@@ -52,3 +52,4 @@ namespace Controllers
         }
     }
 }
+*/
