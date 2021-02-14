@@ -21,8 +21,7 @@ namespace Entities
         {
             if(!optionsBuilder.IsConfigured)
             {
-                var connectionString = @"Filename=minitwit.db";
-                optionsBuilder.UseSqlite(connectionString);
+                optionsBuilder.UseInMemoryDatabase("minitwit");
             }
         }
 
@@ -31,11 +30,11 @@ namespace Entities
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.username)
                 .IsUnique();
-            
+
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.email)
                 .IsUnique();
-            
+
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Messages)
                 .WithOne(m => m.User);
