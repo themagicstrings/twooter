@@ -11,6 +11,7 @@ namespace Api
         public static string GenerateTimeline(List<MessageReadDTO> messages, bool postable)
         {
             messages.Sort((x, y) => DateTime.Compare(x.pub_date, y.pub_date));
+            messages.Reverse();
 
             StringBuilder sb = new StringBuilder();
             sb.Append("<html>");
