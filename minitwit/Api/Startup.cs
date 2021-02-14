@@ -29,17 +29,23 @@ namespace Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<MinitwitContext>(o => o.UseSqlServer(@"Server=localhost;Database=twooter;Trusted_Connection=True"));
+            services.AddDbContext<MinitwitContext>(o => o.UseSqlite(@"Filename=:memory:"));
             services.AddScoped<IMinitwitContext, MinitwitContext>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddControllers( o => o.SuppressAsyncSuffixInActionNames = false);
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = "session";
+                options.Cookie.IsEssential = true;
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
             });
 
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +64,8 @@ namespace Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseSession();
 
             app.UseAuthorization();
 

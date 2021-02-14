@@ -5,7 +5,7 @@ using Shared;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Security.Cryptography; 
+using System.Security.Cryptography;
 
 namespace Models
 {
@@ -32,7 +32,7 @@ namespace Models
             return newUser.user_id;
         }
 
-        private string HashPassword(string password)
+        public string HashPassword(string password)
         {
             using (SHA256 sha = SHA256.Create())
             {
@@ -52,12 +52,12 @@ namespace Models
             if(!await followerQuery.AnyAsync()) return -2;
 
             var relationExists = from entry in context.follows
-                where entry.Followed.username == followed && 
+                where entry.Followed.username == followed &&
                       entry.Follower.username == follower
                 select entry;
 
             if (await relationExists.AnyAsync()) return -3;
-            
+
             var newFollow = new Follow
             {
                 FollowedId = (await followedQuery.FirstOrDefaultAsync()).user_id,
@@ -107,7 +107,7 @@ namespace Models
         public async Task<UserReadDTO> ReadAsync(string username)
         {
             var query = from u in context.users where u.username.Equals(username) select
-                new UserReadDTO { 
+                new UserReadDTO {
                     user_id = u.user_id,
                     username = u.username,
                     email = u.email,
@@ -120,14 +120,14 @@ namespace Models
                         flagged = m.flagged
                     }).ToList()
                 };
-            
+
             return await query.FirstOrDefaultAsync();
         }
 
         public async Task<List<UserReadDTO>> ReadAllAsync()
         {
             var query = from u in context.users select
-                new UserReadDTO { 
+                new UserReadDTO {
                     user_id = u.user_id,
                     username = u.username,
                     email = u.email,
@@ -140,8 +140,33 @@ namespace Models
                         flagged = m.flagged
                     }).ToList()
                 };
-            
+
             return await query.ToListAsync();
         }
+
+    public async Task<UserReadDTO> ReadAsync(int id)
+    {
+        var query = from u in context.users where u.user_id.Equals(id) select
+            new UserReadDTO {
+                user_id = u.user_id,
+                username = u.username,
+                email = u.email,
+                followers = (u.FollowedBy.Select(f => f.Followed.username)).ToList(),
+                following = (u.Following.Select(f => f.Follower.username)).ToList(),
+                messages = (from m in u.Messages select new MessageReadDTO{
+                    id = m.message_id,
+                    text = m.text,
+                    pub_date = m.pub_date,
+                    flagged = m.flagged
+                }).ToList()
+            };
+
+        return await query.FirstOrDefaultAsync();
     }
+
+    public async Task<string> ReadPWHash(string name)
+    {
+      return await (from u in context.users where u.username.Equals(name) select u.pw_hash).FirstOrDefaultAsync();
+    }
+  }
 }

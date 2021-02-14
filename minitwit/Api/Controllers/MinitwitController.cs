@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -6,7 +8,6 @@ using System.Collections.Generic;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 using System.Web;
 using System;
-using Westwind.Web.Mvc;
 using Api;
 
 namespace Controllers
@@ -17,11 +18,23 @@ namespace Controllers
     {
         private readonly IMessageRepository MessageRepo;
         private readonly IUserRepository UserRepo;
+        private readonly SessionHelper sessionHelper;
+        private UserReadDTO user = null;
 
         public MinitwitController(IMessageRepository msgrepo, IUserRepository usrrepo)
         {
             this.MessageRepo = msgrepo;
             this.UserRepo = usrrepo;
+            this.sessionHelper = new SessionHelper(() => HttpContext.Session);
+        }
+
+        public async Task CheckSessionForUser() {
+
+            if (int.TryParse(sessionHelper.GetString("user_id"), out var userid)) {
+                var user = await UserRepo.ReadAsync(userid);
+                if (user is null) await PostLogout();
+                else this.user = user;
+            }
         }
 
         // Redirects to /public if no user is logged in, else displays users timeline including followed users
@@ -54,7 +67,7 @@ namespace Controllers
             await UserRepo.CreateAsync(user);
             return Ok("You were succesfully registered and can login now");
         }
-        
+
         // Displays register page
         [HttpGet("/register")]
         public async Task<IActionResult> GetRegisterPage()
@@ -107,23 +120,57 @@ namespace Controllers
 
         // Attempts to login a user
         [HttpPost("/login")]
-        public async Task<IActionResult> PostLogin()
+        public async Task<IActionResult> PostLogin([FromForm] UserLoginDTO loginDTO)
         {
-            throw new NotImplementedException();
+            if (loginDTO.Username is null || loginDTO.Password is null)
+            {
+                return BadRequest();
+            }
+
+            var hash = await UserRepo.ReadPWHash(loginDTO.Username);
+
+            var hashedpwd = UserRepo.HashPassword(loginDTO.Password);
+
+            if (!hash.Equals(hashedpwd))
+            {
+                return BadRequest();
+            }
+
+            var user = await UserRepo.ReadAsync(loginDTO.Username);
+
+            sessionHelper.SetString("user_id", user.user_id.ToString());
+            return Redirect($"/{user.username}");
         }
 
         // Displays login page
         [HttpGet("/login")]
         public async Task<IActionResult> GetLoginPage()
         {
-            throw new NotImplementedException();
+
+            CheckSessionForUser();
+
+            if (user is null) {
+
+            return new ContentResult(){
+                Content = @"<form method=post action=login>
+                    <input name=Username>
+                    <input name=Password>
+                    <input type=submit>
+                </form>",
+                ContentType = "text/html"
+            };}
+
+            return new ContentResult(){
+                Content = $"User: {user.username}"
+            };
         }
 
         // Logs out currently logged in user
         [HttpPost("/logout")]
         public async Task<IActionResult> PostLogout()
         {
-            throw new NotImplementedException();
+            HttpContext.Session.Clear();
+            return Redirect("~/public");
         }
     }
 }
