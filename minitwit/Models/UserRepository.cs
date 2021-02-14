@@ -46,6 +46,7 @@ namespace Models
 
         public async Task<int> FollowAsync(string follower, string followed)
         {
+            if (followed.Equals(followed)) return -1;
             var followedQuery = from u in context.users where u.username == followed select u;
             if(!await followedQuery.AnyAsync()) return -1;
             var followerQuery = from u in context.users where u.username == follower select u;
