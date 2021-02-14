@@ -22,18 +22,21 @@ namespace Controllers
             this.UserRepo = usrrepo;
         }
 
+        // Redirects to /public if no user is logged in, else displays users timeline including followed users
         [HttpGet]
         public async Task<IActionResult> GetRoot()
         {
             throw new NotImplementedException();
         }
 
+        // Displays specific users messages
         [HttpGet("{username}")]
         public async Task<ActionResult> GetUserAsync(string username)
         {
             throw new NotImplementedException();
         }
 
+        // Attempts to register a user with given information
         [HttpPost("/register")]
         public async Task<IActionResult> CreateUserAsync(UserCreateDTO user)
         {
@@ -50,12 +53,15 @@ namespace Controllers
             return Ok("You were succesfully registered and can login now");
         }
         
+        // Displays register page
         [HttpGet("/register")]
         public async Task<IActionResult> GetRegisterPage()
         {
             throw new NotImplementedException();
         }
 
+
+        // Attemps to follow a user
         [HttpPost("{followed}/follow")]
         public async Task<IActionResult> FollowUserAsync([FromBody] string follower, string followed)
         {
@@ -65,6 +71,7 @@ namespace Controllers
             return Ok();
         }
 
+        // Attemps to unfollow a user
         [HttpDelete("{unfollowed}/unfollow")]
         public async Task<IActionResult> UnfollowUserAsync([FromBody] string unfollower, string unfollowed)
         {
@@ -75,26 +82,30 @@ namespace Controllers
             return Ok();
         }
 
-        [HttpGet("/timeline")]
-        public async Task<IActionResult> GetTimeline(string username)
-        {
-            throw new NotImplementedException();
-        }
-
+        // Displays all messages
         [HttpGet("/public")]
         public async Task<IActionResult> GetPublicTimeline()
         {
             throw new NotImplementedException();
         }
 
+        // Attempts to login a user
         [HttpPost("/login")]
         public async Task<IActionResult> PostLogin()
         {
             throw new NotImplementedException();
         }
 
+        // Displays login page
         [HttpGet("/login")]
         public async Task<IActionResult> GetLoginPage()
+        {
+            throw new NotImplementedException();
+        }
+
+        // Logs out currently logged in user
+        [HttpPost("/logout")]
+        public async Task<IActionResult> PostLogout()
         {
             throw new NotImplementedException();
         }
