@@ -6,7 +6,7 @@ namespace Api
 {
     public class BasicTemplater
     {
-        public static string GeneratePublicTimeline(ICollection<MessageReadDTO> messages)
+        public static string GenerateTimeline(ICollection<MessageReadDTO> messages)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("<html>");

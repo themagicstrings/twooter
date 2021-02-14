@@ -39,16 +39,28 @@ namespace Controllers
 
         // Redirects to /public if no user is logged in, else displays users timeline including followed users
         [HttpGet]
-        public async Task<IActionResult> GetRoot()
+        public async Task<IActionResult> GetTimeline()
         {
-            throw new NotImplementedException();
+            await CheckSessionForUser();
+
+            if(user is null) return Redirect($"/public");
+            else return new ContentResult 
+            {
+                ContentType = "text/html",
+                StatusCode = (int) Status200OK,
+                Content = BasicTemplater.GenerateTimeline((await UserRepo.ReadAsync(user.username)).messages)
+            };
         }
 
         // Displays specific users messages
         [HttpGet("{username}")]
         public async Task<ActionResult> GetUserAsync(string username)
         {
-            throw new NotImplementedException();
+            return new ContentResult {
+                ContentType = "text/html",
+                StatusCode = (int) Status200OK,
+                Content = BasicTemplater.GenerateTimeline((await UserRepo.ReadAsync(username)).messages)
+            };
         }
 
         // Attempts to register a user with given information
@@ -114,7 +126,7 @@ namespace Controllers
             return new ContentResult {
                 ContentType = "text/html",
                 StatusCode = (int) Status200OK,
-                Content = BasicTemplater.GeneratePublicTimeline( await MessageRepo.ReadAllAsync() )
+                Content = BasicTemplater.GenerateTimeline( await MessageRepo.ReadAllAsync() )
             };
         }
 
@@ -147,7 +159,7 @@ namespace Controllers
         public async Task<IActionResult> GetLoginPage()
         {
 
-            CheckSessionForUser();
+            await CheckSessionForUser();
 
             if (user is null) {
 
