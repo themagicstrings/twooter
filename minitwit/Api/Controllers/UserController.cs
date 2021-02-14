@@ -41,7 +41,7 @@ namespace Controllers
         [HttpPost("follow/{followed}")]
         public async Task<IActionResult> FollowUserAsync([FromBody] string follower, string followed)
         {
-            var res = await repository.FollowAsync(follower, followed);
+            var res = await repository.FollowAsync(followed, follower);
 
             if (res != 0) return BadRequest();
             return Ok();
@@ -50,7 +50,7 @@ namespace Controllers
         [HttpDelete("unfollow/{unfollowed}")]
         public async Task<IActionResult> UnfollowUserAsync([FromBody] string unfollower, string unfollowed)
         {
-            var res = await repository.UnfollowAsync(unfollower, unfollowed);
+            var res = await repository.UnfollowAsync(unfollowed, unfollower);
 
             if (res == -3) return NotFound();
             if (res != 0) return BadRequest();
