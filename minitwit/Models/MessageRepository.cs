@@ -16,9 +16,9 @@ namespace Models
         {
             this.context = context;
         }
-        public async Task<int> CreateAsync(MessageCreateDTO message)
+        public async Task<int> CreateAsync(string message, string username)
         {
-            var userQuery = from u in context.users where u.username == message.username select u;
+            var userQuery = from u in context.users where u.username == username select u;
 
             if (!await userQuery.AnyAsync()) return -1;
 
@@ -27,7 +27,7 @@ namespace Models
             var newMessage = new Message
             {
                 User = user,
-                text = message.text,
+                text = message,
                 pub_date = DateTime.Now,
                 flagged = 0
             };

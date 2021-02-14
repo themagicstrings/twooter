@@ -2,9 +2,9 @@ namespace Shared
 {
     public class UserCreateDTO
     {
-        public string username { get; set; }
-        public string email { get; set; }
-        public string password1 { get; set; }
-        public string password2 { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public string Password1 { get; set; }
+        public string Password2 { get; set; }
     }
 }

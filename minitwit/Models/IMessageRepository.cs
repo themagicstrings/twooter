@@ -8,7 +8,7 @@ namespace Models
     public interface IMessageRepository
     {
         Task<MessageReadDTO> ReadAsync(int id);
-        Task<int> CreateAsync(MessageCreateDTO message);
+        Task<int> CreateAsync(string message, string username);
         Task<int> DeleteAsync(int id);
         Task<List<MessageReadDTO>> ReadAllAsync();
     }

@@ -21,9 +21,9 @@ namespace Models
         {
             var newUser = new User
             {
-                username = user.username,
-                email = user.email,
-                pw_hash = HashPassword(user.password1)
+                username = user.Username,
+                email = user.Email,
+                pw_hash = HashPassword(user.Password1)
             };
 
             await context.users.AddAsync(newUser);
@@ -114,6 +114,7 @@ namespace Models
                     followers = (u.FollowedBy.Select(f => f.Followed.username)).ToList(),
                     following = (u.Following.Select(f => f.Follower.username)).ToList(),
                     messages = (from m in u.Messages select new MessageReadDTO{
+                        author = new UserReadDTO {username = u.username},
                         id = m.message_id,
                         text = m.text,
                         pub_date = m.pub_date,
@@ -154,6 +155,7 @@ namespace Models
                 followers = (u.FollowedBy.Select(f => f.Followed.username)).ToList(),
                 following = (u.Following.Select(f => f.Follower.username)).ToList(),
                 messages = (from m in u.Messages select new MessageReadDTO{
+                    author = new UserReadDTO {username = u.username},
                     id = m.message_id,
                     text = m.text,
                     pub_date = m.pub_date,

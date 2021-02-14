@@ -2,7 +2,7 @@ namespace Shared
 {
     public class MessageCreateDTO
     {
-        public string username { get; set; }
-        public string text { get; set; }
+        public string Username { get; set; }
+        public string Text { get; set; }
     }
 }

@@ -43,12 +43,18 @@ namespace Controllers
         {
             await CheckSessionForUser();
 
-            if(user is null) return Redirect($"/public");
-            else return new ContentResult 
+            if(user is null) return Redirect("/public");
+            
+            List<MessageReadDTO> messages = user.messages;
+            foreach(string follow in user.following)
+            {
+                messages.AddRange((await UserRepo.ReadAsync(follow)).messages);
+            }
+            return new ContentResult 
             {
                 ContentType = "text/html",
-                StatusCode = (int) Status200OK,
-                Content = BasicTemplater.GenerateTimeline((await UserRepo.ReadAsync(user.username)).messages)
+                StatusCode = Status200OK,
+                Content = BasicTemplater.GenerateTimeline(messages, user != null)
             };
         }
 
@@ -56,45 +62,56 @@ namespace Controllers
         [HttpGet("{username}")]
         public async Task<ActionResult> GetUserAsync(string username)
         {
-            return new ContentResult {
+            await CheckSessionForUser();
+
+            return new ContentResult 
+            {
                 ContentType = "text/html",
-                StatusCode = (int) Status200OK,
-                Content = BasicTemplater.GenerateTimeline((await UserRepo.ReadAsync(username)).messages)
+                StatusCode = Status200OK,
+                Content = BasicTemplater.GenerateTimeline(user.messages, user != null)
             };
         }
 
         // Attempts to register a user with given information
         [HttpPost("/register")]
-        public async Task<IActionResult> CreateUserAsync(UserCreateDTO user)
+        public async Task<IActionResult> CreateUserAsync([FromForm]UserCreateDTO user)
         {
-            if(user.username == "" || user.username is null) return BadRequest("You have to enter a username");
-            if(!user.email.Contains('@')) return BadRequest("You have to enter a valid email address");
-            if(user.password1 == "" || user.password1 is null) return BadRequest("You have to enter a password");
-            if(user.password1 != user.password2) return BadRequest("The two passwords do not match");
+            if(user.Username == "" || user.Username is null) return BadRequest("You have to enter a username");
+            if(!user.Email.Contains('@')) return BadRequest("You have to enter a valid email address");
+            if(user.Password1 == "" || user.Password1 is null) return BadRequest("You have to enter a password");
+            if(user.Password1 != user.Password2) return BadRequest("The two passwords do not match");
 
-            var exist = await UserRepo.ReadAsync(user.username);
+            var exist = await UserRepo.ReadAsync(user.Username);
 
             if(exist is not null) return BadRequest("The username is already taken");
 
             await UserRepo.CreateAsync(user);
-            return Ok("You were succesfully registered and can login now");
+            return Redirect("/login");
+            //return Ok("You were succesfully registered and can login now");
         }
 
         // Displays register page
         [HttpGet("/register")]
         public async Task<IActionResult> GetRegisterPage()
         {
-            throw new NotImplementedException();
+            return new ContentResult {
+                ContentType = "text/html",
+                StatusCode = (int) Status200OK,
+                Content = BasicTemplater.GenerateRegisterPage()
+            };
         }
 
         // Post a message
         [HttpPost("add_message")]
-        public async Task<IActionResult> PostMessageAsync([FromBody] MessageCreateDTO message)
+        public async Task<IActionResult> PostMessageAsync([FromForm] MessageCreateRequestDTO message)
         {
-            var id = await MessageRepo.CreateAsync(message);
+            await CheckSessionForUser();
+
+            var id = await MessageRepo.CreateAsync(message.Text, user.username);
 
             if (id == -1) return BadRequest();
-            return Ok("Your message was recorded");
+            return Redirect("/");
+            //return Ok("Your message was recorded");
         }
 
 
@@ -123,10 +140,12 @@ namespace Controllers
         [HttpGet("/public")]
         public async Task<IActionResult> GetPublicTimeline()
         {
+            await CheckSessionForUser();
+
             return new ContentResult {
                 ContentType = "text/html",
                 StatusCode = (int) Status200OK,
-                Content = BasicTemplater.GenerateTimeline( await MessageRepo.ReadAllAsync() )
+                Content = BasicTemplater.GenerateTimeline(await MessageRepo.ReadAllAsync(), user != null )
             };
         }
 
@@ -151,7 +170,7 @@ namespace Controllers
             var user = await UserRepo.ReadAsync(loginDTO.Username);
 
             sessionHelper.SetString("user_id", user.user_id.ToString());
-            return Redirect($"/{user.username}");
+            return Redirect("/");
         }
 
         // Displays login page
@@ -161,14 +180,11 @@ namespace Controllers
 
             await CheckSessionForUser();
 
-            if (user is null) {
+            if (user == null) {
 
             return new ContentResult(){
-                Content = @"<form method=post action=login>
-                    <input name=Username>
-                    <input name=Password>
-                    <input type=submit>
-                </form>",
+                Content = BasicTemplater.GenerateLoginPage(),
+                StatusCode = (int) Status200OK,
                 ContentType = "text/html"
             };}
 
