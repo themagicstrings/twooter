@@ -28,7 +28,7 @@ namespace Controllers
             this.sessionHelper = new SessionHelper(() => HttpContext.Session);
         }
 
-        public async Task CheckSessionForUser() {
+        private async Task CheckSessionForUser() {
 
             if (int.TryParse(sessionHelper.GetString("user_id"), out var userid)) {
                 var user = await UserRepo.ReadAsync(userid);
@@ -64,11 +64,15 @@ namespace Controllers
         {
             await CheckSessionForUser();
 
+            var searchedUser = await UserRepo.ReadAsync(username);
+
+            if (searchedUser is null) return NotFound();
+
             return new ContentResult 
             {
                 ContentType = "text/html",
                 StatusCode = Status200OK,
-                Content = BasicTemplater.GenerateTimeline(user.messages, user != null)
+                Content = BasicTemplater.GenerateTimeline(searchedUser.messages, user != null)
             };
         }
 
@@ -116,20 +120,24 @@ namespace Controllers
 
 
         // Attemps to follow a user
-        [HttpPost("{followed}/follow")]
-        public async Task<IActionResult> FollowUserAsync([FromBody] string follower, string followed)
+        [HttpPost("{username}/follow")]
+        public async Task<IActionResult> FollowUserAsync([FromRoute] string username)
         {
-            var res = await UserRepo.FollowAsync(followed, follower);
+            await CheckSessionForUser();
+
+            var res = await UserRepo.FollowAsync(user.username, username);
 
             if (res != 0) return BadRequest();
             return Ok();
         }
 
         // Attemps to unfollow a user
-        [HttpDelete("{unfollowed}/unfollow")]
-        public async Task<IActionResult> UnfollowUserAsync([FromBody] string unfollower, string unfollowed)
+        [HttpDelete("{username}/unfollow")]
+        public async Task<IActionResult> UnfollowUserAsync([FromRoute] string username)
         {
-            var res = await UserRepo.UnfollowAsync(unfollowed, unfollower);
+            await CheckSessionForUser();
+
+            var res = await UserRepo.UnfollowAsync(user.username, username);
 
             if (res == -3) return NotFound();
             if (res != 0) return BadRequest();

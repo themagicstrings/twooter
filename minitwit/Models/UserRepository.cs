@@ -111,8 +111,8 @@ namespace Models
                     user_id = u.user_id,
                     username = u.username,
                     email = u.email,
-                    followers = (u.FollowedBy.Select(f => f.Followed.username)).ToList(),
-                    following = (u.Following.Select(f => f.Follower.username)).ToList(),
+                    followers = (context.follows.Where(f => f.Followed.username == username).Select(f => f.Follower.username).ToList()),//followers = (u.FollowedBy.Select(f => f.Followed.username)).ToList(),
+                    following = (context.follows.Where(f => f.Follower.username == username).Select(f => f.Followed.username).ToList()),//following = (u.Following.Select(f => f.Follower.username)).ToList(),
                     messages = (from m in u.Messages select new MessageReadDTO{
                         author = new UserReadDTO {username = u.username},
                         id = m.message_id,
@@ -152,8 +152,8 @@ namespace Models
                 user_id = u.user_id,
                 username = u.username,
                 email = u.email,
-                followers = (u.FollowedBy.Select(f => f.Followed.username)).ToList(),
-                following = (u.Following.Select(f => f.Follower.username)).ToList(),
+                followers = (context.follows.Where(f => f.Followed.username == u.username).Select(f => f.Follower.username).ToList()),//followers = (u.FollowedBy.Select(f => f.Followed.username)).ToList(),
+                following = (context.follows.Where(f => f.Follower.username == u.username).Select(f => f.Followed.username).ToList()),
                 messages = (from m in u.Messages select new MessageReadDTO{
                     author = new UserReadDTO {username = u.username},
                     id = m.message_id,

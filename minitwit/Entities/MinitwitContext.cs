@@ -49,13 +49,13 @@ namespace Entities
 
             modelBuilder.Entity<Follow>()
                 .HasOne(pt => pt.Followed)
-                .WithMany(p => p.Following)
+                .WithMany(p => p.FollowedBy)
                 .HasForeignKey(pt => pt.FollowedId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Follow>()
                 .HasOne(pt => pt.Follower)
-                .WithMany(p => p.FollowedBy)
+                .WithMany(p => p.Following)
                 .HasForeignKey(pt => pt.FollowerId);
         }
     }
