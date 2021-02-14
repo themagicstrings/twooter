@@ -1,13 +1,17 @@
 using System.Collections.Generic;
 using Shared;
 using System.Text;
+using System.Linq;
+using System;
 
 namespace Api
 {
     public class BasicTemplater
     {
-        public static string GenerateTimeline(ICollection<MessageReadDTO> messages, bool postable)
+        public static string GenerateTimeline(List<MessageReadDTO> messages, bool postable)
         {
+            messages.Sort((x, y) => DateTime.Compare(x.pub_date, y.pub_date));
+
             StringBuilder sb = new StringBuilder();
             sb.Append("<html>");
             if(postable) sb.Append("<form method=post action=add_message><input name=Text><input type=submit></form>");
