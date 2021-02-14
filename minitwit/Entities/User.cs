@@ -12,6 +12,7 @@ namespace Entities
         public string username { get; set; }
         [Required]
         public string email { get; set; }
+        [StringLength(64)]
         [Required]
         public string pw_hash { get; set; }
         public List<Follow> Following { get; set; }

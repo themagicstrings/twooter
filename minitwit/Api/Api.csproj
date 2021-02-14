@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
-    <PackageReference Include="Westwind.Web.Mvc" Version="2.850.0" />
   </ItemGroup>
 
   <ItemGroup>

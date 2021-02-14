@@ -21,8 +21,8 @@ namespace Entities
         {
             if(!optionsBuilder.IsConfigured)
             {
-                var connectionString = @"Server=localhost;Database=twooter;Trusted_Connection=True";
-                optionsBuilder.UseSqlServer(connectionString);
+                var connectionString = @"Filename=minitwit.db";
+                optionsBuilder.UseSqlite(connectionString);
             }
         }
 
