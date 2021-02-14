@@ -1,14 +1,38 @@
+# Contribute
 
-- Which repository setup will we use?
+## Repository model
+Mono repository. One repository for every project(s) / exercises in the course.
 
-- Which branching model will we use?
-  - We will use topic-branches, such that individual features will be on their own branch. Once the feature is believed to be complete, a pull request will be opened, and reviewed by other group members. Once verified, it will be merged into master.
+## Branching model
+We use topic-branches, such that individual features will be on their own branch. Once the feature is believed to be complete, a pull request will be opened to main, and reviewed by other group members. Once verified, it will be merged into master.
 
-- Which distributed development workflow will we use?
-    - Centralized workflow where the shared repository is hosted on GitHub. 
+## Distributed development workflow
+Centralized workflow with shared repository hosted on GitHub. 
 
-- How do we expect contributions to look like?
-  - Commit messages should be written in imperative mood, and should be descriptive of the changes in the commit. Furthermore, a description should be added if the commit-message does not explain everything in the commit. When a new feature is implemented, the commit should also include at least one happy-path test for the implemented feature.
+## What should a contribution look like?
+Commit messages should be written in imperative mood, and should be descriptive of the changes in the commit. Try to adhere to [The seven rules of a great Git commit message - Chris Beams](https://chris.beams.io/posts/git-commit/)
 
-- Who is responsible for integrating/reviewing contributions?
-    
+If the subject line of 50 characters is insufficiant to describe the commit, use the commit body. Seperate subject and body with a blank line.
+
+A new feature requires at least one happy-path test for the implemented feature to be merged to main.
+
+## Responsibility for integrating/reviewing contributions
+
+Responsibility for integrating/reviewing contributions, rotates among the team of five `thhk`, `jglr`, `krbh`, `emja`, `kaky`, on a weekly basis.
+
+Week        | Date          | Responsible
+:-:         |:-:            |:-:
+1           |  7 Feb        | thhk
+2           | 14 Feb        | jglr
+3           | 21 Feb        | krbh
+4           | 28 Feb        | emja
+5           |  7 Mar        | kaky
+6           | 14 Mar        | thhk
+7           | 21 Mar        | jglr
+8           | 28 Mar        | krbh
+9           |  4 Apr        | emja
+Easter Break| 11 Apr        | kaky
+10          | 18 Apr        | thhk
+11          | 25 Apr        | jglr
+12          |  2 May        | krbh
+13          |  9 May        | emja
