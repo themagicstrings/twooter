@@ -1,0 +1,27 @@
+GET /
+  -> public
+  -> timeline
+
+GET /<username>
+
+GET /login
+GET /register
+GET /timeline
+GET /public
+
+POST /login
+  -> timeline?loggedin "You were logged in"
+POST /register
+  -> login?registered "You were successfully registered and can login now"
+
+POST /<username>/follow
+  -> /<username>?followed "You are now following "%s"' % username"
+
+POST /<username>/unfollow
+  -> /<username>?unfollowed "You are no longer following "%s"' % username"
+
+POST /add_message
+  -> /timeline?recorded "Your message was recorded"
+
+POST /logout
+  -> public_timeline?loggedout "You were logged out"

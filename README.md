@@ -6,6 +6,12 @@ Twitter replica for DevOps course.
 ## Setup
 
 ### Update and install dependancies
+First, make `./setup.sh` executable
+
+```
+chmod a+x ./setup.sh
+```
+
 ```
 sudo ./setup.sh
 ```

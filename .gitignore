@@ -1,2 +1,6 @@
 tmp
 __pycache__
+bin
+obj
+.idea
+Migrations
