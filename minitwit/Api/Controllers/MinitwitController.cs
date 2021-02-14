@@ -44,17 +44,17 @@ namespace Controllers
             await CheckSessionForUser();
 
             if(user is null) return Redirect("/public");
-            
+
             List<MessageReadDTO> messages = user.messages;
             foreach(string follow in user.following)
             {
                 messages.AddRange((await UserRepo.ReadAsync(follow)).messages);
             }
-            return new ContentResult 
+            return new ContentResult
             {
                 ContentType = "text/html",
                 StatusCode = Status200OK,
-                Content = BasicTemplater.GenerateTimeline(messages, user != null)
+                Content = BasicTemplater.GenerateTimeline(messages, user)
             };
         }
 
@@ -68,11 +68,11 @@ namespace Controllers
 
             if (searchedUser is null) return NotFound();
 
-            return new ContentResult 
+            return new ContentResult
             {
                 ContentType = "text/html",
                 StatusCode = Status200OK,
-                Content = BasicTemplater.GenerateTimeline(searchedUser.messages, user != null)
+                Content = BasicTemplater.GenerateTimeline(searchedUser.messages, user: user)
             };
         }
 
@@ -153,7 +153,7 @@ namespace Controllers
             return new ContentResult {
                 ContentType = "text/html",
                 StatusCode = (int) Status200OK,
-                Content = BasicTemplater.GenerateTimeline(await MessageRepo.ReadAllAsync(), user != null )
+                Content = BasicTemplater.GenerateTimeline(messages: await MessageRepo.ReadAllAsync(), user: user)
             };
         }
 
