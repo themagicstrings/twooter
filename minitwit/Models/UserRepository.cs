@@ -37,6 +37,13 @@ namespace Models
             var followerQuery = from u in context.users where u.username == follower select u;
             if(!await followerQuery.AnyAsync()) return -2;
 
+            var relationExists = from entry in context.follows
+                where entry.Followed.username == followed && 
+                      entry.Follower.username == follower
+                select entry;
+
+            if (await relationExists.AnyAsync()) return -3;
+            
             var newFollow = new Follow
             {
                 FollowedId = (await followedQuery.FirstOrDefaultAsync()).user_id,
