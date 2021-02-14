@@ -8,7 +8,7 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Controllers
 {
     [ApiController]
-    [Route("[Controller]")]
+    [Route("/")]
     public class MessageController : ControllerBase
     {
         private readonly IMessageRepository repository;
@@ -19,26 +19,36 @@ namespace Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<MessageReadDTO>> GetMessage(int id)
+        public async Task<ActionResult<MessageReadDTO>> GetMessageAsync(int id)
         {
             var message = await repository.ReadAsync(id);
             if (message == null) return NotFound();
             return message;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<MessageReadDTO>>> GetMessages()
+        [HttpGet("all_messages")]
+        public async Task<ActionResult<List<MessageReadDTO>>> GetMessagesAsync()
         {
             return await repository.ReadAllAsync();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostMessage([FromBody] MessageCreateDTO message)
+        [HttpGet("public")]
+        public async Task<ContentResult> PublicTimeline()
+        {
+            return new ContentResult {
+                ContentType = "text/html",
+                StatusCode = (int) Status200OK,
+                Content = "<html><body>Hello World!</body></html>"
+            };
+        }
+
+        [HttpPost("add_message")]
+        public async Task<IActionResult> PostMessageAsync([FromBody] MessageCreateDTO message)
         {
             var id = await repository.CreateAsync(message);
 
             if (id == -1) return BadRequest();
-            return CreatedAtAction(nameof(GetMessage), new { id }, default);
+            return CreatedAtAction(nameof(GetMessageAsync), new { id }, default);
         }
     }
 }

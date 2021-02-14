@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace Controllers
 {
     [ApiController]
-    [Route("[Controller]")]
+    [Route("/")]
     public class UserController : ControllerBase
     {
         private readonly IUserRepository repository;
@@ -24,13 +24,13 @@ namespace Controllers
             return await repository.ReadAsync(username);
         }
 
-        [HttpGet]
+        [HttpGet("/all_users")]
         public async Task<ActionResult<List<UserReadDTO>>> GetUsersAsync()
         {
             return await repository.ReadAllAsync();
         }
 
-        [HttpPost]
+        [HttpPost("/register")]
         public async Task<IActionResult> PostUserAsync([FromBody] UserCreateDTO user)
         {
             var res = await repository.CreateAsync(user);
@@ -38,7 +38,7 @@ namespace Controllers
             return CreatedAtAction(nameof(GetUserAsync), new { res }, default);
         }
 
-        [HttpPost("follow/{followed}")]
+        [HttpPost("{followed}/follow")]
         public async Task<IActionResult> FollowUserAsync([FromBody] string follower, string followed)
         {
             var res = await repository.FollowAsync(followed, follower);
@@ -47,7 +47,7 @@ namespace Controllers
             return Ok();
         }
 
-        [HttpDelete("unfollow/{unfollowed}")]
+        [HttpDelete("{unfollowed}/unfollow")]
         public async Task<IActionResult> UnfollowUserAsync([FromBody] string unfollower, string unfollowed)
         {
             var res = await repository.UnfollowAsync(unfollowed, unfollower);
