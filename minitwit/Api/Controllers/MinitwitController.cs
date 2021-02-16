@@ -75,7 +75,7 @@ namespace Controllers
                 Content = BasicTemplater.GenerateTimeline(searchedUser.messages, user: user)
             };
         }
-
+/*
         // Attempts to register a user with given information
         [HttpPost("/register")]
         public async Task<IActionResult> CreateUserAsync([FromForm]UserCreateDTO user)
@@ -93,7 +93,7 @@ namespace Controllers
             return Redirect("/login");
             //return Ok("You were succesfully registered and can login now");
         }
-
+*/
         // Displays register page
         [HttpGet("/register")]
         public async Task<IActionResult> GetRegisterPage()
