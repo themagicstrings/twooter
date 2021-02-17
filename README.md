@@ -11,7 +11,7 @@ First, make `./setup.sh` executable
 ```
 chmod a+x ./setup.sh
 ```
-
+Now you can run setup.sh:
 ```
 sudo ./setup.sh
 ```
