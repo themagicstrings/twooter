@@ -28,7 +28,7 @@ namespace Api
       if (user is null)
       sb.Append(@"
     <a href=""public_timeline"">public timeline</a> |
-    <a href=""register"">sign up</a> |
+    <a href=""sign_up"">sign up</a> |
     <a href=""login"">sign in</a>");
     else sb.Append($@"
     <a href=""/{user.username}"">my timeline</a> |
@@ -92,7 +92,7 @@ namespace Api
     {
       return Layout(
         title: "Sign Up",
-        body: @"<form method=post action=register>
+        body: @"<form method=post action=sign_up>
           <dl>
       <dt>Username:
       <dd><input type=text name=Username size=30>
