@@ -12,6 +12,7 @@ using System.Web;
 using System.Linq;
 using System;
 using Api;
+using System.Text.Json;
 
 namespace Controllers
 {
@@ -75,7 +76,9 @@ namespace Controllers
             return new ContentResult{
                 ContentType = "text/json",
                 StatusCode = Status200OK,
-                Content = "{\"latest\":"+await read_latest()+"}"
+                Content = JsonSerializer.Serialize(new {
+                    latest = await read_latest()
+                })
             };
         }
         
@@ -102,11 +105,21 @@ namespace Controllers
             await write_latest();
 
             var user = await UserRepo.ReadAsync(username);
+            if (user is null) return NotFound();
+            
+            var userDto = new UserReadDTO {
+                username = user.username, 
+                email = user.email
+            };
+        
 
             return new ContentResult{
                 ContentType = "text/json",
                 StatusCode = Status200OK,
-                Content = "{\"username\":\""+user.username+"\",\"email\":\""+user.email+"\"}"
+                Content = JsonSerializer.Serialize(new {
+                    username = user.username,
+                    email = user.email
+                })
             };
         }
 
