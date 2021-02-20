@@ -41,7 +41,7 @@ namespace Controllers
             return searchedUser.user_id;
         }
 
-        private async Task<int> get_param_int(string name)
+        private int get_param_int(string name)
         {
             Microsoft.Extensions.Primitives.StringValues query;
             if(Request.Query.TryGetValue(name, out query))
@@ -56,7 +56,7 @@ namespace Controllers
         private async Task write_latest()
         {
             try {
-                int val = await get_param_int("latest");
+                int val = get_param_int("latest");
                 await System.IO.File.WriteAllTextAsync(LATEST, "" + val);
             } catch {
                 //ignore
