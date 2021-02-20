@@ -42,7 +42,7 @@ namespace Controllers
             return searchedUser.user_id;
         }
 
-        private int get_param_int(string name)
+        private int get_param_int(string name, int defaultValue)
         {
             Microsoft.Extensions.Primitives.StringValues query;
             if(Request.Query.TryGetValue(name, out query))
@@ -51,13 +51,13 @@ namespace Controllers
                 if(int.TryParse(query.First(), out val)) return val;
                 else throw new Exception("param " + name + " is not an int");
             }
-            else throw new Exception("No param called: " + name);
+            return defaultValue;
         }
 
         private async Task write_latest()
         {
             try {
-                int val = get_param_int("latest");
+                int val = get_param_int("latest", 100);
                 await System.IO.File.WriteAllTextAsync(LATEST, "" + val);
             } catch {
                 //ignore
@@ -106,12 +106,6 @@ namespace Controllers
 
             var user = await UserRepo.ReadAsync(username);
             if (user is null) return NotFound();
-            
-            var userDto = new UserReadDTO {
-                username = user.username, 
-                email = user.email
-            };
-        
 
             return new ContentResult{
                 ContentType = "text/json",
@@ -128,22 +122,26 @@ namespace Controllers
         {
             await write_latest();
 
+            var messages = await MessageRepo.ReadAllAsync();
+            var texts = messages.Select(m => m.text);
+            var noOfMessages = get_param_int("no", 100);
+            var selectedMessages = texts.Take(noOfMessages);
+
             return new ContentResult {
-                ContentType = "text/html",
+                ContentType = "text/json",
                 StatusCode = Status200OK,
-                Content = BasicTemplater.GenerateTimeline(await MessageRepo.ReadAllAsync(), user )
+                Content = JsonSerializer.Serialize(selectedMessages)
             };
         }
 
         [HttpPost("/msgs/<username>")]
-        public async Task<IActionResult> user_post_message([FromBody] MessageCreateDTO message, string username)
+        public async Task<IActionResult> user_post_message([FromBody] MessageCreateRequestDTO message, string username)
         {
             await write_latest();
 
             var id = await MessageRepo.CreateAsync(message.Text, username);
-
             if(id == -1) return BadRequest();
-            return Ok("Your messages was recorded");
+            return NoContent();
         }
 
         [HttpGet("/msgs/<username>")]
@@ -152,12 +150,13 @@ namespace Controllers
             await write_latest();
             
             var allmessages = await MessageRepo.ReadAllAsync();
-            var usermessages = (allmessages.Where(m => m.author.username == username).Select(m => m)).ToList();
+            var noOfMessages = get_param_int("no", 100);
+            var usermessages = (allmessages.Where(m => m.author.username == username).Select(m => m.text)).Take(noOfMessages).ToList();
 
             return new  ContentResult {
-                ContentType = "text/html",
+                ContentType = "text/json",
                 StatusCode = Status200OK,
-                Content = BasicTemplater.GenerateTimeline(usermessages, user)
+                Content = JsonSerializer.Serialize(usermessages)
             };
         }
     }

@@ -19,7 +19,6 @@ namespace Models
         public async Task<int> CreateAsync(string message, string username)
         {
             var userQuery = from u in context.users where u.username == username select u;
-
             if (!await userQuery.AnyAsync()) return -1;
 
             var user = await userQuery.FirstAsync();
