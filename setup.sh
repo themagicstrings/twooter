@@ -18,7 +18,7 @@ apt-get install -y apt-transport-https
 
 apt-get install -y dotnet-sdk-5.0
 rm packages-microsoft-prod.deb
-apt install python-pytest
+apt install -y python-pytest
 
 apt update
 apt install -y apt-transport-https ca-certificates curl software-properties-common
