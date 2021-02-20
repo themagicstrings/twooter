@@ -80,11 +80,17 @@ namespace Api
 
     public static string GenerateLoginPage(UserReadDTO user = null)
     {
-      return Layout(title: "Sign In",
-      body: @"<form method=post action=login>
-                    <input name=Username>
-                    <input name=Password>
-                    <input type=submit>
+      return Layout(
+      title: "Sign In",
+      body: @"<h2>Sign In</h2>
+      <form method=post action=login>
+      <dl>
+      <dt>Username:
+      <dd><input type=text name=Username size=30>
+      <dt>Password:
+      <dd><input type=password name=Password size=30>
+      </dl>
+      <div class=actions><input type=submit value=""Sign In""></div>
                     </form>", user: user);
     }
 
@@ -92,7 +98,8 @@ namespace Api
     {
       return Layout(
         title: "Sign Up",
-        body: @"<form method=post action=sign_up>
+        body: @"<h2>Sign Up</h2>
+        <form method=post action=sign_up>
           <dl>
       <dt>Username:
       <dd><input type=text name=Username size=30>
