@@ -20,9 +20,15 @@ apt-get install -y dotnet-sdk-5.0
 rm packages-microsoft-prod.deb
 apt install python-pytest
 
-# Vagrant
-apt-get install -y virtualbox virtualbox-ext-pack
-wget -c https://releases.hashicorp.com/vagrant/2.2.14/vagrant_2.2.14_x86_64.deb
-dpkg -i vagrant_2.2.14_x86_64.deb
-rm vagrant_2.2.14_x86_64.deb
-vagrant plugin install vagrant-digitalocean
+apt update
+apt install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+apt update
+apt-cache policy docker-ce
+apt install -y docker-ce
+systemctl status docker
+usermod -aG docker ${USER}
+su - ${USER}
+id -nG
+
