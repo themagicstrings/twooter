@@ -41,15 +41,25 @@ namespace Controllers
             return searchedUser.user_id;
         }
 
-        private async Task write_latest()
+        private async Task<int> get_param_int(string name)
         {
             Microsoft.Extensions.Primitives.StringValues query;
-            Request.Query.TryGetValue("latest", out query);
-            if(query.Count != 0)
+            if(Request.Query.TryGetValue(name, out query))
             {
-                int val = -1;
-                bool succes = int.TryParse(query.First(), out val);
+                int val;
+                if(int.TryParse(query.First(), out val)) return val;
+                else throw new Exception("param " + name + " is not an int");
+            }
+            else throw new Exception("No param called: " + name);
+        }
+
+        private async Task write_latest()
+        {
+            try {
+                int val = await get_param_int("latest");
                 await System.IO.File.WriteAllTextAsync(LATEST, "" + val);
+            } catch {
+                //ignore
             }
         }
 
