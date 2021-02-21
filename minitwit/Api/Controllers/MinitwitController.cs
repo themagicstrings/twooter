@@ -54,7 +54,7 @@ namespace Controllers
             {
                 ContentType = "text/html",
                 StatusCode = Status200OK,
-                Content = BasicTemplater.GenerateTimeline(messages, timelineType.PUBLIC, user)
+                Content = BasicTemplater.GenerateTimeline(messages, timelineType.SELF, user)
             };
         }
 
