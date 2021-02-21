@@ -12,6 +12,7 @@ namespace Models
         Task<string> ReadPWHash(string name);
         Task<UserReadDTO> ReadAsync(int id);
         Task<List<UserReadDTO>> ReadAllAsync();
+        Task<List<FollowerListDTO>> ReadFollowerNameAsync();
         Task<int> CreateAsync(UserCreateDTO user);
         Task<int> DeleteAsync(int id);
         Task<int> FollowAsync(string follower, string followed);
