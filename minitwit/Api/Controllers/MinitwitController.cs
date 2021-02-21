@@ -54,7 +54,7 @@ namespace Controllers
             {
                 ContentType = "text/html",
                 StatusCode = Status200OK,
-                Content = BasicTemplater.GenerateTimeline(messages, user)
+                Content = BasicTemplater.GenerateTimeline(messages, timelineType.PUBLIC, user)
             };
         }
 
@@ -72,7 +72,7 @@ namespace Controllers
             {
                 ContentType = "text/html",
                 StatusCode = Status200OK,
-                Content = BasicTemplater.GenerateTimeline(searchedUser.messages, user: user)
+                Content = BasicTemplater.GenerateTimeline(searchedUser.messages,timelineType.OTHER, user: user)
             };
         }
 
@@ -153,7 +153,7 @@ namespace Controllers
             return new ContentResult {
                 ContentType = "text/html",
                 StatusCode = (int) Status200OK,
-                Content = BasicTemplater.GenerateTimeline(messages: await MessageRepo.ReadAllAsync(), user: user, true)
+                Content = BasicTemplater.GenerateTimeline(messages: await MessageRepo.ReadAllAsync(), timelineType.PUBLIC, user: user)
             };
         }
 
