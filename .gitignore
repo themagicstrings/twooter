@@ -2,5 +2,6 @@ tmp
 __pycache__
 bin
 obj
+publish
 .idea
 Migrations

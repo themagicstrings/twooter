@@ -14,9 +14,11 @@ EXPOSE 5000/tcp
 ENTRYPOINT ["dotnet", "Api.dll"]
 ```
 
+Run `dotnet publish -c Release -o publish` in Api/
+
 `docker build -t twooter .`
 
-Check if the image works `docker run -it --rm -p 8080:80 --name my-twooter-instance twooter`
+Check if the image works `docker run -it --rm -p 8080:80 --name twooter-instance twooter`
 
 Find image id `docker images`
 
@@ -32,4 +34,4 @@ Find image id `docker images`
 
 `docker pull docker.pkg.github.com/themagicstrings/twooter/twooter-image:1`
 
-`docker run -it --rm -p 80:80 --name my-twooter-instance docker.pkg.github.com/themagicstrings/twooter/twooter-image:1`
+`docker run -it --rm -p 80:80 --name twooter-instance docker.pkg.github.com/themagicstrings/twooter/twooter-image:1`
