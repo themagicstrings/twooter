@@ -27,13 +27,13 @@ namespace Api
 
       if (user is null)
       sb.Append(@"
-    <a href=""public_timeline"">public timeline</a> |
+    <a href=""public"">public timeline</a> |
     <a href=""sign_up"">sign up</a> |
     <a href=""login"">sign in</a>");
     else sb.Append($@"
     <a href=""/{user.username}"">my timeline</a> |
     <a href=""/public"">public timeline</a> |
-    <a href=""/logout"">sign out {user.username}</a>");
+    <a href=""/logout"">sign out [{user.username}]</a>");
 
       sb.Append(@"</div>");
 
@@ -59,6 +59,10 @@ namespace Api
         return sb.ToString();
     }
 
+    private static string noMessagesHtml = @"<ul class=""messages""> 
+          <li><em>There's no messages so far.</em></li>
+          </ul>
+        ";
 
     public static string GenerateTimeline(List<MessageReadDTO> messages, UserReadDTO user = null)
     {
@@ -68,7 +72,12 @@ namespace Api
 
       StringBuilder sb = new StringBuilder();
       sb.Append("<html>");
+      sb.Append("<h2>Public Timeline</h2>");
       if (loggedin) sb.Append("<form method=post action=add_message><input name=Text><input type=submit></form>");
+      if (messages.Count == 0) 
+      {
+        sb.Append(noMessagesHtml);
+      }
       foreach (MessageReadDTO msg in messages)
       {
         sb.Append($"<p>{msg.author.username} [{msg.pub_date}]: {msg.text}</p>");
@@ -77,11 +86,12 @@ namespace Api
       sb.Append("</html>");
       return Layout(title: loggedin ? "Your timeline" : "Public timeline", body: sb.ToString(), user: user);
     }
+    
 
     public static string GenerateLoginPage(UserReadDTO user = null)
     {
       return Layout(
-      title: "Sign In",
+      title: "Sign In | MiniTwit",
       body: @"<h2>Sign In</h2>
       <form method=post action=login>
       <dl>
@@ -97,7 +107,7 @@ namespace Api
     public static string GenerateRegisterPage(UserReadDTO user = null)
     {
       return Layout(
-        title: "Sign Up",
+        title: "Sign Up | MiniTwit",
         body: @"<h2>Sign Up</h2>
         <form method=post action=sign_up>
           <dl>
