@@ -3,6 +3,7 @@
 # $1 = github user
 # $2 = access token
 # $3 = server ip
+# $4 = server password
 
 apt update
 apt install -y apt-transport-https ca-certificates curl software-properties-common
@@ -13,11 +14,15 @@ apt-cache policy docker-ce
 apt install -y docker-ce
 docker login -u $1 -p $2
 cd minitwit/Api
-dotnet publish -c Release -o publish
+rm -r bin
+rm -r publish
+dotnet publish -c Release -o ./publish
 docker build -t twooter .
 docker tag twooter docker.pkg.github.com/themagicstrings/twooter/twooter
 docker push docker.pkg.github.com/themagicstrings/twooter/twooter
+# apt-get install sshpass
 
+# sshpass -p $4
 ssh root@$3 "
   apt update
   apt install -y apt-transport-https ca-certificates curl software-properties-common
@@ -31,4 +36,4 @@ ssh root@$3 "
   docker rm twooter-instance
   docker rmi docker.pkg.github.com/themagicstrings/twooter/twooter:latest
   docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest
-  docker run --rm -p 80:80 --name twooter-instance docker.pkg.github.com/themagicstrings/twooter/twooter:latest"
+  docker run --rm -p 443:443 -p 80:80 --name twooter-instance docker.pkg.github.com/themagicstrings/twooter/twooter:latest -e ASPNETCORE_URLS=\"http://localhost:80;https://localhost:443\""
