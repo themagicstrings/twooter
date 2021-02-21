@@ -170,9 +170,9 @@ namespace Controllers
 
             var hashedpwd = UserRepo.HashPassword(loginDTO.Password);
 
-            if (!hash.Equals(hashedpwd))
+            if (hash is null || !hash.Equals(hashedpwd))
             {
-                return BadRequest();
+                return Redirect("/login?error");
             }
 
             var user = await UserRepo.ReadAsync(loginDTO.Username);
