@@ -167,17 +167,14 @@ namespace Controllers
         {
             await write_latest();
 
-            var user_id = get_user_id(username);
             var noOfFollows = get_param_int("no", 100);
-            var userFollowers = (await UserRepo.ReadAsync(username));
-            foreach(var f in userFollowers.following) System.Console.WriteLine(f);
-            System.Console.WriteLine();
-            foreach(var f in userFollowers.followers) System.Console.WriteLine(f);
+            var user = await UserRepo.ReadAsync(username);
+            var follow = user.following.Take(noOfFollows);
 
             return new ContentResult {
                 ContentType = "text/json",
                 StatusCode = Status200OK,
-                Content = JsonSerializer.Serialize(userFollowers)
+                Content = JsonSerializer.Serialize(new {follows = follow})
             };
         }
 
