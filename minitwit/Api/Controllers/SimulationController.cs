@@ -160,6 +160,20 @@ namespace Controllers
             };
         }
         [HttpGet("/fllws/{username}")]
+        public async Task<IActionResult> follow(string username)
+        {
+            await write_latest();
+
+            var user_id = get_user_id(username);
+            // var no_followers = request.args.get("no",typeof=int ,default=100)
+            var userFollowers = await UserRepo.ReadFollowerNameAsync();
+
+            return new ContentResult {
+                ContentType = "text/json",
+                StatusCode = Status200OK,
+                Content = JsonSerializer.Serialize(userFollowers)
+            };
+        }
         [HttpPost("/fllws/{username}")]
         public async Task<IActionResult> follow(string username)
         {
@@ -167,8 +181,8 @@ namespace Controllers
 
             var user_id = get_user_id(username);
             // var no_followers = request.args.get("no",typeof=int ,default=100)
-            if(Request.Method == "POST")
-            {   
+            
+               
                 var req = Request.Body;
                 req.Seek(0,System.IO.SeekOrigin.Begin);
                 string json = new StreamReader(req).ReadToEnd();
@@ -183,24 +197,12 @@ namespace Controllers
                 }
                 else
                 {
-                    var follows_username = json.Split(":")[1];;
+                    var follows_username = json.Split(":")[1];
                     var id = await UserRepo.FollowAsync(username,follows_username);
 
                     if(id==-1) return BadRequest();
                     return NoContent();
                 }
-            }
-            else if (Request.Method =="GET")
-            {
-                var userFollowers = await UserRepo.ReadFollowerNameAsync();
-
-                return new ContentResult {
-                    ContentType = "text/json",
-                    StatusCode = Status200OK,
-                    Content = JsonSerializer.Serialize(userFollowers)
-                };
-            }
-            return NoContent();
         }
     }
 }
