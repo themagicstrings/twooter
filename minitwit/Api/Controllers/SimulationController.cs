@@ -175,7 +175,7 @@ namespace Controllers
                 
                 if(json.Contains("unfollow"))
                 {
-                    var unfollows_username = Request.Body.ToString();
+                    var unfollows_username = json.Split(":")[1];
                     var id = await UserRepo.UnfollowAsync(username,unfollows_username);
 
                     if(id==-1) return BadRequest();
@@ -183,7 +183,7 @@ namespace Controllers
                 }
                 else
                 {
-                    var follows_username = Request.Body.ToString();
+                    var follows_username = json.Split(":")[1];;
                     var id = await UserRepo.FollowAsync(username,follows_username);
 
                     if(id==-1) return BadRequest();
