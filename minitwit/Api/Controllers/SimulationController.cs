@@ -160,8 +160,9 @@ namespace Controllers
                 Content = JsonSerializer.Serialize(usermessages)
             };
         }
-        [HttpGet("/fllws/<username>")]
-        [HttpPost("/fllws/<username>")]
+
+        [HttpGet("/fllws/{username}")]
+        [HttpPost("/fllws/{username}")]
         public async Task<IActionResult> follow(string username)
         {
             await write_latest();

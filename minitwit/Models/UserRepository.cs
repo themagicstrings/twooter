@@ -151,7 +151,6 @@ namespace Models
                 new FollowerListDTO {
                     FollowerNameList = (u.FollowedBy.Select(f => f.Followed.username)).ToList()
                 };
-
             return await query.ToListAsync();
         }
 
