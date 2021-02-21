@@ -2,7 +2,7 @@
 
 `echo <Personal Access Token> | docker login https://docker.pkg.github.com -u <GitHub Username> --password-stdin`
 
-## Create Docker container
+## Create Docker container locally
 
 Dockerfile in App/
 ```
@@ -26,7 +26,7 @@ Find image id `docker images`
 
 *if login error* `echo <Token> | docker login https://docker.pkg.github.com -u <GitHub Username> --password-stdin`
 
-## Pull container
+## Pull image and run container on server
 
 `ssh root@<server_ip>`
 
