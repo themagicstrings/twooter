@@ -153,7 +153,7 @@ namespace Controllers
             return new ContentResult {
                 ContentType = "text/html",
                 StatusCode = (int) Status200OK,
-                Content = BasicTemplater.GenerateTimeline(messages: await MessageRepo.ReadAllAsync(), user: user)
+                Content = BasicTemplater.GenerateTimeline(messages: await MessageRepo.ReadAllAsync(), user: user, true)
             };
         }
 

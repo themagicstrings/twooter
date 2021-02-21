@@ -31,7 +31,7 @@ namespace Api
     <a href=""sign_up"">sign up</a> |
     <a href=""login"">sign in</a>");
     else sb.Append($@"
-    <a href=""/{user.username}"">my timeline</a> |
+    <a href=""/"">my timeline</a> |
     <a href=""/public"">public timeline</a> |
     <a href=""/logout"">sign out [{user.username}]</a>");
 
@@ -64,16 +64,21 @@ namespace Api
           </ul>
         ";
 
-    public static string GenerateTimeline(List<MessageReadDTO> messages, UserReadDTO user = null)
+    public static string GenerateTimeline(List<MessageReadDTO> messages, UserReadDTO user = null, bool isPublicTimeline = false)
     {
       bool loggedin = user != null;
       messages.Sort((x, y) => DateTime.Compare(x.pub_date, y.pub_date));
       messages.Reverse();
 
       StringBuilder sb = new StringBuilder();
-      sb.Append("<html>");
-      sb.Append("<h2>Public Timeline</h2>");
-      if (loggedin) sb.Append("<form method=post action=add_message><input name=Text><input type=submit></form>");
+      // sb.Append("<html>");
+      if (isPublicTimeline) sb.Append("<h2>Public Timeline</h2>");
+      else sb.Append("<h2>My Timeline</h2>");
+      if (loggedin && !isPublicTimeline) sb.Append(
+        $@"<div class=""twitbox""><h3>What's on your mind {user.username}?</h3>
+        <form action=""/add_message"" method=""post""><p><input type=""text"" name=""text"" size=""60""><input type=""submit"" value=""Share""></p></form></div>"
+        // "<form method=post action=add_message><input name=Text><input type=submit></form>"
+        );
       if (messages.Count == 0) 
       {
         sb.Append(noMessagesHtml);
@@ -83,7 +88,7 @@ namespace Api
         sb.Append($"<p>{msg.author.username} [{msg.pub_date}]: {msg.text}</p>");
         if (loggedin) sb.Append($"<form method=post action={msg.author.username}/follow><button type=submit>Follow</button></form>");
       }
-      sb.Append("</html>");
+      // sb.Append("</html>");
       return Layout(title: loggedin ? "Your timeline" : "Public timeline", body: sb.ToString(), user: user);
     }
     
