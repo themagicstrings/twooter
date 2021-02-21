@@ -13,7 +13,7 @@ using System.Linq;
 using System;
 using Api;
 using System.Text.Json;
-using System.IO;
+
 namespace Controllers
 {
     public class SimulationController : Controller
@@ -99,7 +99,7 @@ namespace Controllers
             return Ok("You were succesfully registered and can login now");
         }
 
-        [HttpGet("/sim/<username>")]
+        [HttpGet("/sim/{username}")]
         public async Task<IActionResult> get_user(string username)
         {
             await write_latest();
@@ -123,7 +123,7 @@ namespace Controllers
             await write_latest();
 
             var messages = await MessageRepo.ReadAllAsync();
-            var texts = messages.Select(m => m.text);
+            var texts = messages.Select(m => new {content = m.text, user = m.author.username});
             var noOfMessages = get_param_int("no", 100);
             var selectedMessages = texts.Take(noOfMessages);
 
@@ -134,74 +134,30 @@ namespace Controllers
             };
         }
 
-        [HttpPost("/msgs/<username>")]
-        public async Task<IActionResult> user_post_message([FromBody] MessageCreateRequestDTO message, string username)
+        [HttpPost("/msgs/{username}")]
+        public async Task<IActionResult> user_post_message([FromBody] SimulationMessageCreateDTO message, string username)
         {
             await write_latest();
 
-            var id = await MessageRepo.CreateAsync(message.Text, username);
-            if(id == -1) return BadRequest();
-            return NoContent();
+            var id = await MessageRepo.CreateAsync(message.Content, username);
+            if(id == -1) return BadRequest("Message could not be recorded");
+            return Ok("Message recorded");
         }
 
-        [HttpGet("/msgs/<username>")]
-        [HttpPost("/msgs/<username>")]
+        [HttpGet("/msgs/{username}")]
         public async Task<IActionResult> messages_per_user(string username)
         {
             await write_latest();
             
             var allmessages = await MessageRepo.ReadAllAsync();
             var noOfMessages = get_param_int("no", 100);
-            var usermessages = (allmessages.Where(m => m.author.username == username).Select(m => m.text)).Take(noOfMessages).ToList();
+            var usermessages = (allmessages.Where(m => m.author.username == username).Select(m => new {content = m.text, user = m.author.username})).Take(noOfMessages).ToList();
 
             return new  ContentResult {
                 ContentType = "text/json",
                 StatusCode = Status200OK,
                 Content = JsonSerializer.Serialize(usermessages)
             };
-        }
-        [HttpGet("/fllws/<username>")]
-        [HttpPost("/fllws/<username>")]
-        public async Task<IActionResult> follow(string username)
-        {
-            await write_latest();
-
-            var user_id = get_user_id(username);
-            // var no_followers = request.args.get("no",typeof=int ,default=100)
-            if(Request.Method == "POST")
-            {   
-                var req = Request.Body;
-                req.Seek(0,System.IO.SeekOrigin.Begin);
-                string json = new StreamReader(req).ReadToEnd();
-                
-                if(json.Contains("unfollow"))
-                {
-                    var unfollows_username = Request.Body.ToString();
-                    var id = await UserRepo.UnfollowAsync(username,unfollows_username);
-
-                    if(id==-1) return BadRequest();
-                    return NoContent();
-                }
-                else
-                {
-                    var follows_username = Request.Body.ToString();
-                    var id = await UserRepo.FollowAsync(username,follows_username);
-
-                    if(id==-1) return BadRequest();
-                    return NoContent();
-                }
-            }
-            else if (Request.Method =="GET")
-            {
-                var userFollowers = await UserRepo.ReadFollowerNameAsync();
-
-                return new ContentResult {
-                    ContentType = "text/json",
-                    StatusCode = Status200OK,
-                    Content = JsonSerializer.Serialize(userFollowers)
-                };
-            }
-            return NoContent();
         }
     }
 }
