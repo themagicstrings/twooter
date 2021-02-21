@@ -14,6 +14,8 @@ using System;
 using Api;
 using System.Text.Json;
 using System.IO;
+using System.Text.RegularExpressions;
+
 namespace Controllers
 {
     public class SimulationController : Controller
@@ -159,14 +161,18 @@ namespace Controllers
                 Content = JsonSerializer.Serialize(usermessages)
             };
         }
+
         [HttpGet("/fllws/{username}")]
-        public async Task<IActionResult> follow(string username)
+        public async Task<IActionResult> hfollow(string username)
         {
             await write_latest();
 
             var user_id = get_user_id(username);
-            // var no_followers = request.args.get("no",typeof=int ,default=100)
-            var userFollowers = await UserRepo.ReadFollowerNameAsync();
+            var noOfFollows = get_param_int("no", 100);
+            var userFollowers = (await UserRepo.ReadAsync(username));
+            foreach(var f in userFollowers.following) System.Console.WriteLine(f);
+            System.Console.WriteLine();
+            foreach(var f in userFollowers.followers) System.Console.WriteLine(f);
 
             return new ContentResult {
                 ContentType = "text/json",
@@ -174,35 +180,33 @@ namespace Controllers
                 Content = JsonSerializer.Serialize(userFollowers)
             };
         }
+
         [HttpPost("/fllws/{username}")]
         public async Task<IActionResult> follow(string username)
         {
             await write_latest();
-
-            var user_id = get_user_id(username);
-            // var no_followers = request.args.get("no",typeof=int ,default=100)
             
-               
-                var req = Request.Body;
-                req.Seek(0,System.IO.SeekOrigin.Begin);
-                string json = new StreamReader(req).ReadToEnd();
-                
-                if(json.Contains("unfollow"))
-                {
-                    var unfollows_username = json.Split(":")[1];
-                    var id = await UserRepo.UnfollowAsync(username,unfollows_username);
+            var sr = new StreamReader( Request.Body );
+            var bodystring = await sr.ReadToEndAsync();
+            string pattern = @"{""(.+?)"": ""(.+?)""}";
+            var match = Regex.Matches(bodystring, pattern)[0];
+            
+            var method = match.Groups[1].Value;
+            var parameter = match.Groups[2].Value;
 
-                    if(id==-1) return BadRequest();
-                    return NoContent();
-                }
-                else
-                {
-                    var follows_username = json.Split(":")[1];
-                    var id = await UserRepo.FollowAsync(username,follows_username);
+            switch(method)
+            {
+                case "follow":
+                    await UserRepo.FollowAsync(username, parameter);
+                    break;
+                case "unfollow":
+                    await UserRepo.UnfollowAsync(username, parameter);
+                    break;
+                default:
+                    return BadRequest("Not a supported method");
+            }
 
-                    if(id==-1) return BadRequest();
-                    return NoContent();
-                }
+            return Ok("Succes");
         }
     }
 }

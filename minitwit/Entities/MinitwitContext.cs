@@ -21,7 +21,8 @@ namespace Entities
         {
             if(!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseInMemoryDatabase("minitwit");
+                //optionsBuilder.UseInMemoryDatabase("minitwit");
+                optionsBuilder.UseSqlServer(@"Server=localhost;Database=Minitwit;Trusted_Connection=True");
             }
         }
 
