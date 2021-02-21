@@ -71,6 +71,7 @@ namespace Api
 
       if (type == timelineType.PUBLIC) sb.Append("<h2>Public Timeline</h2>");
       else if (type == timelineType.OTHER) sb.Append($"<h2>{otherPersonUsername}'s Timeline</h2>");
+      else if (type == timelineType.SELF) sb.Append($"<h2>My Timeline</h2>");
 
       if (loggedin && type == timelineType.SELF) sb.Append(
         $@"<div class=""twitbox""><h3>What's on your mind {user.username}?</h3>
