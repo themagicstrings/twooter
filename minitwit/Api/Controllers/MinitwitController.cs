@@ -170,7 +170,7 @@ namespace Controllers
 
             var hashedpwd = UserRepo.HashPassword(loginDTO.Password);
 
-            if (hash is null || !hash.Equals(hashedpwd))
+            if (hash is null || hashedpwd is null || !hash.Equals(hashedpwd))
             {
                 return Redirect("/login?error");
             }
