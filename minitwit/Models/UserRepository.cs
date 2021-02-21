@@ -166,7 +166,14 @@ namespace Models
 
         return await query.FirstOrDefaultAsync();
     }
-
+    public async Task<List<FollowerListDTO>> ReadFollowerNameAsync()
+        {
+            var query = from u in context.users select
+                new FollowerListDTO {
+                    FollowerNameList = (u.FollowedBy.Select(f => f.Followed.username)).ToList()
+                };
+            return await query.ToListAsync();
+        }
     public async Task<string> ReadPWHash(string name)
     {
       return await (from u in context.users where u.username.Equals(name) select u.pw_hash).FirstOrDefaultAsync();
