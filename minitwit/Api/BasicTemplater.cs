@@ -59,61 +59,37 @@ namespace Api
         return sb.ToString();
     }
 
-    public static string GenerateTimeline(List<MessageReadDTO> messages, timelineType type, UserReadDTO user = null, string otherPersonUsername = "")
+    private static string noMessagesHtml = @"<ul class=""messages""> 
+          <li><em>There's no messages so far.</em></li>
+          </ul>
+        ";
+
+    public static string GenerateTimeline(List<MessageReadDTO> messages, UserReadDTO user = null, bool isPublicTimeline = false)
     {
       bool loggedin = user != null;
       messages.Sort((x, y) => DateTime.Compare(x.pub_date, y.pub_date));
       messages.Reverse();
 
       StringBuilder sb = new StringBuilder();
-
-      if (type == timelineType.PUBLIC) sb.Append("<h2>Public Timeline</h2>");
+      // sb.Append("<html>");
+      if (isPublicTimeline) sb.Append("<h2>Public Timeline</h2>");
       else sb.Append("<h2>My Timeline</h2>");
-      if (loggedin && type == timelineType.SELF) sb.Append(
+      if (loggedin && !isPublicTimeline) sb.Append(
         $@"<div class=""twitbox""><h3>What's on your mind {user.username}?</h3>
         <form action=""/add_message"" method=""post""><p><input type=""text"" name=""text"" size=""60""><input type=""submit"" value=""Share""></p></form></div>"
-
+        // "<form method=post action=add_message><input name=Text><input type=submit></form>"
         );
       if (messages.Count == 0) 
       {
-        sb.Append(@"<ul class=""messages""> 
-          <li><em>There's no messages so far.</em></li>
-          </ul>
-        ");
-      } 
-      else 
-      {
-        sb.Append(@"<ul class=""messages"">");
-        foreach (MessageReadDTO msg in messages)
-        {
-          string optionalZero = msg.pub_date.Month < 10 ? "0" : "";
-          var reformattedDateTime = "- " + msg.pub_date.Year + "-" + optionalZero + msg.pub_date.Month + "-" + msg.pub_date.Day + " @ " + msg.pub_date.Hour + ":" + msg.pub_date.Minute;
-          // sb.Append($"<p>{msg.author.username} [{msg.pub_date}]: {msg.text}</p>");
-          sb.Append($@"
-          <li>
-          
-            <p>
-              <strong>
-                <a href=""/{msg.author.username}"">
-                  {msg.author.username}
-                </a>
-              </strong>
-              {msg.text}
-              <small>
-                {reformattedDateTime}
-              </small>
-            </p>
-          </li>");
-          // if (loggedin) 
-          // {
-          //   sb.Append($"<form method=post action={msg.author.username}/follow><button type=submit>Follow</button></form>");
-          // }
-        }
-        sb.Append("</ul>");
+        sb.Append(noMessagesHtml);
       }
-    
-
-      return Layout(title: loggedin ? "Your Timeline" : "Public Timeline", body: sb.ToString(), user: user);
+      foreach (MessageReadDTO msg in messages)
+      {
+        sb.Append($"<p>{msg.author.username} [{msg.pub_date}]: {msg.text}</p>");
+        if (loggedin) sb.Append($"<form method=post action={msg.author.username}/follow><button type=submit>Follow</button></form>");
+      }
+      // sb.Append("</html>");
+      return Layout(title: loggedin ? "Your timeline" : "Public timeline", body: sb.ToString(), user: user);
     }
     
 
@@ -154,10 +130,5 @@ namespace Api
         user
       );
     }
-  }
-
-  public enum timelineType 
-  {
-    SELF, PUBLIC, OTHER
   }
 }
