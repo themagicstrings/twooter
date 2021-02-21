@@ -54,7 +54,7 @@ namespace Controllers
             {
                 ContentType = "text/html",
                 StatusCode = Status200OK,
-                Content = BasicTemplater.GenerateTimeline(messages, user)
+                Content = BasicTemplater.GenerateTimeline(messages, timelineType.SELF, user)
             };
         }
 
@@ -72,12 +72,12 @@ namespace Controllers
             {
                 ContentType = "text/html",
                 StatusCode = Status200OK,
-                Content = BasicTemplater.GenerateTimeline(searchedUser.messages, user: user)
+                Content = BasicTemplater.GenerateTimeline(searchedUser.messages,timelineType.OTHER, user: user)
             };
         }
 
         // Attempts to register a user with given information
-        [HttpPost("/register")]
+        [HttpPost("/sign_up")]
         public async Task<IActionResult> CreateUserAsync([FromForm]UserCreateDTO user)
         {
             if(user.Username == "" || user.Username is null) return BadRequest("You have to enter a username");
@@ -95,7 +95,7 @@ namespace Controllers
         }
 
         // Displays register page
-        [HttpGet("/register")]
+        [HttpGet("/sign_up")]
         public async Task<IActionResult> GetRegisterPage()
         {
             return new ContentResult {
@@ -153,7 +153,7 @@ namespace Controllers
             return new ContentResult {
                 ContentType = "text/html",
                 StatusCode = (int) Status200OK,
-                Content = BasicTemplater.GenerateTimeline(messages: await MessageRepo.ReadAllAsync(), user: user)
+                Content = BasicTemplater.GenerateTimeline(messages: await MessageRepo.ReadAllAsync(), timelineType.PUBLIC, user: user)
             };
         }
 
@@ -170,9 +170,9 @@ namespace Controllers
 
             var hashedpwd = UserRepo.HashPassword(loginDTO.Password);
 
-            if (!hash.Equals(hashedpwd))
+            if (hash is null || hashedpwd is null || !hash.Equals(hashedpwd))
             {
-                return BadRequest();
+                return Redirect("/login?error");
             }
 
             var user = await UserRepo.ReadAsync(loginDTO.Username);

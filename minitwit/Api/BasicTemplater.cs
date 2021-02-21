@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using Shared;
 using System.Text;
@@ -19,6 +20,7 @@ namespace Api
 <head>
 <title>{title} | MiniTwit</title>
 <link rel=stylesheet type=text/css href=""/static/css/style.css"">
+<meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
 </head>
 <body>
 <div class=page>
@@ -27,13 +29,13 @@ namespace Api
 
       if (user is null)
       sb.Append(@"
-    <a href=""public_timeline"">public timeline</a> |
-    <a href=""register"">sign up</a> |
+    <a href=""public"">public timeline</a> |
+    <a href=""sign_up"">sign up</a> |
     <a href=""login"">sign in</a>");
     else sb.Append($@"
-    <a href=""/{user.username}"">my timeline</a> |
+    <a href=""/"">my timeline</a> |
     <a href=""/public"">public timeline</a> |
-    <a href=""/logout"">sign out {user.username}</a>");
+    <form method=post action=/logout  style=""display: inline-block""><button class=nav_a type=submit style=""background: none; border: none;"">sign out [{user.username}]</button></form>");
 
       sb.Append(@"</div>");
 
@@ -59,40 +61,84 @@ namespace Api
         return sb.ToString();
     }
 
-
-    public static string GenerateTimeline(List<MessageReadDTO> messages, UserReadDTO user = null)
+    public static string GenerateTimeline(List<MessageReadDTO> messages, timelineType type, UserReadDTO user = null, string otherPersonUsername = "")
     {
       bool loggedin = user != null;
       messages.Sort((x, y) => DateTime.Compare(x.pub_date, y.pub_date));
       messages.Reverse();
 
       StringBuilder sb = new StringBuilder();
-      sb.Append("<html>");
-      if (loggedin) sb.Append("<form method=post action=add_message><input name=Text><input type=submit></form>");
-      foreach (MessageReadDTO msg in messages)
+
+      if (type == timelineType.PUBLIC) sb.Append("<h2>Public Timeline</h2>");
+      else if (type == timelineType.OTHER) sb.Append($"<h2>{otherPersonUsername}'s Timeline</h2>");
+
+      if (loggedin && type == timelineType.SELF) sb.Append(
+        $@"<div class=""twitbox""><h3>What's on your mind {user.username}?</h3>
+        <form action=""/add_message"" method=""post""><p><input type=""text"" name=""text"" size=""60""><input type=""submit"" value=""Share""></p></form></div>"
+        );
+      if (messages.Count == 0)
       {
-        sb.Append($"<p>{msg.author.username} [{msg.pub_date}]: {msg.text}</p>");
-        if (loggedin) sb.Append($"<form method=post action={msg.author.username}/follow><button type=submit>Follow</button></form>");
+        sb.Append(@"<ul class=""messages"">
+          <li><em>There's no messages so far.</em></li>
+          </ul>
+        ");
       }
-      sb.Append("</html>");
-      return Layout(title: loggedin ? "Your timeline" : "Public timeline", body: sb.ToString(), user: user);
+      else
+      {
+        sb.Append(@"<ul class=""messages"">");
+        foreach (MessageReadDTO msg in messages)
+        {
+          string optionalZero = msg.pub_date.Month < 10 ? "0" : "";
+          var reformattedDateTime = "- " + msg.pub_date.Year + "-" + optionalZero + msg.pub_date.Month + "-" + msg.pub_date.Day + " @ " + msg.pub_date.Hour + ":" + msg.pub_date.Minute;
+          // sb.Append($"<p>{msg.author.username} [{msg.pub_date}]: {msg.text}</p>");
+          sb.Append($@"
+          <li>
+
+            <p>
+              <strong>
+                <a href=""/{msg.author.username}"">{msg.author.username}</a>
+              </strong>
+              {msg.text}
+              <small>
+                {reformattedDateTime}
+              </small>
+            </p>
+          </li>");
+          // if (loggedin)
+          // {
+          //   sb.Append($"<form method=post action={msg.author.username}/follow><button type=submit>Follow</button></form>");
+          // }
+        }
+        sb.Append("</ul>");
+      }
+
+
+      return Layout(title: loggedin ? "Your Timeline" : "Public Timeline", body: sb.ToString(), user: user);
     }
+
 
     public static string GenerateLoginPage(UserReadDTO user = null)
     {
-      return Layout(title: "Sign In",
-      body: @"<form method=post action=login>
-                    <input name=Username>
-                    <input name=Password>
-                    <input type=submit>
+      return Layout(
+      title: "Sign In | MiniTwit",
+      body: @"<h2>Sign In</h2>
+      <form method=post action=login>
+      <dl>
+      <dt>Username:
+      <dd><input type=text name=Username size=30>
+      <dt>Password:
+      <dd><input type=password name=Password size=30>
+      </dl>
+      <div class=actions><input type=submit value=""Sign In""></div>
                     </form>", user: user);
     }
 
     public static string GenerateRegisterPage(UserReadDTO user = null)
     {
       return Layout(
-        title: "Sign Up",
-        body: @"<form method=post action=register>
+        title: "Sign Up | MiniTwit",
+        body: @"<h2>Sign Up</h2>
+        <form method=post action=sign_up>
           <dl>
       <dt>Username:
       <dd><input type=text name=Username size=30>
@@ -108,5 +154,10 @@ namespace Api
         user
       );
     }
+  }
+
+  public enum timelineType
+  {
+    SELF, PUBLIC, OTHER
   }
 }

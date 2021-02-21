@@ -1,0 +1,13 @@
+digraph G {
+  "Program.cs" -> "Startup.cs"
+  "Startup.cs" -> "Entities/"
+  "Startup.cs" -> "Controllers/"
+  "Controllers/" -> "Models/"
+  "Controllers/" -> "AspNetCore"
+  "Models/" -> "Shared/"
+  "Models/" -> "EntityFrameworkCore"
+  "Entities/" -> "EntityFrameworkCore"
+  "EntityFrameworkCore"-> ".NET 5.0"
+  "AspNetCore" -> ".NET 5.0"
+  "Shared/" -> ".NET 5.0"
+}

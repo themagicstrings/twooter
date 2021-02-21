@@ -30,6 +30,7 @@ namespace Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<MinitwitContext>(o => o.UseInMemoryDatabase("minitwit"));
+            //services.AddDbContext<MinitwitContext>(o => o.UseSqlServer(@"Server=localhost;Database=Minitwit;Trusted_Connection=True"));
             services.AddScoped<IMinitwitContext, MinitwitContext>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
@@ -61,7 +62,7 @@ namespace Api
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api v1"));
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseStaticFiles();
 
@@ -76,6 +77,5 @@ namespace Api
                 endpoints.MapControllers();
             });
         }
-
     }
 }
