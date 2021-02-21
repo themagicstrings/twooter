@@ -34,7 +34,7 @@ namespace Api
     else sb.Append($@"
     <a href=""/"">my timeline</a> |
     <a href=""/public"">public timeline</a> |
-    <a href=""/logout"">sign out [{user.username}]</a>");
+    <form method=post action=/logout  style=""display: inline-block""><button class=nav_a type=submit style=""background: none; border: none;"">sign out [{user.username}]</button></form>");
 
       sb.Append(@"</div>");
 
@@ -75,14 +75,14 @@ namespace Api
         <form action=""/add_message"" method=""post""><p><input type=""text"" name=""text"" size=""60""><input type=""submit"" value=""Share""></p></form></div>"
 
         );
-      if (messages.Count == 0) 
+      if (messages.Count == 0)
       {
-        sb.Append(@"<ul class=""messages""> 
+        sb.Append(@"<ul class=""messages"">
           <li><em>There's no messages so far.</em></li>
           </ul>
         ");
-      } 
-      else 
+      }
+      else
       {
         sb.Append(@"<ul class=""messages"">");
         foreach (MessageReadDTO msg in messages)
@@ -92,7 +92,7 @@ namespace Api
           // sb.Append($"<p>{msg.author.username} [{msg.pub_date}]: {msg.text}</p>");
           sb.Append($@"
           <li>
-          
+
             <p>
               <strong>
                 <a href=""/{msg.author.username}"">
@@ -105,18 +105,18 @@ namespace Api
               </small>
             </p>
           </li>");
-          // if (loggedin) 
+          // if (loggedin)
           // {
           //   sb.Append($"<form method=post action={msg.author.username}/follow><button type=submit>Follow</button></form>");
           // }
         }
         sb.Append("</ul>");
       }
-    
+
 
       return Layout(title: loggedin ? "Your Timeline" : "Public Timeline", body: sb.ToString(), user: user);
     }
-    
+
 
     public static string GenerateLoginPage(UserReadDTO user = null)
     {
@@ -157,7 +157,7 @@ namespace Api
     }
   }
 
-  public enum timelineType 
+  public enum timelineType
   {
     SELF, PUBLIC, OTHER
   }
