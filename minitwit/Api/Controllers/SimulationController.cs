@@ -13,6 +13,8 @@ using System.Linq;
 using System;
 using Api;
 using System.Text.Json;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Controllers
 {
@@ -158,6 +160,50 @@ namespace Controllers
                 StatusCode = Status200OK,
                 Content = JsonSerializer.Serialize(usermessages)
             };
+        }
+
+        [HttpGet("/fllws/{username}")]
+        public async Task<IActionResult> hfollow(string username)
+        {
+            await write_latest();
+
+            var noOfFollows = get_param_int("no", 100);
+            var user = await UserRepo.ReadAsync(username);
+            var follow = user.following.Take(noOfFollows);
+
+            return new ContentResult {
+                ContentType = "text/json",
+                StatusCode = Status200OK,
+                Content = JsonSerializer.Serialize(new {follows = follow})
+            };
+        }
+
+        [HttpPost("/fllws/{username}")]
+        public async Task<IActionResult> follow(string username)
+        {
+            await write_latest();
+            
+            var sr = new StreamReader( Request.Body );
+            var bodystring = await sr.ReadToEndAsync();
+            string pattern = @"{""(.+?)"": ""(.+?)""}";
+            var match = Regex.Matches(bodystring, pattern)[0];
+            
+            var method = match.Groups[1].Value;
+            var parameter = match.Groups[2].Value;
+
+            switch(method)
+            {
+                case "follow":
+                    await UserRepo.FollowAsync(username, parameter);
+                    break;
+                case "unfollow":
+                    await UserRepo.UnfollowAsync(username, parameter);
+                    break;
+                default:
+                    return BadRequest("Not a supported method");
+            }
+
+            return Ok("Succes");
         }
     }
 }

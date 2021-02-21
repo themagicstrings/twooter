@@ -46,18 +46,18 @@ namespace Models
 
         public async Task<int> FollowAsync(string follower, string followed)
         {
-            if (followed.Equals(followed)) return -1;
+            if (follower.Equals(followed)) return -1;
             var followedQuery = from u in context.users where u.username == followed select u;
-            if(!await followedQuery.AnyAsync()) return -1;
+            if(!await followedQuery.AnyAsync()) return -2;
             var followerQuery = from u in context.users where u.username == follower select u;
-            if(!await followerQuery.AnyAsync()) return -2;
+            if(!await followerQuery.AnyAsync()) return -3;
 
             var relationExists = from entry in context.follows
                 where entry.Followed.username == followed &&
                       entry.Follower.username == follower
                 select entry;
 
-            if (await relationExists.AnyAsync()) return -3;
+            if (await relationExists.AnyAsync()) return -4;
 
             var newFollow = new Follow
             {
@@ -73,16 +73,17 @@ namespace Models
 
         public async Task<int> UnfollowAsync(string unfollower, string unfollowed)
         {
+            if (unfollower.Equals(unfollowed)) return -1;
             var unfollowedQuery = from u in context.users where u.username == unfollowed select u;
-            if(!await unfollowedQuery.AnyAsync()) return -1;
+            if(!await unfollowedQuery.AnyAsync()) return -2;
             var unfollowerQuery = from u in context.users where u.username == unfollower select u;
-            if(!await unfollowerQuery.AnyAsync()) return -2;
+            if(!await unfollowerQuery.AnyAsync()) return -3;
 
             var followedUser = await unfollowedQuery.FirstAsync();
             var followerUser = await unfollowerQuery.FirstAsync();
 
             var followQuery = from f in context.follows where f.FollowedId == followedUser.user_id && f.FollowerId == followerUser.user_id select f;
-            if(!await followQuery.AnyAsync()) return -3;
+            if(!await followQuery.AnyAsync()) return -4;
 
             var followEntity = await followQuery.FirstAsync();
             context.follows.Remove(followEntity);
@@ -112,8 +113,8 @@ namespace Models
                     user_id = u.user_id,
                     username = u.username,
                     email = u.email,
-                    followers = (context.follows.Where(f => f.Followed.username == username).Select(f => f.Follower.username).ToList()),//followers = (u.FollowedBy.Select(f => f.Followed.username)).ToList(),
-                    following = (context.follows.Where(f => f.Follower.username == username).Select(f => f.Followed.username).ToList()),//following = (u.Following.Select(f => f.Follower.username)).ToList(),
+                    followers = (context.follows.Where(f => f.Followed.username == username).Select(f => f.Follower.username).ToList()),
+                    following = (context.follows.Where(f => f.Follower.username == username).Select(f => f.Followed.username).ToList()),
                     messages = (from m in u.Messages select new MessageReadDTO{
                         author = new UserReadDTO {username = u.username},
                         id = m.message_id,
@@ -122,7 +123,7 @@ namespace Models
                         flagged = m.flagged
                     }).ToList()
                 };
-
+ 
             return await query.FirstOrDefaultAsync();
         }
 
@@ -153,7 +154,7 @@ namespace Models
                 user_id = u.user_id,
                 username = u.username,
                 email = u.email,
-                followers = (context.follows.Where(f => f.Followed.username == u.username).Select(f => f.Follower.username).ToList()),//followers = (u.FollowedBy.Select(f => f.Followed.username)).ToList(),
+                followers = (context.follows.Where(f => f.Followed.username == u.username).Select(f => f.Follower.username).ToList()),
                 following = (context.follows.Where(f => f.Follower.username == u.username).Select(f => f.Followed.username).ToList()),
                 messages = (from m in u.Messages select new MessageReadDTO{
                     author = new UserReadDTO {username = u.username},
