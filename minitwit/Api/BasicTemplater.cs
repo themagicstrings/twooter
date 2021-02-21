@@ -20,6 +20,7 @@ namespace Api
 <head>
 <title>{title} | MiniTwit</title>
 <link rel=stylesheet type=text/css href=""/static/css/style.css"">
+<meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
 </head>
 <body>
 <div class=page>
@@ -69,11 +70,11 @@ namespace Api
       StringBuilder sb = new StringBuilder();
 
       if (type == timelineType.PUBLIC) sb.Append("<h2>Public Timeline</h2>");
-      else sb.Append("<h2>My Timeline</h2>");
+      else if (type == timelineType.OTHER) sb.Append($"<h2>{otherPersonUsername}'s Timeline</h2>");
+
       if (loggedin && type == timelineType.SELF) sb.Append(
         $@"<div class=""twitbox""><h3>What's on your mind {user.username}?</h3>
         <form action=""/add_message"" method=""post""><p><input type=""text"" name=""text"" size=""60""><input type=""submit"" value=""Share""></p></form></div>"
-
         );
       if (messages.Count == 0)
       {
@@ -95,9 +96,7 @@ namespace Api
 
             <p>
               <strong>
-                <a href=""/{msg.author.username}"">
-                  {msg.author.username}
-                </a>
+                <a href=""/{msg.author.username}"">{msg.author.username}</a>
               </strong>
               {msg.text}
               <small>
