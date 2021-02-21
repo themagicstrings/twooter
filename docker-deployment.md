@@ -30,6 +30,6 @@ Check if the image works `docker run -it --rm -p 8080:80 --name twooter-instance
 
 `ssh root@<server_ip>`
 
-`docker pull docker.pkg.github.com/themagicstrings/twooter/twooter-image:1`
+`docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest`
 
-`docker run -it --rm -p 80:80 --name twooter-instance docker.pkg.github.com/themagicstrings/twooter/twooter-image:1`
+`docker run -it --rm -p 80:80 --name twooter-instance docker.pkg.github.com/themagicstrings/twooter/twooter:latest`
