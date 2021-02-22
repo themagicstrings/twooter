@@ -35,7 +35,7 @@ namespace Api
     else sb.Append($@"
     <a href=""/"">my timeline</a> |
     <a href=""/public"">public timeline</a> |
-    <form method=post action=/logout  style=""display: inline-block""><button class=nav_a type=submit style=""background: none; border: none;"">sign out [{user.username}]</button></form>");
+    <form method=post action=/logout  style=""display: inline-block""><button class=nav_a type=submit>sign out [{user.username}]</button></form>");
 
       sb.Append(@"</div>");
 
