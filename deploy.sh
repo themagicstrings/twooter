@@ -20,9 +20,10 @@ dotnet publish -c Release -o ./publish
 docker build -t twooter .
 docker tag twooter docker.pkg.github.com/themagicstrings/twooter/twooter
 docker push docker.pkg.github.com/themagicstrings/twooter/twooter
-apt-get install sshpass
+# apt-get install sshpass
 
-sshpass -p $4 ssh root@$3 "
+# sshpass -p $4
+ssh root@$3 "
   apt update
   apt install -y apt-transport-https ca-certificates curl software-properties-common
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
