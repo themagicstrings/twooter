@@ -18,7 +18,7 @@ HEADERS = {'Connection': 'close',
 
 
 def test_latest():
-    # post something to updaet LATEST
+    # post something to update LATEST
     url = f"{BASE_URL}/register"
     data = {'username': 'test', 'email': 'test@test', 'pwd': 'foo'}
     params = {'latest': 1337}
