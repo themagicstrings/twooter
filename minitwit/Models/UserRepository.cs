@@ -19,6 +19,13 @@ namespace Models
         }
         public async Task<int> CreateAsync(UserCreateDTO user)
         {
+            if(!user.Password1.Equals(user.Password2)) return -1;
+            var usernamecheck = from u in context.users where u.username == user.Username select u;
+            if(await usernamecheck.AnyAsync()) return -2;
+            var emailcheck = from u in context.users where u.email == user.Email select u;
+            if(await emailcheck.AnyAsync()) return -3;
+            if(!user.Email.Contains("@")) return -4;
+
             var newUser = new User
             {
                 username = user.Username,
