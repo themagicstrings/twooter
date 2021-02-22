@@ -66,7 +66,7 @@ namespace Controllers
 
             var searchedUser = await UserRepo.ReadAsync(username);
 
-            if (searchedUser is null) return NotFound();
+            if (searchedUser is null) return (ActionResult)await Get404Page();
 
             return new ContentResult
             {
@@ -139,7 +139,7 @@ namespace Controllers
 
             var res = await UserRepo.UnfollowAsync(user.username, username);
 
-            if (res == -3) return NotFound();
+            if (res == -3) return (ActionResult)await Get404Page();
             if (res != 0) return BadRequest();
             return Ok();
         }
@@ -207,6 +207,17 @@ namespace Controllers
         {
             HttpContext.Session.Clear();
             return Redirect("~/public");
+        }
+
+        [HttpGet("/404")]
+        public async Task<IActionResult> Get404Page()
+        {
+            await CheckSessionForUser();
+            return new ContentResult {
+                ContentType = "text/html",
+                StatusCode = (int) Status404NotFound,
+                Content = BasicTemplater.Generate404Page(user)
+            };
         }
     }
 }

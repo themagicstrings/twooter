@@ -155,6 +155,11 @@ namespace Api
         user
       );
     }
+
+    internal static string Generate404Page(UserReadDTO user)
+    {
+      return Layout("The page you are looking for was not found.", "<h2>404 Not Found</h2>The page you are looking for was not found.", user);
+    }
   }
 
   public enum timelineType
