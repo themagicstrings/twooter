@@ -24,8 +24,8 @@ jobs:
         dotnet-version: 5.0.x
     - name: Restore dependencies
       run: dotnet restore
-      with:
-        path: minitwit/Api
+        with:
+          path: minitwit/Api
     - name: Build
       run: dotnet build --no-restore
     - name: Test
