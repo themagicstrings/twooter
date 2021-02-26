@@ -24,14 +24,14 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
-      working-directory: ./minitwit/Api
       run: dotnet restore
+      working-directory: ./minitwit/Api
     - name: Build
-      working-directory: ./minitwit/Api
       run: dotnet build --no-restore
-    - name: Publish
       working-directory: ./minitwit/Api
+    - name: Publish
       run: dotnet publish -c Release -o ./publish
+      working-directory: ./minitwit/Api
     # - name: Test
     #   working-directory: ./minitwit/Api
     #   run: dotnet test --no-build --verbosity normal
