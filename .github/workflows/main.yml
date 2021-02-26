@@ -18,14 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      with:
-        path: minitwit/Api
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
       run: dotnet restore
+      with:
+        path: minitwit/Api
     - name: Build
       run: dotnet build --no-restore
     - name: Test
