@@ -63,7 +63,18 @@ div.page div.navigation {
   letter-spacing: 0.5px;
 }
 
-div.page div.navigation a {
+.nav_a {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  font: inherit;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+div.page div.navigation a,
+div.page div.navigation .nav_a
+ {
   color: #444;
   font-weight: bold;
 }

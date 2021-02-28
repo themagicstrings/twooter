@@ -35,7 +35,7 @@ namespace Api
     else sb.Append($@"
     <a href=""/"">my timeline</a> |
     <a href=""/public"">public timeline</a> |
-    <form method=post action=/logout  style=""display: inline-block""><button class=nav_a type=submit style=""background: none; border: none;"">sign out [{user.username}]</button></form>");
+    <form method=post action=/logout  style=""display: inline-block""><button class=nav_a type=submit>sign out [{user.username}]</button></form>");
 
       sb.Append(@"</div>");
 
@@ -158,7 +158,11 @@ namespace Api
 
     internal static string Generate404Page(UserReadDTO user)
     {
-      return Layout("The page you are looking for was not found.", "<h2>404 Not Found</h2>The page you are looking for was not found.", user);
+      return @"<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 3.2 Final//EN"">
+<title>404 Not Found</title>
+<h1>Not Found</h1>
+<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>
+      ";
     }
   }
 

@@ -42,6 +42,7 @@ namespace Models
                 where message.message_id == id
                 select message;
             var foundMessage = await query.FirstOrDefaultAsync();
+            if(foundMessage is null) return -1;
             context.messages.Remove(foundMessage);
             await context.SaveChangesAsync();
             return foundMessage.message_id;

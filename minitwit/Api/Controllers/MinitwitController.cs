@@ -72,7 +72,7 @@ namespace Controllers
             {
                 ContentType = "text/html",
                 StatusCode = Status200OK,
-                Content = BasicTemplater.GenerateTimeline(searchedUser.messages,timelineType.OTHER, user: user)
+                Content = BasicTemplater.GenerateTimeline(searchedUser.messages,timelineType.OTHER, user: user, otherPersonUsername: searchedUser.username)
             };
         }
 
