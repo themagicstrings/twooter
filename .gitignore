@@ -5,3 +5,4 @@ obj
 publish
 .idea
 Migrations
+deploy.config
