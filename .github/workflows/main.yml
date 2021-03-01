@@ -41,7 +41,7 @@ jobs:
       working-directory: ./minitwit/Api
     - name: Docker login
       run: |
-        docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+        docker login https://docker.pkg.github.com -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
     - name: Docker build, tag and push
       run: |
         cd ./minitwit/Api
