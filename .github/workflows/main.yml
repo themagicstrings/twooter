@@ -48,25 +48,53 @@ jobs:
         docker build -t twooter .
         docker tag twooter docker.pkg.github.com/themagicstrings/twooter/twooter
         docker push docker.pkg.github.com/themagicstrings/twooter/twooter
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-    
+        
+  deploy:
+    needs: build-publish-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Docker login
+        run: |
+          docker login https://docker.pkg.github.com -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+      - name: Deploy to DigitalOcean Droplet
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.DIGITALOCEAN_HOST }}
+          username: root
+          key: ${{ secrets.DIGITALOCEAN_API_KEY }}
+          port: 22
+          script: |
+            docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest
+            
+            docker stop twooter-instance || true
+            docker rm twooter-instance || true
+            
+            docker rmi docker.pkg.github.com/themagicstrings/twooter/twooter:latest
+            
+            docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest
+            docker run --rm -p 443:443 -p 80:80 --name twooter-instance docker.pkg.github.com/themagicstrings/twooter/twooter:latest -e ASPNETCORE_URLS=\"http://localhost:80;https://localhost:443\""
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
