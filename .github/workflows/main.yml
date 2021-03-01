@@ -28,7 +28,7 @@ jobs:
       run: dotnet build --no-restore
       working-directory: ./minitwit/Api
     - name: Test
-      working-directory: ./minitwit/Api
+      working-directory: ./minitwit/Models.Test
       run: dotnet test --no-build --verbosity normal
       
   build-publish-image:
