@@ -6,3 +6,4 @@ publish
 .idea
 Migrations
 deploy.config
+minitwit/Api/LATEST.txt
