@@ -47,7 +47,8 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: docker.pkg.github.com
-        repository: ${{ github.repository }}
+        repository: ${{ github.repository }}/twooter-xd
+        context: ./minitwit/Api
         tag_with_sha: true
         tag_with_ref: true
     
