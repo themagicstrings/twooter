@@ -63,19 +63,19 @@ jobs:
           username: root
           key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
           port: 22
-          #script: |
-          #  apt update
-          #  apt install -y docker
-          #  
-          #  docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest
-          #  
-          #  docker stop twooter-instance || true
-          #  docker rm twooter-instance || true
-          #  
-          #  docker rmi docker.pkg.github.com/themagicstrings/twooter/twooter:latest
-          #  
-          #  docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest
-          #  docker run --rm -p 443:443 -p 80:80 --name twooter-instance docker.pkg.github.com/themagicstrings/twooter/twooter:latest -e ASPNETCORE_URLS=\"http://localhost:80;https://localhost:443\""
+          script: |
+            apt update
+            apt install -y docker
+            
+            docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest
+            
+            docker stop twooter-instance || true
+            docker rm twooter-instance || true
+            
+            docker rmi docker.pkg.github.com/themagicstrings/twooter/twooter:latest
+            
+            docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest
+            docker run --rm -p 443:443 -p 80:80 --name twooter-instance docker.pkg.github.com/themagicstrings/twooter/twooter:latest -e ASPNETCORE_URLS=\"http://localhost:80;https://localhost:443\""
  
  
  
