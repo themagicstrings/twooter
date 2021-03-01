@@ -23,10 +23,10 @@ jobs:
         dotnet-version: 5.0.x
     - name: Restore dependencies
       run: dotnet restore
-      working-directory: ./minitwit/Api
+      working-directory: ./minitwit
     - name: Build
       run: dotnet build --no-restore
-      working-directory: ./minitwit/Api
+      working-directory: ./minitwit
     - name: Test
       working-directory: ./minitwit/Models.Test
       run: dotnet test --no-build --verbosity normal
