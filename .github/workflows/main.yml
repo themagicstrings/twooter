@@ -1,4 +1,4 @@
-name: CI/CD
+name: Test and Deploy
 
 on:
   # Enable these triggers when finalized
