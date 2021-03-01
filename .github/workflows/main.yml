@@ -53,30 +53,40 @@ jobs:
     needs: build-publish-image
     runs-on: ubuntu-latest
     steps:
-      - name: Docker login
+      - name: Configure SSH
         run: |
-          docker login https://docker.pkg.github.com -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
-      - name: Deploy to DigitalOcean Droplet
-        uses: appleboy/ssh-action@v0.1.4
-        with:
-          host: ${{ secrets.DIGITALOCEAN_HOST2 }}
-          username: root
-          key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
-          port: 22
-          script: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ${{ secrets.STAGING_SSH_USER }}
+          SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
+          SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
+      - name: Deploy with SSH
+        run: |
+          ssh staging "
             apt update
             apt install -y docker.io
-            
+
+            docker login https://docker.pkg.github.com -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+
             docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest
-            
+
             docker stop twooter-instance || true
             docker rm twooter-instance || true
-            
+
             docker rmi docker.pkg.github.com/themagicstrings/twooter/twooter:latest
-            
+
             docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest
             docker run --rm -p 443:443 -p 80:80 --name twooter-instance docker.pkg.github.com/themagicstrings/twooter/twooter:latest -e ASPNETCORE_URLS=\"http://localhost:80;https://localhost:443\""
- 
+          "
  
  
  
