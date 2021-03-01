@@ -65,7 +65,7 @@ jobs:
           port: 22
           script: |
             apt update
-            apt install -y docker
+            apt install -y docker.io
             
             docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest
             
