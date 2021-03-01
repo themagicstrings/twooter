@@ -9,11 +9,11 @@ namespace Api
 {
   public class BasicTemplater
   {
+    public static List<string> flashes = new List<string>();
     public static string Layout(
         string title = "Welcome",
         string body = "",
-        UserReadDTO user = null,
-        string[] flashes = default
+        UserReadDTO user = null
     ) {
       StringBuilder sb = new StringBuilder();
       sb.Append($@"<!doctype html>
@@ -39,7 +39,7 @@ namespace Api
 
       sb.Append(@"</div>");
 
-      if (flashes != null && flashes.Length > 0)
+      if (flashes != null && flashes.Count > 0)
       {
         sb.Append("<ul class=flashes>");
         foreach (var message in flashes)
@@ -112,15 +112,15 @@ namespace Api
         }
         sb.Append("</ul>");
       }
-
-
-      return Layout(title: loggedin ? "Your Timeline" : "Public Timeline", body: sb.ToString(), user: user);
+      string toReturn = Layout(title: loggedin ? "Your Timeline" : "Public Timeline", body: sb.ToString(), user: user);
+      BasicTemplater.flashes.Clear();
+      return toReturn;
     }
 
 
     public static string GenerateLoginPage(UserReadDTO user = null)
     {
-      return Layout(
+      string toReturn = Layout(
       title: "Sign In | MiniTwit",
       body: @"<h2>Sign In</h2>
       <form method=post action=login>
@@ -132,11 +132,13 @@ namespace Api
       </dl>
       <div class=actions><input type=submit value=""Sign In""></div>
                     </form>", user: user);
+      BasicTemplater.flashes.Clear();
+      return toReturn;
     }
 
     public static string GenerateRegisterPage(UserReadDTO user = null)
     {
-      return Layout(
+      string toReturn =  Layout(
         title: "Sign Up | MiniTwit",
         body: @"<h2>Sign Up</h2>
         <form method=post action=sign_up>
@@ -154,6 +156,8 @@ namespace Api
                     </form>",
         user
       );
+    BasicTemplater.flashes.Clear();
+    return toReturn;
     }
 
     internal static string Generate404Page(UserReadDTO user)

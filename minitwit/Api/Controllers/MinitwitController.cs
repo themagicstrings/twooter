@@ -90,6 +90,7 @@ namespace Controllers
             if(exist is not null) return BadRequest("The username is already taken");
 
             await UserRepo.CreateAsync(user);
+            BasicTemplater.flashes.Add("You were successfully registered and can login now");
             return Redirect("/login");
             //return Ok("You were succesfully registered and can login now");
         }
@@ -178,6 +179,7 @@ namespace Controllers
             var user = await UserRepo.ReadAsync(loginDTO.Username);
 
             sessionHelper.SetString("user_id", user.user_id.ToString());
+            BasicTemplater.flashes.Add("You were logged in");
             return Redirect("/");
         }
 
@@ -205,6 +207,7 @@ namespace Controllers
         [HttpPost("/logout")]
         public async Task<IActionResult> PostLogout()
         {
+            BasicTemplater.flashes.Add("You were logged out");
             HttpContext.Session.Clear();
             return Redirect("~/public");
         }
