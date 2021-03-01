@@ -39,16 +39,34 @@ jobs:
     - name: Publish
       run: dotnet publish -c Release -o ./publish
       working-directory: ./minitwit/Api
-    - name: Set up Docker Builder
-      uses: docker/setup-buildx-action@v1
-    - name: Build container image
-      uses: docker/build-push-action@v1
-      with:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-        registry: docker.pkg.github.com
-        repository: ${{ github.repository }}
-        context: ./minitwit/Api
-        tag_with_sha: true
-        tag_with_ref: true
+    - name: Docker login
+      run: |
+        docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+    - name: Docker build, tag and push
+      run: |
+        cd ./minitwit/Api
+        docker build -t twooter .
+        docker tag twooter docker.pkg.github.com/themagicstrings/twooter/twooter
+        docker push docker.pkg.github.com/themagicstrings/twooter/twooter
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
     
