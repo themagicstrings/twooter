@@ -3,12 +3,9 @@ name: Test and Deploy
 on:
   # Enable these triggers when finalized
   push:
-    branches: [feature/gh-actions]
-  # branches: [ main ]
-  
-  # pull_request:
-  #   branches: [ main ]
-
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
   # Manual trigger
   workflow_dispatch:
 
@@ -24,14 +21,14 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
       working-directory: ./minitwit
-    - name: Build
+    - name: Build dotnet project
       run: dotnet build --no-restore
       working-directory: ./minitwit
-    - name: Test
+    - name: Run dotnet tests
       working-directory: ./minitwit/Models.Test
       run: dotnet test --no-build --verbosity normal
       
-  build-publish-image:
+  publish-docker-image:
     runs-on: ubuntu-latest
     needs: test
     steps:
@@ -50,7 +47,7 @@ jobs:
         docker push docker.pkg.github.com/themagicstrings/twooter/twooter
         
   deploy:
-    needs: build-publish-image
+    needs: publish-docker-image
     runs-on: ubuntu-latest
     steps:
       - name: Configure SSH
@@ -69,7 +66,7 @@ jobs:
           SSH_USER: ${{ secrets.STAGING_SSH_USER }}
           SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
           SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
-      - name: Deploy with SSH
+      - name: Pull and run docker image with SSH
         run: |
           ssh staging "
             apt update
