@@ -4,7 +4,7 @@ name: Test and Deploy
 on:
   # Trigger on pushes to main
   push:
-    branches: [ main ]
+    branches: [ main, feature/gh-actions ]
   # Trigger on pull requests to main
   pull_request:
     branches: [ main ]
