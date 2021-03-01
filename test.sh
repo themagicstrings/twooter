@@ -1,5 +1,7 @@
+#!/bin/bash
+
 #Run model tests
-cd minitwit/models.Test
+cd minitwit/Models.Test
 dotnet test
 
 #Start the api in background
@@ -12,8 +14,9 @@ apipid=$!
 #Run api tests
 cd ..
 cd Api.Test
-pytest SimulationControllerTests.py
-pytest MinitwitControllerTests.py
+pip3 install pytest
+python3 -m pytest SimulationControllerTests.py
+python3 -m pytest MinitwitControllerTests.py
 
 #Stop the api
 kill $apipid
