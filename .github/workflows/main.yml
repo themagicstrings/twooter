@@ -2,8 +2,10 @@ name: CI/CD
 
 on:
   # Enable these triggers when finalized
-  # push:
-  #   branches: [ main ]
+  push:
+    branches: [feature/gh-actions]
+  # branches: [ main ]
+  
   # pull_request:
   #   branches: [ main ]
 
