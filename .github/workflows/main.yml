@@ -64,6 +64,9 @@ jobs:
           key: ${{ secrets.DIGITALOCEAN_API_KEY }}
           port: 22
           script: |
+            apt update
+            apt install -y docker
+            
             docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest
             
             docker stop twooter-instance || true
