@@ -85,7 +85,7 @@ jobs:
             docker rmi docker.pkg.github.com/themagicstrings/twooter/twooter:latest
 
             docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest
-            docker run --rm -p 443:443 -p 80:80 --name twooter-instance docker.pkg.github.com/themagicstrings/twooter/twooter:latest -e ASPNETCORE_URLS=\"http://localhost:80;https://localhost:443\""
+            docker run -d --rm -p 443:443 -p 80:80 --name twooter-instance docker.pkg.github.com/themagicstrings/twooter/twooter:latest -e ASPNETCORE_URLS=\"http://localhost:80;https://localhost:443\""
           "
  
  
