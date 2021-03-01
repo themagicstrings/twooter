@@ -68,8 +68,13 @@ namespace Controllers
 
         private async Task<int> read_latest()
         {
-            string text = await System.IO.File.ReadAllTextAsync(LATEST);
-            return int.Parse(text);
+            try {
+                string text = await System.IO.File.ReadAllTextAsync(LATEST);
+                return int.Parse(text);
+            } catch {
+                await System.IO.File.WriteAllTextAsync(LATEST, "" + 0);
+                return 0;
+            }
         }
 
         [HttpGet("/latest")]
@@ -83,7 +88,7 @@ namespace Controllers
                 })
             };
         }
-        
+
         [HttpPost("/register")]
         public async Task<IActionResult> register([FromBody] SimulationUserCreateDTO user)
         {
@@ -150,7 +155,7 @@ namespace Controllers
         public async Task<IActionResult> messages_per_user(string username)
         {
             await write_latest();
-            
+
             var allmessages = await MessageRepo.ReadAllAsync();
             var noOfMessages = get_param_int("no", 100);
             var usermessages = (allmessages.Where(m => m.author.username == username).Select(m => new {content = m.text, user = m.author.username})).Take(noOfMessages).ToList();
@@ -182,12 +187,12 @@ namespace Controllers
         public async Task<IActionResult> follow(string username)
         {
             await write_latest();
-            
+
             var sr = new StreamReader( Request.Body );
             var bodystring = await sr.ReadToEndAsync();
             string pattern = @"{""(.+?)"": ""(.+?)""}";
             var match = Regex.Matches(bodystring, pattern)[0];
-            
+
             var method = match.Groups[1].Value;
             var parameter = match.Groups[2].Value;
 
