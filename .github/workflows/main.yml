@@ -59,9 +59,9 @@ jobs:
       - name: Deploy to DigitalOcean Droplet
         uses: appleboy/ssh-action@v0.1.4
         with:
-          host: ${{ secrets.DIGITALOCEAN_HOST }}
+          host: ${{ secrets.DIGITALOCEAN_HOST2 }}
           username: root
-          key: ${{ secrets.DIGITALOCEAN_API_KEY }}
+          key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
           port: 22
           #script: |
           #  apt update
