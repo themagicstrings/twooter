@@ -1,0 +1,125 @@
+name: Test and Deploy
+
+# This workflow will run with these triggers
+on:
+  # Trigger on pushes to main
+  push:
+    branches: [ main ]
+  # Trigger on pull requests to main
+  pull_request:
+    branches: [ main ]
+  # Manual trigger
+  workflow_dispatch:
+  
+# A workflow run is made up of one or more jobs.
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+      working-directory: ./minitwit
+    - name: Build dotnet project
+      run: dotnet build --no-restore
+      working-directory: ./minitwit
+    - name: Run dotnet tests
+      working-directory: ./minitwit/Models.Test
+      run: dotnet test --no-build --verbosity normal
+
+# Jobs run in parallel by default,
+# the publish-docker-image job is configured only to run if any tests fail, by using:
+# needs: test
+      
+  publish-docker-image:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - uses: actions/checkout@v2
+    - name: Dotnet Publish
+      # Create a publish folder with a binary build
+      run: dotnet publish -c Release -o ./publish
+      working-directory: ./minitwit/Api
+    - name: Docker login
+      # Login to github packages registry
+      # github.actor and secrets.GITHUB_TOKEN are generated automatically
+      run: |
+        docker login https://docker.pkg.github.com -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+    - name: Docker build, tag and push
+      # Build a docker image from /minitwit/Api/publish
+      # Tag the docker image (default tag latest)
+      # Push the docker image to github packages registry
+      run: |
+        cd ./minitwit/Api
+        docker build -t twooter .
+        docker tag twooter docker.pkg.github.com/themagicstrings/twooter/twooter
+        docker push docker.pkg.github.com/themagicstrings/twooter/twooter
+        
+  deploy:
+    needs: publish-docker-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure SSH
+        # Retrieve private SSH key from github secrets
+        # Create key file with owner read/write permissions
+        # Put github secrets host and user into an ssh config file
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ${{ secrets.STAGING_SSH_USER }}
+          SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
+          SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
+      - name: Pull and run docker image with SSH
+        # Run ssh with config file and script
+        # Script will install docker, login to github packages and pull new image, stop and clean up old deployment, run the new image in a new container
+        run: |
+          ssh staging "
+            apt update
+            apt install -y docker.io
+            
+            docker login https://docker.pkg.github.com -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+            docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest
+
+            docker stop twooter-instance || true
+            docker rm twooter-instance || true
+            docker rmi docker.pkg.github.com/themagicstrings/twooter/twooter:latest || true
+            
+            docker run -d --rm -p 443:443 -p 80:80 --name twooter-instance docker.pkg.github.com/themagicstrings/twooter/twooter:latest -e ASPNETCORE_URLS=\"http://localhost:80;https://localhost:443\"
+          "
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
