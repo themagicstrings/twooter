@@ -80,16 +80,16 @@ namespace Controllers
         [HttpPost("/sign_up")]
         public async Task<IActionResult> CreateUserAsync([FromForm]UserCreateDTO user)
         {
-            if(user.Username == "" || user.Username is null) return generateBadRequest("You have to enter a username");
-            if(user.Email is null || !user.Email.Contains('@')) return generateBadRequest("You have to enter a valid email address");
-            if(user.Password1 == "" || user.Password1 is null) return generateBadRequest("You have to enter a password");
-            if(user.Password1 != user.Password2) return generateBadRequest("The two passwords do not match");
+            if(user.Username == "" || user.Username is null) return generateBadRequestRegister("You have to enter a username");
+            if(user.Email is null || !user.Email.Contains('@')) return generateBadRequestRegister("You have to enter a valid email address");
+            if(user.Password1 == "" || user.Password1 is null) return generateBadRequestRegister("You have to enter a password");
+            if(user.Password1 != user.Password2) return generateBadRequestRegister("The two passwords do not match");
 
             var exist = await UserRepo.ReadAsync(user.Username);
 
             if(exist is not null) 
             {
-                return generateBadRequest("The username is already taken");
+                return generateBadRequestRegister("The username is already taken");
             }
             // return BadRequest("The username is already taken");
 
@@ -99,13 +99,24 @@ namespace Controllers
             //return Ok("You were succesfully registered and can login now");
         }
 
-        private static ContentResult generateBadRequest(string message)
+        private static ContentResult generateBadRequestRegister(string message)
         {
             BasicTemplater.errors.Add(message);
                 var toReturn = new ContentResult {
                     ContentType = "text/html",
                     StatusCode = Status400BadRequest,
                     Content = BasicTemplater.GenerateRegisterPage()
+                };
+            return toReturn;
+        }
+
+        private static ContentResult generateBadRequestLogin(string message) 
+        {
+            BasicTemplater.errors.Add(message);
+                var toReturn = new ContentResult {
+                    ContentType = "text/html",
+                    StatusCode = Status400BadRequest,
+                    Content = BasicTemplater.GenerateLoginPage()
                 };
             return toReturn;
         }
@@ -177,9 +188,14 @@ namespace Controllers
         [HttpPost("/login")]
         public async Task<IActionResult> PostLogin([FromForm] UserLoginDTO loginDTO)
         {
-            if (loginDTO.Username is null || loginDTO.Password is null)
+            if (loginDTO.Username is null)
             {
-                return BadRequest();
+                return generateBadRequestLogin("Invalid username");
+            }
+
+            if (loginDTO.Password is null)
+            {
+                return generateBadRequestLogin("Invalid password");
             }
 
             var hash = await UserRepo.ReadPWHash(loginDTO.Username);
@@ -188,7 +204,7 @@ namespace Controllers
 
             if (hash is null || hashedpwd is null || !hash.Equals(hashedpwd))
             {
-                return Redirect("/login?error");
+                return generateBadRequestLogin("Invalid password");
             }
 
             var user = await UserRepo.ReadAsync(loginDTO.Username);
