@@ -38,6 +38,7 @@ jobs:
   publish-docker-image:
     runs-on: ubuntu-latest
     needs: test
+    if: github.ref == 'refs/heads/main'
     steps:
     - uses: actions/checkout@v2
     - name: Dotnet Publish
@@ -62,6 +63,7 @@ jobs:
   deploy:
     needs: publish-docker-image
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Configure SSH
         # Retrieve private SSH key from github secrets
