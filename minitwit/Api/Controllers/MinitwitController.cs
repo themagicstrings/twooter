@@ -80,19 +80,34 @@ namespace Controllers
         [HttpPost("/sign_up")]
         public async Task<IActionResult> CreateUserAsync([FromForm]UserCreateDTO user)
         {
-            if(user.Username == "" || user.Username is null) return BadRequest("You have to enter a username");
-            if(!user.Email.Contains('@')) return BadRequest("You have to enter a valid email address");
-            if(user.Password1 == "" || user.Password1 is null) return BadRequest("You have to enter a password");
-            if(user.Password1 != user.Password2) return BadRequest("The two passwords do not match");
+            if(user.Username == "" || user.Username is null) return generateBadRequest("You have to enter a username");
+            if(user.Email is null || !user.Email.Contains('@')) return generateBadRequest("You have to enter a valid email address");
+            if(user.Password1 == "" || user.Password1 is null) return generateBadRequest("You have to enter a password");
+            if(user.Password1 != user.Password2) return generateBadRequest("The two passwords do not match");
 
             var exist = await UserRepo.ReadAsync(user.Username);
 
-            if(exist is not null) return BadRequest("The username is already taken");
+            if(exist is not null) 
+            {
+                return generateBadRequest("The username is already taken");
+            }
+            // return BadRequest("The username is already taken");
 
             await UserRepo.CreateAsync(user);
             BasicTemplater.flashes.Add("You were successfully registered and can login now");
             return Redirect("/login");
             //return Ok("You were succesfully registered and can login now");
+        }
+
+        private static ContentResult generateBadRequest(string message)
+        {
+            BasicTemplater.errors.Add(message);
+                var toReturn = new ContentResult {
+                    ContentType = "text/html",
+                    StatusCode = Status400BadRequest,
+                    Content = BasicTemplater.GenerateRegisterPage()
+                };
+            return toReturn;
         }
 
         // Displays register page

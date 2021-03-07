@@ -10,6 +10,7 @@ namespace Api
   public class BasicTemplater
   {
     public static List<string> flashes = new List<string>();
+    public static List<string> errors = new List<string>();
     public static string Layout(
         string title = "Welcome",
         string body = "",
@@ -39,15 +40,7 @@ namespace Api
 
       sb.Append(@"</div>");
 
-      if (flashes != null && flashes.Count > 0)
-      {
-        sb.Append("<ul class=flashes>");
-        foreach (var message in flashes)
-        {
-          sb.Append($"<li>{message}</li>");
-        }
-        sb.Append("</ul>");
-      }
+      
       sb.Append($@"
   <div class=body>
   {body}
@@ -61,6 +54,29 @@ namespace Api
         return sb.ToString();
     }
 
+    public static StringBuilder addNotifications(StringBuilder sb)
+    {
+      if (flashes != null && flashes.Count > 0)
+      {
+        sb.Append("<ul class=flashes>");
+        foreach (var message in flashes)
+        {
+          sb.Append($"<li>{message}</li>");
+        }
+        sb.Append("</ul>");
+      }
+      if (errors.Count > 0)
+      {
+        
+        foreach (var error in errors)
+        {
+          sb.Append($@"<div class=""error""><strong>Error: </strong>{error}</div>");
+        }
+        
+      }
+      return sb;
+    }
+
     public static string GenerateTimeline(List<MessageReadDTO> messages, timelineType type, UserReadDTO user = null, string otherPersonUsername = "")
     {
       bool loggedin = user != null;
@@ -72,6 +88,8 @@ namespace Api
       if (type == timelineType.PUBLIC) sb.Append("<h2>Public Timeline</h2>");
       else if (type == timelineType.OTHER) sb.Append($"<h2>{otherPersonUsername}'s Timeline</h2>");
       else if (type == timelineType.SELF) sb.Append($"<h2>My Timeline</h2>");
+
+      sb = addNotifications(sb);
 
       if (loggedin && type == timelineType.SELF) sb.Append(
         $@"<div class=""twitbox""><h3>What's on your mind {user.username}?</h3>
@@ -113,35 +131,36 @@ namespace Api
         sb.Append("</ul>");
       }
       string toReturn = Layout(title: loggedin ? "Your Timeline" : "Public Timeline", body: sb.ToString(), user: user);
-      BasicTemplater.flashes.Clear();
+      clearNotifications();
       return toReturn;
     }
 
 
     public static string GenerateLoginPage(UserReadDTO user = null)
     {
+      StringBuilder sb = new StringBuilder();
+
+      sb.Append("<h2>Sign In</h2>");
+      sb = addNotifications(sb);
+      sb.Append(@"<form method=post action=login><dl><dt>Username:<dd><input type=text name=Username size=30><dt>Password:<dd><input type=password name=Password size=30></dl>
+      <div class=actions><input type=submit value=""Sign In""></div>
+                    </form>");
+
       string toReturn = Layout(
       title: "Sign In | MiniTwit",
-      body: @"<h2>Sign In</h2>
-      <form method=post action=login>
-      <dl>
-      <dt>Username:
-      <dd><input type=text name=Username size=30>
-      <dt>Password:
-      <dd><input type=password name=Password size=30>
-      </dl>
-      <div class=actions><input type=submit value=""Sign In""></div>
-                    </form>", user: user);
-      BasicTemplater.flashes.Clear();
+      body: sb.ToString()
+      , user: user);
+      clearNotifications();
       return toReturn;
     }
 
     public static string GenerateRegisterPage(UserReadDTO user = null)
     {
-      string toReturn =  Layout(
-        title: "Sign Up | MiniTwit",
-        body: @"<h2>Sign Up</h2>
-        <form method=post action=sign_up>
+
+      StringBuilder sb = new StringBuilder();
+      sb.Append("<h2>Sign Up</h2>");
+      sb = addNotifications(sb);
+      sb.Append(@"<form method=post action=sign_up>
           <dl>
       <dt>Username:
       <dd><input type=text name=Username size=30>
@@ -153,10 +172,14 @@ namespace Api
       <dd><input type=password name=Password2 size=30>
     </dl>
     <div class=actions><input type=submit value=""Sign Up""></div>
-                    </form>",
+                    </form>");
+
+      string toReturn =  Layout(
+        title: "Sign Up | MiniTwit",
+        body: sb.ToString(),
         user
       );
-    BasicTemplater.flashes.Clear();
+    clearNotifications();
     return toReturn;
     }
 
@@ -167,6 +190,12 @@ namespace Api
 <h1>Not Found</h1>
 <p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>
       ";
+    }
+
+    private static void clearNotifications()
+    {
+      flashes.Clear();
+      errors.Clear();
     }
   }
 
