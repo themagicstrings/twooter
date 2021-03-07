@@ -8,10 +8,10 @@ namespace Models
 {
     public interface IUserRepository
     {
-        Task<UserReadDTO> ReadAsync(string name);
+        Task<UserReadDTO> ReadAsync(string name, int noOfMessages = int.MaxValue);
         Task<string> ReadPWHash(string name);
-        Task<UserReadDTO> ReadAsync(int id);
-        Task<List<UserReadDTO>> ReadAllAsync();
+        Task<UserReadDTO> ReadAsync(int id, int noOfMessages = int.MaxValue);
+        Task<List<UserReadDTO>> ReadAllAsync(int noOfMessages = int.MaxValue);
         Task<int> CreateAsync(UserCreateDTO user);
         Task<int> DeleteAsync(int id);
         Task<int> FollowAsync(string follower, string followed);

@@ -16,6 +16,7 @@ namespace Controllers
     [Route("/")]
     public class MinitwitController : ControllerBase
     {
+        private readonly int MessageLimit = 100;
         private readonly IMessageRepository MessageRepo;
         private readonly IUserRepository UserRepo;
         private readonly SessionHelper sessionHelper;
@@ -64,7 +65,7 @@ namespace Controllers
         {
             await CheckSessionForUser();
 
-            var searchedUser = await UserRepo.ReadAsync(username);
+            var searchedUser = await UserRepo.ReadAsync(username, MessageLimit);
 
             if (searchedUser is null) return (ActionResult)await Get404Page();
 
@@ -180,7 +181,7 @@ namespace Controllers
             return new ContentResult {
                 ContentType = "text/html",
                 StatusCode = (int) Status200OK,
-                Content = BasicTemplater.GenerateTimeline(messages: await MessageRepo.ReadAllAsync(), timelineType.PUBLIC, user: user)
+                Content = BasicTemplater.GenerateTimeline(messages: await MessageRepo.ReadAllAsync(MessageLimit), timelineType.PUBLIC, user: user)
             };
         }
 
