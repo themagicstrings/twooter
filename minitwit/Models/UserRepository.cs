@@ -113,7 +113,7 @@ namespace Models
             return foundUser.user_id;
         }
 
-        public async Task<UserReadDTO> ReadAsync(string username)
+        public async Task<UserReadDTO> ReadAsync(string username, int noOfMessages = int.MaxValue)
         {
             var query = from u in context.users where u.username.Equals(username) select
                 new UserReadDTO {
@@ -128,13 +128,13 @@ namespace Models
                         text = m.text,
                         pub_date = m.pub_date,
                         flagged = m.flagged
-                    }).ToList()
+                    }).Take(noOfMessages).ToList()
                 };
  
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<List<UserReadDTO>> ReadAllAsync()
+        public async Task<List<UserReadDTO>> ReadAllAsync(int noOfMessages = int.MaxValue)
         {
             var query = from u in context.users select
                 new UserReadDTO {
@@ -148,13 +148,13 @@ namespace Models
                         text = m.text,
                         pub_date = m.pub_date,
                         flagged = m.flagged
-                    }).ToList()
+                    }).Take(noOfMessages).ToList()
                 };
 
             return await query.ToListAsync();
         }
 
-    public async Task<UserReadDTO> ReadAsync(int id)
+    public async Task<UserReadDTO> ReadAsync(int id, int noOfMessages = int.MaxValue)
     {
         var query = from u in context.users where u.user_id.Equals(id) select
             new UserReadDTO {
@@ -169,7 +169,7 @@ namespace Models
                     text = m.text,
                     pub_date = m.pub_date,
                     flagged = m.flagged
-                }).ToList()
+                }).Take(noOfMessages).ToList()
             };
 
         return await query.FirstOrDefaultAsync();
