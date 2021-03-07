@@ -10,6 +10,6 @@ namespace Models
         Task<MessageReadDTO> ReadAsync(int id);
         Task<int> CreateAsync(string message, string username);
         Task<int> DeleteAsync(int id);
-        Task<List<MessageReadDTO>> ReadAllAsync();
+        Task<List<MessageReadDTO>> ReadAllAsync(int noOfMessages = int.MaxValue);
     }
 }

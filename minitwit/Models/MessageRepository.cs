@@ -71,10 +71,9 @@ namespace Models
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<List<MessageReadDTO>> ReadAllAsync()
+        public async Task<List<MessageReadDTO>> ReadAllAsync(int noOfMessages = int.MaxValue)
         {
-            var query =
-                from message in context.messages
+            var query = from message in context.messages
                 select new MessageReadDTO {
                     id = message.message_id,
                     text = message.text,
@@ -88,8 +87,7 @@ namespace Models
                                  email = user.email
                              }).FirstOrDefault()
                 };
-
-            return await query.ToListAsync();
+            return await query.Take(noOfMessages).ToListAsync();
         }
     }
 }

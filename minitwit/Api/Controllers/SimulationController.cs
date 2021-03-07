@@ -129,9 +129,9 @@ namespace Controllers
         {
             await write_latest();
 
-            var messages = await MessageRepo.ReadAllAsync();
-            var texts = messages.Select(m => new {content = m.text, user = m.author.username});
             var noOfMessages = get_param_int("no", 100);
+            var messages = await MessageRepo.ReadAllAsync(noOfMessages);
+            var texts = messages.Select(m => new {content = m.text, user = m.author.username});
             var selectedMessages = texts.Take(noOfMessages);
 
             return new ContentResult {
@@ -156,9 +156,10 @@ namespace Controllers
         {
             await write_latest();
 
-            var allmessages = await MessageRepo.ReadAllAsync();
+            var user = await UserRepo.ReadAsync(username);
             var noOfMessages = get_param_int("no", 100);
-            var usermessages = (allmessages.Where(m => m.author.username == username).Select(m => new {content = m.text, user = m.author.username})).Take(noOfMessages).ToList();
+            var messages = user.messages.Take(noOfMessages);
+            var usermessages = (messages.Where(m => m.author.username == username).Select(m => new {content = m.text, user = m.author.username})).Take(noOfMessages).ToList();
 
             return new  ContentResult {
                 ContentType = "text/json",
