@@ -147,7 +147,7 @@ namespace Api
                     </form>");
 
       string toReturn = Layout(
-      title: "Sign In | MiniTwit",
+      title: "Sign In",
       body: sb.ToString()
       , user: user);
       clearNotifications();
@@ -175,7 +175,7 @@ namespace Api
                     </form>");
 
       string toReturn =  Layout(
-        title: "Sign Up | MiniTwit",
+        title: "Sign Up",
         body: sb.ToString(),
         user
       );
