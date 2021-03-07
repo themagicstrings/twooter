@@ -15,6 +15,7 @@ using Api;
 using System.Text.Json;
 using System.IO;
 using System.Text.RegularExpressions;
+using static Api.TwooterOptions;
 
 namespace Controllers
 {
@@ -131,8 +132,7 @@ namespace Controllers
 
             var noOfMessages = get_param_int("no", 100);
             var messages = await MessageRepo.ReadAllAsync(noOfMessages);
-            var texts = messages.Select(m => new {content = m.text, user = m.author.username});
-            var selectedMessages = texts.Take(noOfMessages);
+            var selectedMessages = messages.Select(m => new {content = m.text, user = m.author.username});
 
             return new ContentResult {
                 ContentType = "text/json",
@@ -156,15 +156,14 @@ namespace Controllers
         {
             await write_latest();
 
-            var user = await UserRepo.ReadAsync(username);
-            var noOfMessages = get_param_int("no", 100);
-            var messages = user.messages.Take(noOfMessages);
-            var usermessages = (messages.Where(m => m.author.username == username).Select(m => new {content = m.text, user = m.author.username})).Take(noOfMessages).ToList();
+            var noOfMessages = get_param_int("no", MessageLimit);
+            var user = await UserRepo.ReadAsync(username, noOfMessages);
+            var messages = user.messages;
 
             return new  ContentResult {
                 ContentType = "text/json",
                 StatusCode = Status200OK,
-                Content = JsonSerializer.Serialize(usermessages)
+                Content = JsonSerializer.Serialize(messages.ToList())
             };
         }
 
@@ -173,8 +172,8 @@ namespace Controllers
         {
             await write_latest();
 
-            var noOfFollows = get_param_int("no", 100);
-            var user = await UserRepo.ReadAsync(username);
+            var noOfFollows = get_param_int("no", MessageLimit);
+            var user = await UserRepo.ReadAsync(username, MessageLimit);
             var follow = user.following.Take(noOfFollows);
 
             return new ContentResult {
