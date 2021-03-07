@@ -30,7 +30,7 @@ namespace Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<MinitwitContext>(o => o.UseInMemoryDatabase("minitwit"));
-            //services.AddDbContext<MinitwitContext>(o => o.UseSqlServer(@"Server=localhost;Database=Minitwit;Trusted_Connection=True"));
+            // services.AddDbContext<MinitwitContext>(o => o.UseSqlServer(System.Environment.GetEnvironmentVariable("CONNECTION_STRING")));
             services.AddScoped<IMinitwitContext, MinitwitContext>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
@@ -56,6 +56,7 @@ namespace Api
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<MinitwitContext>();
                 context.Database.EnsureCreated();
+                // context.Database.Migrate();
             }
 
             app.UseDeveloperExceptionPage();
