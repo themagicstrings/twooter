@@ -53,15 +53,16 @@ namespace Models
         {
             var query =
                 from message in context.messages
+                orderby message.pub_date descending
                 where message.message_id == id
                 select new MessageReadDTO {
                     id = message.message_id,
                     text = message.text,
                     pub_date = message.pub_date,
                     flagged = message.flagged,
-                    author = (from user in context.users 
-                             where user.user_id == message.User.user_id 
-                             select new UserReadDTO { 
+                    author = (from user in context.users
+                             where user.user_id == message.User.user_id
+                             select new UserReadDTO {
                                  user_id = user.user_id,
                                  username = user.username,
                                  email = user.email
@@ -74,14 +75,15 @@ namespace Models
         public async Task<List<MessageReadDTO>> ReadAllAsync(int noOfMessages = int.MaxValue)
         {
             var query = from message in context.messages
+                orderby message.pub_date descending
                 select new MessageReadDTO {
                     id = message.message_id,
                     text = message.text,
                     pub_date = message.pub_date,
                     flagged = message.flagged,
-                    author = (from user in context.users 
-                             where user.user_id == message.User.user_id 
-                             select new UserReadDTO { 
+                    author = (from user in context.users
+                             where user.user_id == message.User.user_id
+                             select new UserReadDTO {
                                  user_id = user.user_id,
                                  username = user.username,
                                  email = user.email

@@ -9,6 +9,7 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 using System.Web;
 using System;
 using Api;
+using static Api.TwooterOptions;
 
 namespace Controllers
 {
@@ -16,7 +17,6 @@ namespace Controllers
     [Route("/")]
     public class MinitwitController : ControllerBase
     {
-        private readonly int MessageLimit = 100;
         private readonly IMessageRepository MessageRepo;
         private readonly IUserRepository UserRepo;
         private readonly SessionHelper sessionHelper;
@@ -88,7 +88,7 @@ namespace Controllers
 
             var exist = await UserRepo.ReadAsync(user.Username);
 
-            if(exist is not null) 
+            if(exist is not null)
             {
                 return generateBadRequestRegister("The username is already taken");
             }
@@ -111,7 +111,7 @@ namespace Controllers
             return toReturn;
         }
 
-        private static ContentResult generateBadRequestLogin(string message) 
+        private static ContentResult generateBadRequestLogin(string message)
         {
             BasicTemplater.errors.Add(message);
                 var toReturn = new ContentResult {

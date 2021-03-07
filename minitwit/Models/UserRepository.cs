@@ -122,15 +122,19 @@ namespace Models
                     email = u.email,
                     followers = (context.follows.Where(f => f.Followed.username == username).Select(f => f.Follower.username).ToList()),
                     following = (context.follows.Where(f => f.Follower.username == username).Select(f => f.Followed.username).ToList()),
-                    messages = (from m in u.Messages select new MessageReadDTO{
-                        author = new UserReadDTO {username = u.username},
-                        id = m.message_id,
-                        text = m.text,
-                        pub_date = m.pub_date,
-                        flagged = m.flagged
-                    }).Take(noOfMessages).ToList()
+                    messages = (
+                        from m in u.Messages
+                        orderby m.pub_date descending
+                        select new MessageReadDTO{
+                            author = new UserReadDTO {username = u.username},
+                            id = m.message_id,
+                            text = m.text,
+                            pub_date = m.pub_date,
+                            flagged = m.flagged
+                        }
+                    ).Take(noOfMessages).ToList()
                 };
- 
+
             return await query.FirstOrDefaultAsync();
         }
 
@@ -143,7 +147,10 @@ namespace Models
                     email = u.email,
                     followers = (u.FollowedBy.Select(f => f.Followed.username)).ToList(),
                     following = (u.Following.Select(f => f.Follower.username)).ToList(),
-                    messages = (from m in u.Messages select new MessageReadDTO{
+                    messages = (
+                        from m in u.Messages
+                        orderby m.pub_date descending
+                        select new MessageReadDTO{
                         id = m.message_id,
                         text = m.text,
                         pub_date = m.pub_date,
@@ -163,13 +170,17 @@ namespace Models
                 email = u.email,
                 followers = (context.follows.Where(f => f.Followed.username == u.username).Select(f => f.Follower.username).ToList()),
                 following = (context.follows.Where(f => f.Follower.username == u.username).Select(f => f.Followed.username).ToList()),
-                messages = (from m in u.Messages select new MessageReadDTO{
-                    author = new UserReadDTO {username = u.username},
-                    id = m.message_id,
-                    text = m.text,
-                    pub_date = m.pub_date,
-                    flagged = m.flagged
-                }).Take(noOfMessages).ToList()
+                messages = (
+                    from m in u.Messages
+                    orderby m.pub_date descending
+                    select new MessageReadDTO{
+                        author = new UserReadDTO {username = u.username},
+                        id = m.message_id,
+                        text = m.text,
+                        pub_date = m.pub_date,
+                        flagged = m.flagged
+                    }
+                ).Take(noOfMessages).ToList()
             };
 
         return await query.FirstOrDefaultAsync();
