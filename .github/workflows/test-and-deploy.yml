@@ -10,7 +10,7 @@ on:
     branches: [ main ]
   # Manual trigger
   workflow_dispatch:
-  
+
 # A workflow run is made up of one or more jobs.
 jobs:
   test:
@@ -34,11 +34,11 @@ jobs:
 # Jobs run in parallel by default,
 # the publish-docker-image job is configured only to run if any tests fail, by using:
 # needs: test
-      
+
   publish-docker-image:
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/main'
+    # if: github.ref == 'refs/heads/main'
     steps:
     - uses: actions/checkout@v2
     - name: Dotnet Publish
@@ -59,11 +59,11 @@ jobs:
         docker build -t twooter .
         docker tag twooter docker.pkg.github.com/themagicstrings/twooter/twooter
         docker push docker.pkg.github.com/themagicstrings/twooter/twooter
-        
+
   deploy:
     needs: publish-docker-image
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    # if: github.ref == 'refs/heads/main'
     steps:
       - name: Configure SSH
         # Retrieve private SSH key from github secrets
@@ -91,37 +91,23 @@ jobs:
           ssh staging "
             apt update
             apt install -y docker.io
-            
+
             docker login https://docker.pkg.github.com -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
             docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest
 
             docker stop twooter-instance || true
             docker rm twooter-instance || true
             docker rmi docker.pkg.github.com/themagicstrings/twooter/twooter:latest || true
-            
-            docker run -d --rm -p 443:443 -p 80:80 --name twooter-instance docker.pkg.github.com/themagicstrings/twooter/twooter:latest -e ASPNETCORE_URLS=\"http://localhost:80;https://localhost:443\"
+
+            docker run
+              -d  \
+              --rm \
+              -p 443:443 \
+              -p 80:80 \
+              --name twooter-instance \
+              -e ASPNETCORE_URLS=\"http://localhost:80;https://localhost:443\ \
+              -e \"DB_PASSWORD=${{ secrets.DB_PASSWORD }}\" \
+              --net twooter-network \
+              docker.pkg.github.com/themagicstrings/twooter/twooter:latest
+            "
           "
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
