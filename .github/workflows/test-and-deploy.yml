@@ -101,7 +101,6 @@ jobs:
 
             docker run \
               -d  \
-              --rm \
               -p 443:443 \
               -p 80:80 \
               --name twooter-instance \
