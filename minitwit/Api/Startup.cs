@@ -29,8 +29,10 @@ namespace Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<MinitwitContext>(o => o.UseInMemoryDatabase("minitwit"));
-            // services.AddDbContext<MinitwitContext>(o => o.UseSqlServer(System.Environment.GetEnvironmentVariable("CONNECTION_STRING")));
+            var dbpassword = System.Environment.GetEnvironmentVariable("DB_PASSWORD");
+            var connectionString = "Server=dbserver.twooter-network,1433;Database=Minitwit;Trusted_Connection=True;Integrated Security=false;User Id=SA;Password=" + dbpassword;
+
+            services.AddDbContext<MinitwitContext>(o => o.UseSqlServer(connectionString));
             services.AddScoped<IMinitwitContext, MinitwitContext>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
@@ -55,8 +57,7 @@ namespace Api
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<MinitwitContext>();
-                context.Database.EnsureCreated();
-                // context.Database.Migrate();
+                context.Database.Migrate();
             }
 
             app.UseDeveloperExceptionPage();
