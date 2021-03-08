@@ -112,10 +112,7 @@ namespace Api
 
           var email = msg.author.email ?? "";
 
-          var memCache = new GravatarProfileMemoryCache();
-          var library = new GravatarLibrary(memCache);
-
-          var bytes = new MD5CryptoServiceProvider().ComputeHash(Encoding.ASCII.GetBytes(email));
+          var bytes = new MD5CryptoServiceProvider().ComputeHash(Encoding.ASCII.GetBytes(email.ToLower()));
           var gravatarEmailHash = new StringBuilder();
 
           foreach (var b in bytes) gravatarEmailHash.Append(b.ToString("x2"));

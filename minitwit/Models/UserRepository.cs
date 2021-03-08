@@ -126,7 +126,7 @@ namespace Models
                         from m in u.Messages
                         orderby m.pub_date descending
                         select new MessageReadDTO{
-                            author = new UserReadDTO {username = u.username},
+                            author = new UserReadDTO {username = u.username, email = u.email },
                             id = m.message_id,
                             text = m.text,
                             pub_date = m.pub_date,
@@ -174,7 +174,7 @@ namespace Models
                     from m in u.Messages
                     orderby m.pub_date descending
                     select new MessageReadDTO{
-                        author = new UserReadDTO {username = u.username},
+                        author = new UserReadDTO {username = u.username, email = u.email},
                         id = m.message_id,
                         text = m.text,
                         pub_date = m.pub_date,
