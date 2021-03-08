@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using Shared;
 using System.Text;
-using System.Linq;
 using System;
+using System.Security.Cryptography;
 
 namespace Api
 {
@@ -40,7 +40,7 @@ namespace Api
 
       sb.Append(@"</div>");
 
-      
+
       sb.Append($@"
   <div class=body>
   {body}
@@ -67,12 +67,12 @@ namespace Api
       }
       if (errors.Count > 0)
       {
-        
+
         foreach (var error in errors)
         {
           sb.Append($@"<div class=""error""><strong>Error: </strong>{error}</div>");
         }
-        
+
       }
       return sb;
     }
@@ -109,10 +109,20 @@ namespace Api
         {
           string optionalZero = msg.pub_date.Month < 10 ? "0" : "";
           var reformattedDateTime = "- " + msg.pub_date.Year + "-" + optionalZero + msg.pub_date.Month + "-" + msg.pub_date.Day + " @ " + msg.pub_date.Hour + ":" + msg.pub_date.Minute;
-          // sb.Append($"<p>{msg.author.username} [{msg.pub_date}]: {msg.text}</p>");
+
+          var email = msg.author.email ?? "";
+
+          var memCache = new GravatarProfileMemoryCache();
+          var library = new GravatarLibrary(memCache);
+
+          var bytes = new MD5CryptoServiceProvider().ComputeHash(Encoding.ASCII.GetBytes(email));
+          var gravatarEmailHash = new StringBuilder();
+
+          foreach (var b in bytes) gravatarEmailHash.Append(b.ToString("x2"));
+
           sb.Append($@"
           <li>
-
+            <img src=""https://www.gravatar.com/avatar/{gravatarEmailHash}?d=identicon&s=48"">
             <p>
               <strong>
                 <a href=""/{msg.author.username}"">{msg.author.username}</a>
