@@ -104,7 +104,7 @@ namespace Controllers
             if(exist is not null) return BadRequest("The username is already taken");
 
             await UserRepo.CreateAsync(new UserCreateDTO {Username = user.Username, Email = user.Email, Password1 = user.Pwd, Password2 = user.Pwd});
-            return Ok("You were succesfully registered and can login now");
+            return NoContent();
         }
 
         [HttpGet("/sim/{username}")]
@@ -148,7 +148,7 @@ namespace Controllers
 
             var id = await MessageRepo.CreateAsync(message.Content, username);
             if(id == -1) return BadRequest("Message could not be recorded");
-            return Ok("Message recorded");
+            return NoContent();
         }
 
         [HttpGet("/msgs/{username}")]
@@ -158,6 +158,9 @@ namespace Controllers
 
             var noOfMessages = get_param_int("no", MessageLimit);
             var user = await UserRepo.ReadAsync(username, noOfMessages);
+
+            if (user is null) return NotFound("No such user");
+
             var messages = user.messages;
 
             return new  ContentResult {
@@ -196,19 +199,23 @@ namespace Controllers
             var method = match.Groups[1].Value;
             var parameter = match.Groups[2].Value;
 
+            int res = 0;
+
             switch(method)
             {
                 case "follow":
-                    await UserRepo.FollowAsync(username, parameter);
+                    res = await UserRepo.FollowAsync(username, parameter);
                     break;
                 case "unfollow":
-                    await UserRepo.UnfollowAsync(username, parameter);
+                    res = await UserRepo.UnfollowAsync(username, parameter);
                     break;
                 default:
                     return BadRequest("Not a supported method");
             }
 
-            return Ok("Succes");
+            if (res != 0) return NotFound();
+
+            return NoContent();
         }
     }
 }
