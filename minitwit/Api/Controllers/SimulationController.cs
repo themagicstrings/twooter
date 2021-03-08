@@ -162,11 +162,12 @@ namespace Controllers
             if (user is null) return NotFound("No such user");
 
             var messages = user.messages;
+            var selectedMessages = messages.Select(m => new {content = m.text, user = m.author.username});
 
             return new  ContentResult {
                 ContentType = "text/json",
                 StatusCode = Status200OK,
-                Content = JsonSerializer.Serialize(messages.ToList())
+                Content = JsonSerializer.Serialize(selectedMessages)
             };
         }
 
