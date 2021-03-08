@@ -104,7 +104,7 @@ jobs:
               -p 443:443 \
               -p 80:80 \
               --name twooter-instance \
-              -e \"ASPNETCORE_URLS=http://localhost:80;https://localhost:443\" \
+              -e \"ASPNETCORE_URLS=http://localhost:80;\" \
               -e \"DB_PASSWORD=${{ secrets.DB_PASSWORD }}\" \
               --net twooter-network \
               docker.pkg.github.com/themagicstrings/twooter/twooter:latest
