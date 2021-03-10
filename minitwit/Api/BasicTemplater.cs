@@ -4,6 +4,7 @@ using Shared;
 using System.Text;
 using System;
 using System.Security.Cryptography;
+using System.Linq;
 
 namespace Api
 {
@@ -78,6 +79,11 @@ namespace Api
       return sb;
     }
 
+    private static bool userFollows(UserReadDTO user, string followedUserName) {
+      var follows = user.following.Where(a => a == followedUserName).Select(a => a);
+      return follows.Count() > 0;
+    }
+
     public static string GenerateTimeline(List<MessageReadDTO> messages, timelineType type, UserReadDTO user = null, string otherPersonUsername = "")
     {
       bool loggedin = user != null;
@@ -87,7 +93,28 @@ namespace Api
       StringBuilder sb = new StringBuilder();
 
       if (type == timelineType.PUBLIC) sb.Append("<h2>Public Timeline</h2>");
-      else if (type == timelineType.OTHER) sb.Append($"<h2>{otherPersonUsername}'s Timeline</h2>");
+      else if (type == timelineType.OTHER) { 
+        sb.Append($"<h2>{otherPersonUsername}'s Timeline</h2>");
+        if (user != null) {
+          if (otherPersonUsername == user.username) {
+            sb.Append(@"<div class=""followstatus"">This is you!</div>");
+          } else {
+            if (userFollows(user, otherPersonUsername)) {
+              sb.Append($@"<div class=""followstatus"">You are currently following this user.
+              <a class=""follow"" href=""/{otherPersonUsername}/unfollow"">Follow user</a>
+              .
+              </div>
+              ");
+            } else {
+              sb.Append($@"<div class=""followstatus"">You are not yet following this user yet.
+              <a class=""follow"" href=""/{otherPersonUsername}/follow"">Follow user</a>
+              .
+              </div>
+              ");
+            }
+          }
+        }
+      }
       else if (type == timelineType.SELF) sb.Append($"<h2>My Timeline</h2>");
 
       sb = addNotifications(sb);
