@@ -17,22 +17,13 @@ namespace Entities
         public MinitwitContext(DbContextOptions<MinitwitContext> options)
         : base(options) {}
 
-        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        // {
-        //     if(!optionsBuilder.IsConfigured)
-        //     {
-        //         var dbpassword = System.Environment.GetEnvironmentVariable("DB_PASSWORD");
-        //         var connectionString = "Server=dbserver.twooter-network,1433;Database=Minitwit;Trusted_Connection=True;Integrated Security=false;User Id=SA;Password=" + dbpassword;
-        //         optionsBuilder.UseSqlServer(connectionString);
-        //     }
-        // }
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if(!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseInMemoryDatabase("minitwit");
-                //optionsBuilder.UseSqlServer(@"Server=localhost;Database=Minitwit;Trusted_Connection=True");
+                var dbpassword = System.Environment.GetEnvironmentVariable("DB_PASSWORD");
+                var connectionString = "Server=dbserver.twooter-network,1433;Database=Minitwit;Trusted_Connection=True;Integrated Security=false;User Id=SA;Password=" + dbpassword;
+                optionsBuilder.UseSqlServer(connectionString);
             }
         }
 
