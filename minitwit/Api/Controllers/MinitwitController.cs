@@ -60,8 +60,8 @@ namespace Controllers
         }
 
         // Displays specific users messages
-        [HttpGet("{username}")]
-        public async Task<ActionResult> GetUserAsync(string username)
+        [HttpGet("/{username}")]
+        public async Task<ActionResult> GetUserAsync([FromRoute] string username)
         {
             await CheckSessionForUser();
 
