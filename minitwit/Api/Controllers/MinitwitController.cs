@@ -122,16 +122,6 @@ namespace Controllers
             return toReturn;
         }
 
-        private async Task<ContentResult> generateOkFollow(string message, string username) {
-            BasicTemplater.flashes.Add(message);
-                var toReturn = new ContentResult {
-                    ContentType = "text/html",
-                    StatusCode = Status200OK,
-                    Content = BasicTemplater.GenerateTimeline(messages: await MessageRepo.ReadAllAsync(MessageLimit), timelineType.OTHER, user: user, otherPersonUsername: username)
-                };
-            return toReturn;
-        }
-
         // Displays register page
         [HttpGet("/sign_up")]
         public async Task<IActionResult> GetRegisterPage()
@@ -153,7 +143,6 @@ namespace Controllers
 
             if (id == -1) return BadRequest();
             return Redirect("/");
-            //return Ok("Your message was recorded");
         }
 
 
@@ -166,11 +155,12 @@ namespace Controllers
             var res = await UserRepo.FollowAsync(user.username, username);
 
             if (res != 0) return BadRequest();
-            return await generateOkFollow($@"You are now following ""{username}""", username);
+            BasicTemplater.flashes.Add($@"You are now following ""{username}""");
+            return Redirect($"/{username}");
         }
 
         // Attemps to unfollow a user
-        [HttpDelete("/{username}/unfollow")]
+        [HttpPost("/{username}/unfollow")]
         public async Task<IActionResult> UnfollowUserAsync([FromRoute] string username)
         {
             await CheckSessionForUser();
@@ -179,7 +169,8 @@ namespace Controllers
 
             if (res == -3) return (ActionResult)await Get404Page();
             if (res != 0) return BadRequest();
-            return await generateOkFollow($@"You are no longer following ""{username}""", username);
+            BasicTemplater.flashes.Add($@"You are no longer following ""{username}""");
+            return Redirect($"/{username}");
         }
 
         // Displays all messages

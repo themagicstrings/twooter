@@ -72,6 +72,16 @@ div.page div.navigation {
   cursor: pointer;
 }
 
+.nav_b {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  font: inherit;
+  font-weight: normal;
+  cursor: pointer;
+  padding: 0;
+}
+
 div.page div.navigation a,
 div.page div.navigation .nav_a
  {
