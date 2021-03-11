@@ -99,16 +99,15 @@ namespace Api
           if (otherPersonUsername == user.username) {
             sb.Append(@"<div class=""followstatus"">This is you!</div>");
           } else {
-            if (userFollows(user, otherPersonUsername)) {
+            if (/*userFollows(user, otherPersonUsername)*/ user.following.Contains(otherPersonUsername)) {
               sb.Append($@"<div class=""followstatus"">You are currently following this user.
-              <a class=""follow"" href=""/{otherPersonUsername}/unfollow"">Follow user</a>
-              .
+
+              <form method=post action=/{otherPersonUsername}/unfollow  style=""display: inline-block""><button class=nav_a type=submit>Unfollow user</button></form>
               </div>
               ");
             } else {
               sb.Append($@"<div class=""followstatus"">You are not yet following this user yet.
-              <a class=""follow"" href=""/{otherPersonUsername}/follow"">Follow user</a>
-              .
+              <form method=post action=/{otherPersonUsername}/follow  style=""display: inline-block""><button class=nav_a type=submit>Follow user</button></form>
               </div>
               ");
             }
