@@ -91,7 +91,6 @@ namespace Api
       messages.Reverse();
 
       StringBuilder sb = new StringBuilder();
-
       if (type == timelineType.PUBLIC) sb.Append("<h2>Public Timeline</h2>");
       else if (type == timelineType.OTHER) { 
         sb.Append($"<h2>{otherPersonUsername}'s Timeline</h2>");
@@ -102,12 +101,12 @@ namespace Api
             if (/*userFollows(user, otherPersonUsername)*/ user.following.Contains(otherPersonUsername)) {
               sb.Append($@"<div class=""followstatus"">You are currently following this user.
 
-              <form method=post action=/{otherPersonUsername}/unfollow  style=""display: inline-block""><button class=nav_a type=submit>Unfollow user</button></form>
+              <form method=post action=""/{otherPersonUsername}/unfollow""  style=""display: inline-block""><button class=nav_a type=submit>Unfollow user</button></form>
               </div>
               ");
             } else {
               sb.Append($@"<div class=""followstatus"">You are not yet following this user yet.
-              <form method=post action=/{otherPersonUsername}/follow  style=""display: inline-block""><button class=nav_a type=submit>Follow user</button></form>
+              <form method=post action=""/{otherPersonUsername}/follow""  style=""display: inline-block""><button class=nav_a type=submit>Follow user</button></form>
               </div>
               ");
             }
