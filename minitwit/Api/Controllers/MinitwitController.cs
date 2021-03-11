@@ -190,7 +190,8 @@ namespace Controllers
         [HttpPost("/login")]
         public async Task<IActionResult> PostLogin([FromForm] UserLoginDTO loginDTO)
         {
-            if (loginDTO.Username is null)
+            string hash;
+            if (loginDTO.Username is null || (hash = await UserRepo.ReadPWHash(loginDTO.Username)) is null)
             {
                 return generateBadRequestLogin("Invalid username");
             }
@@ -199,8 +200,6 @@ namespace Controllers
             {
                 return generateBadRequestLogin("Invalid password");
             }
-
-            var hash = await UserRepo.ReadPWHash(loginDTO.Username);
 
             var hashedpwd = UserRepo.HashPassword(loginDTO.Password);
 
