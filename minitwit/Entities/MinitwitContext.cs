@@ -22,7 +22,9 @@ namespace Entities
             if(!optionsBuilder.IsConfigured)
             {
                 var dbpassword = System.Environment.GetEnvironmentVariable("DB_PASSWORD");
-                var connectionString = "Server=dbserver.twooter-network,1433;Database=Minitwit;Trusted_Connection=True;Integrated Security=false;User Id=SA;Password=" + dbpassword;
+                var dbip = System.Environment.GetEnvironmentVariable("DB_IP");
+                var connectionString = $"Server={dbip};Database=Minitwit;Trusted_Connection=True;Integrated Security=false;User Id=SA;Password={dbpassword}";
+
                 optionsBuilder.UseSqlServer(connectionString);
             }
         }
