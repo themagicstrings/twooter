@@ -104,7 +104,7 @@ jobs:
               -p 443:443 \
               -p 80:80 \
               --name twooter-instance \
+              -e \"DB_IP=${{ secrets.DB_IP }}\" \
               -e \"DB_PASSWORD=${{ secrets.DB_PASSWORD }}\" \
-              --net twooter-network \
               docker.pkg.github.com/themagicstrings/twooter/twooter:latest
           "

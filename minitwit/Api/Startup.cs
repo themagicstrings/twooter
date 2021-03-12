@@ -30,7 +30,8 @@ namespace Api
         public void ConfigureServices(IServiceCollection services)
         {
             var dbpassword = System.Environment.GetEnvironmentVariable("DB_PASSWORD");
-            var connectionString = "Server=dbserver.twooter-network,1433;Database=Minitwit;Trusted_Connection=True;Integrated Security=false;User Id=SA;Password=" + dbpassword;
+            var dbip = System.Environment.GetEnvironmentVariable("DB_IP");
+            var connectionString = $"Server={dbip};Database=Minitwit;Trusted_Connection=True;Integrated Security=false;User Id=SA;Password={dbpassword}";
 
             services.AddDbContext<MinitwitContext>(o => o.UseSqlServer(connectionString));
             services.AddScoped<IMinitwitContext, MinitwitContext>();
@@ -57,7 +58,6 @@ namespace Api
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<MinitwitContext>();
-                context.Database.EnsureCreated();
                 context.Database.Migrate();
             }
 
