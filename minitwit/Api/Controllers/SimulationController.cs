@@ -126,12 +126,11 @@ namespace Controllers
         }
 
         [HttpGet("/msgs")]
-        public async Task<IActionResult> messages()
+        public async Task<IActionResult> messages([FromQuery] int no = 100)
         {
             await write_latest();
 
-            var noOfMessages = get_param_int("no", 100);
-            var messages = await MessageRepo.ReadAllAsync(noOfMessages);
+            var messages = await MessageRepo.ReadAllAsync(no);
             var selectedMessages = messages.Select(m => new {content = m.text, user = m.author.username});
 
             return new ContentResult {
@@ -152,12 +151,11 @@ namespace Controllers
         }
 
         [HttpGet("/msgs/{username}")]
-        public async Task<IActionResult> messages_per_user(string username)
+        public async Task<IActionResult> messages_per_user(string username, [FromQuery] int no = 100)
         {
             await write_latest();
 
-            var noOfMessages = get_param_int("no", MessageLimit);
-            var user = await UserRepo.ReadAsync(username, noOfMessages);
+            var user = await UserRepo.ReadAsync(username, no);
 
             if (user is null) return NotFound("No such user");
 
@@ -172,13 +170,12 @@ namespace Controllers
         }
 
         [HttpGet("/fllws/{username}")]
-        public async Task<IActionResult> hfollow(string username)
+        public async Task<IActionResult> hfollow(string username, [FromQuery] int no = 100)
         {
             await write_latest();
 
-            var noOfFollows = get_param_int("no", MessageLimit);
             var user = await UserRepo.ReadAsync(username, MessageLimit);
-            var follow = user.following.Take(noOfFollows);
+            var follow = user.following.Take(no);
 
             return new ContentResult {
                 ContentType = "text/json",
@@ -194,24 +191,21 @@ namespace Controllers
 
             var sr = new StreamReader( Request.Body );
             var bodystring = await sr.ReadToEndAsync();
-            string pattern = @"{""(.+?)"": ""(.+?)""}";
-            var match = Regex.Matches(bodystring, pattern)[0];
-
-            var method = match.Groups[1].Value;
-            var parameter = match.Groups[2].Value;
+            var body = JsonSerializer.Deserialize<FollowDTO>(bodystring);
 
             int res = 0;
 
-            switch(method)
+            if (body.unfollow != null)
             {
-                case "follow":
-                    res = await UserRepo.FollowAsync(username, parameter);
-                    break;
-                case "unfollow":
-                    res = await UserRepo.UnfollowAsync(username, parameter);
-                    break;
-                default:
-                    return BadRequest("Not a supported method");
+                res = await UserRepo.UnfollowAsync(username, body.unfollow);
+            }
+            else if (body.follow != null)
+            {
+                res = await UserRepo.FollowAsync(username, body.follow);
+            }
+            else 
+            {
+                return BadRequest("Not a supported method");
             }
 
             if (res != 0) return NotFound();
