@@ -194,24 +194,25 @@ namespace Controllers
 
             var sr = new StreamReader( Request.Body );
             var bodystring = await sr.ReadToEndAsync();
-            string pattern = @"""(follow|unfollow)"": ""(.+?)""";
-            var match = Regex.Matches(bodystring, pattern)[0];
-
-            var method = match.Groups[1].Value;
-            var parameter = match.Groups[2].Value;
+            ReadOnlySpan<byte> getBytes(string input)
+            {
+                return new ReadOnlySpan<byte>(Encoding.ASCII.GetBytes(bodystring));
+            }
+            var body = JsonSerializer.Deserialize<FollowDTO>(getBytes(bodystring));
 
             int res = 0;
 
-            switch(method)
+            if (body.unfollow != null)
             {
-                case "follow":
-                    res = await UserRepo.FollowAsync(username, parameter);
-                    break;
-                case "unfollow":
-                    res = await UserRepo.UnfollowAsync(username, parameter);
-                    break;
-                default:
-                    return BadRequest("Not a supported method");
+                res = await UserRepo.UnfollowAsync(username, body.unfollow);
+            }
+            else if (body.follow != null)
+            {
+                res = await UserRepo.FollowAsync(username, body.follow);
+            }
+            else 
+            {
+                return BadRequest("Not a supported method");
             }
 
             if (res != 0) return NotFound();
