@@ -194,8 +194,8 @@ namespace Controllers
 
             var sr = new StreamReader( Request.Body );
             var bodystring = await sr.ReadToEndAsync();
-            string pattern = @"{""(.+?)"": ""(.+?)""}";
-            var match = Regex.Matches(bodystring, pattern, RegexOptions.Singleline)[0];
+            string pattern = @"""(follow|unfollow)"": ""(.+?)""";
+            var match = Regex.Matches(bodystring, pattern)[0];
 
             var method = match.Groups[1].Value;
             var parameter = match.Groups[2].Value;
