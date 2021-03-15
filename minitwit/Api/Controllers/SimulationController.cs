@@ -126,12 +126,11 @@ namespace Controllers
         }
 
         [HttpGet("/msgs")]
-        public async Task<IActionResult> messages()
+        public async Task<IActionResult> messages([FromQuery] int no = 100)
         {
             await write_latest();
 
-            var noOfMessages = get_param_int("no", 100);
-            var messages = await MessageRepo.ReadAllAsync(noOfMessages);
+            var messages = await MessageRepo.ReadAllAsync(no);
             var selectedMessages = messages.Select(m => new {content = m.text, user = m.author.username});
 
             return new ContentResult {
@@ -152,12 +151,11 @@ namespace Controllers
         }
 
         [HttpGet("/msgs/{username}")]
-        public async Task<IActionResult> messages_per_user(string username)
+        public async Task<IActionResult> messages_per_user(string username, [FromQuery] int no = 100)
         {
             await write_latest();
 
-            var noOfMessages = get_param_int("no", MessageLimit);
-            var user = await UserRepo.ReadAsync(username, noOfMessages);
+            var user = await UserRepo.ReadAsync(username, no);
 
             if (user is null) return NotFound("No such user");
 
@@ -172,13 +170,12 @@ namespace Controllers
         }
 
         [HttpGet("/fllws/{username}")]
-        public async Task<IActionResult> hfollow(string username)
+        public async Task<IActionResult> hfollow(string username, [FromQuery] int no = 100)
         {
             await write_latest();
 
-            var noOfFollows = get_param_int("no", MessageLimit);
             var user = await UserRepo.ReadAsync(username, MessageLimit);
-            var follow = user.following.Take(noOfFollows);
+            var follow = user.following.Take(no);
 
             return new ContentResult {
                 ContentType = "text/json",
@@ -194,11 +191,7 @@ namespace Controllers
 
             var sr = new StreamReader( Request.Body );
             var bodystring = await sr.ReadToEndAsync();
-            ReadOnlySpan<byte> getBytes(string input)
-            {
-                return new ReadOnlySpan<byte>(Encoding.ASCII.GetBytes(bodystring));
-            }
-            var body = JsonSerializer.Deserialize<FollowDTO>(getBytes(bodystring));
+            var body = JsonSerializer.Deserialize<FollowDTO>(bodystring);
 
             int res = 0;
 
