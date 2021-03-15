@@ -160,7 +160,11 @@ namespace Models
 
             return await query.ToListAsync();
         }
-
+    public int GetTotalUsers()
+    {
+        var query = (from u in context.users select  u.user_id).Count();
+        return query;    
+    }
     public async Task<UserReadDTO> ReadAsync(int id, int noOfMessages = int.MaxValue)
     {
         var query = from u in context.users where u.user_id.Equals(id) select

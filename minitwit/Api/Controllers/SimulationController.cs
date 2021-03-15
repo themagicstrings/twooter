@@ -104,6 +104,7 @@ namespace Controllers
             if(exist is not null) return BadRequest("The username is already taken");
 
             await UserRepo.CreateAsync(new UserCreateDTO {Username = user.Username, Email = user.Email, Password1 = user.Pwd, Password2 = user.Pwd});
+            MinitwitController.TotalUsers.IncTo(UserRepo.GetTotalUsers());
             return NoContent();
         }
 

@@ -10,7 +10,7 @@ using System.Web;
 using System;
 using Api;
 using static Api.TwooterOptions;
-
+using Prometheus;
 namespace Controllers
 {
     [ApiController]
@@ -21,14 +21,15 @@ namespace Controllers
         private readonly IUserRepository UserRepo;
         private readonly SessionHelper sessionHelper;
         private UserReadDTO user = null;
-
+        public static readonly Gauge TotalUsers = Metrics.CreateGauge("Minitwit_users","Total number of users on the platform");
         public MinitwitController(IMessageRepository msgrepo, IUserRepository usrrepo)
         {
             this.MessageRepo = msgrepo;
             this.UserRepo = usrrepo;
             this.sessionHelper = new SessionHelper(() => HttpContext.Session);
+            TotalUsers.IncTo(UserRepo.GetTotalUsers());
         }
-
+     
         private async Task CheckSessionForUser() {
 
             if (int.TryParse(sessionHelper.GetString("user_id"), out var userid)) {
@@ -96,6 +97,7 @@ namespace Controllers
 
             await UserRepo.CreateAsync(user);
             BasicTemplater.flashes.Add("You were successfully registered and can login now");
+            TotalUsers.IncTo(UserRepo.GetTotalUsers());
             return Redirect("/login");
             //return Ok("You were succesfully registered and can login now");
         }
