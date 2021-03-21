@@ -15,6 +15,6 @@ jobs:
         uses: microsoft/infersharpaction@v1.0
         id: runinfersharp
         with:
-          binary-path: '/minitwit/Api/bin/Debug'
+          binary-path: './minitwit/Api/bin/Debug'
       - name: Infer# analysis results
         run: echo "${{ steps.runinfersharp.outputs.results }}"
