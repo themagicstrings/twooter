@@ -1,0 +1,19 @@
+name: Infer# Analysis
+on:
+  push: 
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  analyse:
+    name: Infer#
+    runs-on: windows-latest
+    - name: Run Infer#
+      uses: microsoft/infersharpaction@v1.0
+      id: runinfersharp
+      with:
+        binary-path: '/minitwit/Api/bin/Debug'
+    - name: Infer# analysis results
+      run: echo "${{ steps.runinfersharp.outputs.results }}"
