@@ -167,7 +167,7 @@ namespace Models.Test
         {
             var result = await repo.FollowAsync("nonuser1", "olduser1");
 
-            Assert.Equal(-3, result);
+            Assert.Equal(-2, result);
         }
 
         [Fact]
@@ -211,7 +211,7 @@ namespace Models.Test
         {
             var result = await repo.UnfollowAsync("olduser3", "olduser4");
 
-            Assert.Equal(-4, result);
+            Assert.Equal(-2, result);
         }
 
         [Fact]
@@ -227,7 +227,7 @@ namespace Models.Test
         {
             var result = await repo.UnfollowAsync("nonuser", "olduser1");
 
-            Assert.Equal(-3, result);
+            Assert.Equal(-2, result);
         }
 
         public void Dispose()
