@@ -9,7 +9,7 @@ on:
 jobs:
   analyse:
     name: Infer#
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Run Infer#
         uses: microsoft/infersharpaction@v1.0
