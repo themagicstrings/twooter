@@ -30,9 +30,9 @@ namespace Models.Test
             var user = await userQuery.FirstOrDefaultAsync();
 
             Assert.NotNull(user);
-            Assert.Equal(user.username, "user5");
-            Assert.Equal(user.email, "user5@mail.io");
-            Assert.NotEqual(user.pw_hash, "123");
+            Assert.Equal("user5", user.username);
+            Assert.Equal("user5@mail.io", user.email);
+            Assert.NotEqual("123", user.pw_hash);
         }
 
         [Fact]
