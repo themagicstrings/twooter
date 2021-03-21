@@ -78,7 +78,7 @@ namespace Controllers
             }
         }
 
-        private bool authorize (out UnauthorizedObjectResult result)
+        private bool notReqFromSimulator (out UnauthorizedObjectResult result)
         {
             Request.Headers.TryGetValue("Authorization", out var authToken);
             if (authToken != "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh") {
@@ -92,7 +92,7 @@ namespace Controllers
         [HttpGet("/latest")]
         public async Task<IActionResult> get_latest()
         {
-             if (authorize(out var result)) return result;
+             if (notReqFromSimulator(out var result)) return result;
             return new ContentResult{
                 ContentType = "text/json",
                 StatusCode = Status200OK,
@@ -105,7 +105,7 @@ namespace Controllers
         [HttpPost("/register")]
         public async Task<IActionResult> register([FromBody] SimulationUserCreateDTO user)
         {
-            if (authorize(out var result)) return result;
+            if (notReqFromSimulator(out var result)) return result;
             await write_latest();
 
             if(user.Username == "" || user.Username is null) return BadRequest("You have to enter a username");
@@ -124,7 +124,7 @@ namespace Controllers
         [HttpGet("/sim/{username}")]
         public async Task<IActionResult> get_user(string username)
         {
-            if (authorize(out var result)) return result;
+            if (notReqFromSimulator(out var result)) return result;
             await write_latest();
 
             var user = await UserRepo.ReadAsync(username);
@@ -143,7 +143,7 @@ namespace Controllers
         [HttpGet("/msgs")]
         public async Task<IActionResult> messages([FromQuery] int no = 100)
         {
-            if (authorize(out var result)) return result;
+            if (notReqFromSimulator(out var result)) return result;
             await write_latest();
 
             var messages = await MessageRepo.ReadAllAsync(no);
@@ -159,7 +159,7 @@ namespace Controllers
         [HttpPost("/msgs/{username}")]
         public async Task<IActionResult> user_post_message([FromBody] SimulationMessageCreateDTO message, string username)
         {
-            if (authorize(out var result)) return result;
+            if (notReqFromSimulator(out var result)) return result;
             await write_latest();
 
             var id = await MessageRepo.CreateAsync(message.Content, username);
@@ -170,7 +170,7 @@ namespace Controllers
         [HttpGet("/msgs/{username}")]
         public async Task<IActionResult> messages_per_user(string username, [FromQuery] int no = 100)
         {
-            if (authorize(out var result)) return result;
+            if (notReqFromSimulator(out var result)) return result;
             await write_latest();
 
             var user = await UserRepo.ReadAsync(username, no);
@@ -190,7 +190,7 @@ namespace Controllers
         [HttpGet("/fllws/{username}")]
         public async Task<IActionResult> hfollow(string username, [FromQuery] int no = 100)
         {
-            if (authorize(out var result)) return result;
+            if (notReqFromSimulator(out var result)) return result;
             await write_latest();
 
             var user = await UserRepo.ReadAsync(username, MessageLimit);
@@ -206,7 +206,7 @@ namespace Controllers
         [HttpPost("/fllws/{username}")]
         public async Task<IActionResult> follow(string username)
         {
-            if (authorize(out var result)) return result;
+            if (notReqFromSimulator(out var result)) return result;
             await write_latest();
 
             var sr = new StreamReader( Request.Body );
