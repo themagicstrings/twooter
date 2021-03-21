@@ -11,6 +11,9 @@ jobs:
     name: Infer#
     runs-on: ubuntu-latest
     steps:
+      - name: Build dotnet projects
+        run: dotnet build --no-restore
+        working-directory: ./minitwit
       - name: Run Infer#
         uses: microsoft/infersharpaction@v1.0
         id: runinfersharp
