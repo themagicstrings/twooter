@@ -133,9 +133,7 @@ namespace Api
         sb.Append(@"<ul class=""messages"">");
         foreach (MessageReadDTO msg in messages)
         {
-          string optionalZero = msg.pub_date.Month < 10 ? "0" : "";
-          var reformattedDateTime = "- " + msg.pub_date.Year + "-" + optionalZero + msg.pub_date.Month + "-" + msg.pub_date.Day + " @ " + msg.pub_date.Hour + ":" + msg.pub_date.Minute;
-
+          var reformattedDateTime = generateDateTimeString(msg.pub_date);
           var email = msg.author.email ?? "";
 
           var bytes = new MD5CryptoServiceProvider().ComputeHash(Encoding.ASCII.GetBytes(email.ToLower()));
@@ -168,8 +166,17 @@ namespace Api
       return toReturn;
     }
 
+    public static string generateDateTimeString(DateTime time)
+    {
+          string optionalZeroMonth = time.Month < 10 ? "0" : "";
+          string optionalZeroDay = time.Day < 10 ? "0" : "";
+          string optionalZeroHour = time.Hour < 10 ? "0" : "";
+          string optionalZeroMinute = time.Minute < 10 ? "0" : "";
 
-    public static string GenerateLoginPage(UserReadDTO user = null)
+          return $"- {time.Year}-{optionalZeroMonth}{time.Month}-{optionalZeroDay}{time.Day} @ {optionalZeroHour}{time.Hour}:{optionalZeroMinute}{time.Minute}";
+
+    }
+        public static string GenerateLoginPage(UserReadDTO user = null)
     {
       StringBuilder sb = new StringBuilder();
 
