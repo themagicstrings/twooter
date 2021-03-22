@@ -10,7 +10,10 @@ using System.Web;
 using System;
 using Api;
 using static Api.TwooterOptions;
+using static Shared.CreateReturnType;
 using Prometheus;
+
+
 namespace Controllers
 {
     [ApiController]
@@ -93,13 +96,29 @@ namespace Controllers
             {
                 return generateBadRequestRegister("The username is already taken");
             }
-            // return BadRequest("The username is already taken");
 
-            await UserRepo.CreateAsync(user);
-            BasicTemplater.flashes.Add("You were successfully registered and can login now");
-            TotalUsers.IncTo(UserRepo.GetTotalUsers());
-            return Redirect("/login");
-            //return Ok("You were succesfully registered and can login now");
+            var result = await UserRepo.CreateAsync(user);
+
+            switch(result)
+            {
+                case MISSING_PASSWORD:
+                    return generateBadRequestRegister("You have to enter a password");
+                case MISSING_USERNAME:
+                    return generateBadRequestRegister("You have to enter a username");
+                case INVALID_EMAIL:
+                    return generateBadRequestRegister("You have to enter a valid email address");
+                case PASSWORD_MISMATCH:
+                    return generateBadRequestRegister("The two passwords do not match");
+                case USERNAME_TAKEN:
+                    return generateBadRequestRegister("The username is already taken");
+                case EMAIL_TAKEN:
+                    return generateBadRequestRegister("The email is already taken");
+                case SUCCES:
+                default:
+                    BasicTemplater.flashes.Add("You were successfully registered and can login now");
+                    TotalUsers.IncTo(UserRepo.GetTotalUsers());
+                    return Redirect("/login");
+            }
         }
 
         private static ContentResult generateBadRequestRegister(string message)

@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using static Shared.CreateReturnType;
 
 namespace Models
 {
@@ -17,19 +18,21 @@ namespace Models
         {
             this.context = context;
         }
-        public async Task<int> CreateAsync(UserCreateDTO user)
+        public async Task<CreateReturnType> CreateAsync(UserCreateDTO user)
         {
-            if(user.Password1 == "" && user.Password2 == "") return -1;
+            if(user.Username == "" || user.Username is null) return MISSING_USERNAME;
 
-            if(!user.Email.Contains("@")) return -2;
+            if(user.Password1 == "" || user.Password1 is null) return MISSING_PASSWORD;
 
-            if(!user.Password1.Equals(user.Password2)) return -3;
+            if(!user.Email.Contains("@")) return INVALID_EMAIL;
+
+            if(user.Password1 != user.Password2) return PASSWORD_MISMATCH;
 
             var usernamecheck = from u in context.users where u.username == user.Username select u;
-            if(await usernamecheck.AnyAsync()) return -4;
+            if(await usernamecheck.AnyAsync()) return USERNAME_TAKEN;
 
             var emailcheck = from u in context.users where u.email == user.Email select u;
-            if(await emailcheck.AnyAsync()) return -5;
+            if(await emailcheck.AnyAsync()) return EMAIL_TAKEN;
 
             var newUser = new User
             {
@@ -41,7 +44,7 @@ namespace Models
             await context.users.AddAsync(newUser);
             await context.SaveChangesAsync();
 
-            return newUser.user_id;
+            return CreateReturnType.SUCCES;
         }
 
         public string HashPassword(string password)
