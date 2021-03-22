@@ -122,7 +122,7 @@ namespace Controllers
         }
 
         [HttpGet("/sim/{username}")]
-        public async Task<IActionResult> get_user(string username)
+        public async Task<IActionResult> get_user([FromRoute] string username)
         {
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
@@ -157,7 +157,7 @@ namespace Controllers
         }
 
         [HttpPost("/msgs/{username}")]
-        public async Task<IActionResult> user_post_message([FromBody] SimulationMessageCreateDTO message, string username)
+        public async Task<IActionResult> user_post_message([FromBody] SimulationMessageCreateDTO message, [FromRoute] string username)
         {
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
@@ -168,7 +168,7 @@ namespace Controllers
         }
 
         [HttpGet("/msgs/{username}")]
-        public async Task<IActionResult> messages_per_user(string username, [FromQuery] int no = 100)
+        public async Task<IActionResult> messages_per_user([FromRoute] string username, [FromQuery] int no = 100)
         {
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
@@ -188,7 +188,7 @@ namespace Controllers
         }
 
         [HttpGet("/fllws/{username}")]
-        public async Task<IActionResult> hfollow(string username, [FromQuery] int no = 100)
+        public async Task<IActionResult> hfollow([FromRoute] string username, [FromQuery] int no = 100)
         {
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
@@ -204,7 +204,7 @@ namespace Controllers
         }
 
         [HttpPost("/fllws/{username}")]
-        public async Task<IActionResult> follow(string username)
+        public async Task<IActionResult> follow([FromRoute] string username)
         {
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
