@@ -108,17 +108,24 @@ namespace Controllers
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
 
-            if(user.Username == "" || user.Username is null) return BadRequest("You have to enter a username");
-            if(!user.Email.Contains('@')) return BadRequest("You have to enter a valid email address");
-            if(user.Pwd == "" || user.Pwd is null) return BadRequest("You have to enter a password");
-
-            var exist = await UserRepo.ReadAsync(user.Username);
-
-            if(exist is not null) return BadRequest("The username is already taken");
-
-            await UserRepo.CreateAsync(new UserCreateDTO {Username = user.Username, Email = user.Email, Password1 = user.Pwd, Password2 = user.Pwd});
-            MinitwitController.TotalUsers.IncTo(UserRepo.GetTotalUsers());
-            return NoContent();
+            var res = await UserRepo.CreateAsync(new UserCreateDTO {Username = user.Username, Email = user.Email, Password1 = user.Pwd, Password2 = user.Pwd});
+            
+            switch(res)
+            {
+                case -1:
+                    return BadRequest("You have to enter a password");
+                case -2:
+                    return BadRequest("You have to enter a valid email address");
+                case -3:
+                    return BadRequest("Passwords are not matching");
+                case -4:
+                    return BadRequest("The username is already taken");
+                case -5:
+                    return BadRequest("The email is already taken");
+                default:
+                    MinitwitController.TotalUsers.IncTo(UserRepo.GetTotalUsers());
+                    return NoContent();
+            }
         }
 
         [HttpGet("/sim/{username}")]

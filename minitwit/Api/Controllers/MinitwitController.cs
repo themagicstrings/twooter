@@ -68,7 +68,7 @@ namespace Controllers
 
             var searchedUser = await UserRepo.ReadAsync(username, MessageLimit);
 
-            if (searchedUser is null) return (ActionResult)await Get404Page();
+            if (searchedUser is null) return (ActionResult) await Get404Page();
 
             return new ContentResult
             {
