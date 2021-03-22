@@ -24,7 +24,6 @@ namespace Controllers
         private readonly IMessageRepository MessageRepo;
         private readonly IUserRepository UserRepo;
         private readonly SessionHelper sessionHelper;
-        private UserReadDTO user = null;
 
 
         private readonly string LATEST = "./LATEST.txt";
