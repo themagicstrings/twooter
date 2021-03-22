@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Test", "Models.Test\Models.Test.csproj", "{63A0A871-4FA8-4D5F-BC66-D9B330FECE37}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Test", "Api.Test\Api.Test.csproj", "{BECF142A-FFEC-4E76-A879-4C39FDC7826B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,5 +88,17 @@ Global
 		{63A0A871-4FA8-4D5F-BC66-D9B330FECE37}.Release|x64.Build.0 = Release|Any CPU
 		{63A0A871-4FA8-4D5F-BC66-D9B330FECE37}.Release|x86.ActiveCfg = Release|Any CPU
 		{63A0A871-4FA8-4D5F-BC66-D9B330FECE37}.Release|x86.Build.0 = Release|Any CPU
+		{BECF142A-FFEC-4E76-A879-4C39FDC7826B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BECF142A-FFEC-4E76-A879-4C39FDC7826B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BECF142A-FFEC-4E76-A879-4C39FDC7826B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BECF142A-FFEC-4E76-A879-4C39FDC7826B}.Debug|x64.Build.0 = Debug|Any CPU
+		{BECF142A-FFEC-4E76-A879-4C39FDC7826B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BECF142A-FFEC-4E76-A879-4C39FDC7826B}.Debug|x86.Build.0 = Debug|Any CPU
+		{BECF142A-FFEC-4E76-A879-4C39FDC7826B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BECF142A-FFEC-4E76-A879-4C39FDC7826B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BECF142A-FFEC-4E76-A879-4C39FDC7826B}.Release|x64.ActiveCfg = Release|Any CPU
+		{BECF142A-FFEC-4E76-A879-4C39FDC7826B}.Release|x64.Build.0 = Release|Any CPU
+		{BECF142A-FFEC-4E76-A879-4C39FDC7826B}.Release|x86.ActiveCfg = Release|Any CPU
+		{BECF142A-FFEC-4E76-A879-4C39FDC7826B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
