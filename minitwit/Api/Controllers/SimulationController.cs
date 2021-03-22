@@ -16,6 +16,7 @@ using System.Text.Json;
 using System.IO;
 using System.Text.RegularExpressions;
 using static Api.TwooterOptions;
+using static Shared.CreateReturnType;
 
 namespace Controllers
 {
@@ -111,16 +112,17 @@ namespace Controllers
             
             switch(res)
             {
-                case -1:
+                case MISSING_PASSWORD:
                     return BadRequest("You have to enter a password");
-                case -2:
+                case INVALID_EMAIL:
                     return BadRequest("You have to enter a valid email address");
-                case -3:
+                case PASSWORD_MISMATCH:
                     return BadRequest("Passwords are not matching");
-                case -4:
+                case USERNAME_TAKEN:
                     return BadRequest("The username is already taken");
-                case -5:
+                case EMAIL_TAKEN:
                     return BadRequest("The email is already taken");
+                case SUCCES:
                 default:
                     MinitwitController.TotalUsers.IncTo(UserRepo.GetTotalUsers());
                     return NoContent();
