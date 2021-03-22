@@ -114,6 +114,8 @@ namespace Controllers
             {
                 case MISSING_PASSWORD:
                     return BadRequest("You have to enter a password");
+                case MISSING_USERNAME:
+                    return BadRequest("You have to enter a username");
                 case INVALID_EMAIL:
                     return BadRequest("You have to enter a valid email address");
                 case PASSWORD_MISMATCH:
