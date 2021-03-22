@@ -40,7 +40,7 @@ namespace Models.Test
         {
             var result = await repo.CreateAsync(new UserCreateDTO { Username = "olduser1", Email = "test@mail.com", Password1 = "123", Password2 = "123"});
             
-            Assert.Equal(-2, result);
+            Assert.Equal(-4, result);
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace Models.Test
         {
             var result = await repo.CreateAsync(new UserCreateDTO { Username = "user5", Email = "usermail.io", Password1 = "123", Password2 = "123"});
             
-            Assert.Equal(-4, result);
+            Assert.Equal(-2, result);
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace Models.Test
         {
             var result = await repo.CreateAsync(new UserCreateDTO { Username = "user5", Email = "olduser1@mail.io", Password1 = "123", Password2 = "123"});
             
-            Assert.Equal(-3, result);
+            Assert.Equal(-5, result);
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace Models.Test
         {
             var result = await repo.CreateAsync(new UserCreateDTO { Username = "user5", Email = "user5@mail.io", Password1 = "123", Password2 = "1234"});
 
-            Assert.Equal(-1, result);
+            Assert.Equal(-3, result);
         }
 
         [Fact]
