@@ -37,7 +37,7 @@ namespace Controllers
 
             if (int.TryParse(sessionHelper.GetString("user_id"), out var userid)) {
                 var user = await UserRepo.ReadAsync(userid);
-                if (user is null) await PostLogout();
+                if (user is null) PostLogout();
                 else this.user = user;
             }
         }
@@ -145,11 +145,12 @@ namespace Controllers
 
         // Displays register page
         [HttpGet("/sign_up")]
-        public async Task<IActionResult> GetRegisterPage()
+        public IActionResult GetRegisterPage()
         {
-            return new ContentResult {
+            return new ContentResult
+            {
                 ContentType = "text/html",
-                StatusCode = (int) Status200OK,
+                StatusCode = (int)Status200OK,
                 Content = BasicTemplater.GenerateRegisterPage()
             };
         }
@@ -259,7 +260,7 @@ namespace Controllers
 
         // Logs out currently logged in user
         [HttpPost("/logout")]
-        public async Task<IActionResult> PostLogout()
+        public IActionResult PostLogout()
         {
             BasicTemplater.flashes.Add("You were logged out");
             HttpContext.Session.Clear();
