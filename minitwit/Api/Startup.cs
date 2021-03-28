@@ -1,3 +1,4 @@
+using System.Threading;
 using Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,9 +13,17 @@ namespace Api
 {
   public class Startup
     {
+
+        public static readonly Gauge Uptime = Metrics.CreateGauge("Minitwit_uptime", "Current uptime for the system");
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            new Thread(() => {
+                while(true) {
+                    Uptime.Inc();
+                    Thread.Sleep(1000);
+                }
+            }).Start();
         }
 
         public IConfiguration Configuration { get; }
