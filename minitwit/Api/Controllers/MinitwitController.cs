@@ -13,6 +13,8 @@ using static Api.TwooterOptions;
 using static Shared.CreateReturnType;
 using Prometheus;
 
+using Microsoft.Extensions.Logging;
+
 
 namespace Controllers
 {
@@ -23,13 +25,15 @@ namespace Controllers
         private readonly IMessageRepository MessageRepo;
         private readonly IUserRepository UserRepo;
         private readonly SessionHelper sessionHelper;
+        private ILogger<MinitwitController> logger;
         private UserReadDTO user = null;
         public static readonly Gauge TotalUsers = Metrics.CreateGauge("Minitwit_users","Total number of users on the platform");
-        public MinitwitController(IMessageRepository msgrepo, IUserRepository usrrepo)
+        public MinitwitController(IMessageRepository msgrepo, IUserRepository usrrepo, ILogger<MinitwitController> logger)
         {
             this.MessageRepo = msgrepo;
             this.UserRepo = usrrepo;
             this.sessionHelper = new SessionHelper(() => HttpContext.Session);
+            this.logger = logger;
             TotalUsers.IncTo(UserRepo.GetTotalUsers());
         }
      
@@ -235,6 +239,7 @@ namespace Controllers
 
             sessionHelper.SetString("user_id", user.user_id.ToString());
             BasicTemplater.flashes.Add("You were logged in");
+            logger.LogInformation(loginDTO.Username + " has logged in");
             return Redirect("/");
         }
 
