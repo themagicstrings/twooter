@@ -85,6 +85,7 @@ namespace Api.Controllers
                 result = null;
                 return true;
             }
+            logger.LogError("SIMULATION: Non-simulator request to simulation api");
             result = Unauthorized("You are not authorized to use this resource!");
             return false;
         }
@@ -105,6 +106,7 @@ namespace Api.Controllers
         [HttpPost("/register")]
         public async Task<IActionResult> register([FromBody] SimulationUserCreateDTO user)
         {
+            logger.LogInformation($"SIMULATION: A user is registering");
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
 
@@ -113,16 +115,22 @@ namespace Api.Controllers
             switch(res)
             {
                 case MISSING_PASSWORD:
+                    logger.LogError("SIMULATION: No password received");
                     return BadRequest("You have to enter a password");
                 case MISSING_USERNAME:
+                    logger.LogError("SIMULATION: No username received");
                     return BadRequest("You have to enter a username");
                 case INVALID_EMAIL:
+                    logger.LogError("SIMULATION: Email is invalid");
                     return BadRequest("You have to enter a valid email address");
                 case PASSWORD_MISMATCH:
+                    logger.LogError("SIMULATION: Password mismatch");
                     return BadRequest("Passwords are not matching");
                 case USERNAME_TAKEN:
+                    logger.LogError("SIMULATION: Username already taken");
                     return BadRequest("The username is already taken");
                 case EMAIL_TAKEN:
+                    logger.LogError("SIMULATION: Email already taken");
                     return BadRequest("The email is already taken");
                 case SUCCES:
                 default:
