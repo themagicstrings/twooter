@@ -17,6 +17,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using static Api.TwooterOptions;
 using static Shared.CreateReturnType;
+using Microsoft.Extensions.Logging;
 
 namespace Controllers
 {
@@ -25,16 +26,17 @@ namespace Controllers
         private readonly IMessageRepository MessageRepo;
         private readonly IUserRepository UserRepo;
         private readonly SessionHelper sessionHelper;
-
+        private ILogger<MinitwitController> logger;
 
         private readonly string LATEST = "./LATEST.txt";
 
 
-        public SimulationController(IMessageRepository msgrepo, IUserRepository usrrepo)
+        public SimulationController(IMessageRepository msgrepo, IUserRepository usrrepo, ILogger<MinitwitController> logger)
         {
             this.MessageRepo = msgrepo;
             this.UserRepo = usrrepo;
             this.sessionHelper = new SessionHelper(() => HttpContext.Session);
+            this.logger = logger;
         }
 
         private async Task<int> get_user_id(string username)
@@ -92,8 +94,7 @@ namespace Controllers
         [HttpGet("/latest")]
         public async Task<IActionResult> get_latest()
         {
-            Console.WriteLine(Request);
-             if (!reqFromSimulator(out var result)) return result;
+            if (!reqFromSimulator(out var result)) return result;
             return new ContentResult{
                 ContentType = "text/json",
                 StatusCode = Status200OK,
@@ -106,7 +107,6 @@ namespace Controllers
         [HttpPost("/register")]
         public async Task<IActionResult> register([FromBody] SimulationUserCreateDTO user)
         {
-            Console.WriteLine(Request);
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
 
@@ -136,7 +136,6 @@ namespace Controllers
         [HttpGet("/sim/{username}")]
         public async Task<IActionResult> get_user([FromRoute] string username)
         {
-            Console.WriteLine(Request);
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
 
@@ -156,7 +155,6 @@ namespace Controllers
         [HttpGet("/msgs")]
         public async Task<IActionResult> messages([FromQuery] int no = 100)
         {
-            Console.WriteLine(Request);
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
 
@@ -173,7 +171,6 @@ namespace Controllers
         [HttpPost("/msgs/{username}")]
         public async Task<IActionResult> user_post_message([FromBody] SimulationMessageCreateDTO message, [FromRoute] string username)
         {
-            Console.WriteLine(Request);
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
 
@@ -185,7 +182,6 @@ namespace Controllers
         [HttpGet("/msgs/{username}")]
         public async Task<IActionResult> messages_per_user([FromRoute] string username, [FromQuery] int no = 100)
         {
-            Console.WriteLine(Request);
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
 
@@ -206,7 +202,6 @@ namespace Controllers
         [HttpGet("/fllws/{username}")]
         public async Task<IActionResult> hfollow([FromRoute] string username, [FromQuery] int no = 100)
         {
-            Console.WriteLine(Request);
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
 
@@ -223,7 +218,6 @@ namespace Controllers
         [HttpPost("/fllws/{username}")]
         public async Task<IActionResult> follow([FromRoute] string username)
         {
-            Console.WriteLine(Request);
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
 

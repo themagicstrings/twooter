@@ -12,7 +12,6 @@ using Api;
 using static Api.TwooterOptions;
 using static Shared.CreateReturnType;
 using Prometheus;
-
 using Microsoft.Extensions.Logging;
 
 
