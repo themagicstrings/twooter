@@ -23,7 +23,7 @@ namespace Api.Controllers
         private readonly IMessageRepository MessageRepo;
         private readonly IUserRepository UserRepo;
         private readonly SessionHelper sessionHelper;
-        private ILogger<MinitwitController> logger;
+        private readonly ILogger<MinitwitController> logger;
         private UserReadDTO user = null;
         public static readonly Gauge TotalUsers = Metrics.CreateGauge("Minitwit_users","Total number of users on the platform");
         public MinitwitController(IMessageRepository msgrepo, IUserRepository usrrepo, ILogger<MinitwitController> logger)

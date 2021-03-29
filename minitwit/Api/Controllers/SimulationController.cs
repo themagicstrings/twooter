@@ -24,7 +24,7 @@ namespace Api.Controllers
         private readonly IMessageRepository MessageRepo;
         private readonly IUserRepository UserRepo;
         private readonly SessionHelper sessionHelper;
-        private ILogger<SimulationController> logger;
+        private readonly ILogger<SimulationController> logger;
 
         private readonly string LATEST = "./LATEST.txt";
 
