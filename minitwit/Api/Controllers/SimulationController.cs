@@ -7,31 +7,29 @@ using Models;
 using Shared;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.AspNetCore.Http.StatusCodes;
 using System.Web;
 using System.Linq;
 using System;
-using Api;
 using System.Text.Json;
 using System.IO;
-using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
 using static Api.TwooterOptions;
 using static Shared.CreateReturnType;
-using Microsoft.Extensions.Logging;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
-namespace Controllers
+namespace Api.Controllers
 {
     public class SimulationController : Controller
     {
         private readonly IMessageRepository MessageRepo;
         private readonly IUserRepository UserRepo;
         private readonly SessionHelper sessionHelper;
-        private ILogger<MinitwitController> logger;
+        private ILogger<SimulationController> logger;
 
         private readonly string LATEST = "./LATEST.txt";
 
 
-        public SimulationController(IMessageRepository msgrepo, IUserRepository usrrepo, ILogger<MinitwitController> logger)
+        public SimulationController(IMessageRepository msgrepo, IUserRepository usrrepo, ILogger<SimulationController> logger)
         {
             this.MessageRepo = msgrepo;
             this.UserRepo = usrrepo;

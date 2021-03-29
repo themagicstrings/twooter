@@ -8,14 +8,13 @@ using System.Collections.Generic;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 using System.Web;
 using System;
-using Api;
 using static Api.TwooterOptions;
 using static Shared.CreateReturnType;
 using Prometheus;
 using Microsoft.Extensions.Logging;
 
 
-namespace Controllers
+namespace Api.Controllers
 {
     [ApiController]
     [Route("/")]
