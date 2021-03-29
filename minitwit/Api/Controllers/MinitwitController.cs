@@ -72,7 +72,7 @@ namespace Controllers
             string logs;
             try
             {
-                logs = await System.IO.File.ReadAllTextAsync($@".\logs\nlog-AspNetCore-{year}-{month}-{day}.log");
+                logs = await System.IO.File.ReadAllTextAsync($@"./logs/nlog-AspNetCore-{year}-{month}-{day}.log");
             }
             catch (Exception)
             {
