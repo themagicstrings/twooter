@@ -169,11 +169,16 @@ namespace Api.Controllers
         [HttpPost("/msgs/{username}")]
         public async Task<IActionResult> user_post_message([FromBody] SimulationMessageCreateDTO message, [FromRoute] string username)
         {
+            logger.LogInformation($"SIMULATION: {username} is posting a message");
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
 
             var id = await MessageRepo.CreateAsync(message.Content, username);
-            if(id == -1) return BadRequest("Message could not be recorded");
+            if(id == -1) 
+            {
+                logger.LogError($"SIMULATION: {username} does not exist");
+                return BadRequest("Message could not be recorded");
+            }
             return NoContent();
         }
 
