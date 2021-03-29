@@ -9,4 +9,4 @@ deploy.config
 minitwit/Api/LATEST.txt
 .ionide
 *.log
-*.txt
+internal-nlog-AspNetCore.txt
