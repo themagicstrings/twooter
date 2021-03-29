@@ -67,6 +67,37 @@ namespace Controllers
             };
         }
 
+        [HttpGet("/logs/{day}-{month}-{year}")]
+        public async Task<ActionResult> GetLogs([FromRoute] string day, [FromRoute] string month, [FromRoute] string year)
+        {
+            string logs;
+            try
+            {
+                logs = await System.IO.File.ReadAllTextAsync($@".\logs\nlog-AspNetCore-{year}-{month}-{day}.log");
+            }
+            catch (Exception)
+            {
+                logs = $"No logs avalible for {day}/{month}/{year}";
+            }
+
+            return new ContentResult
+            {
+                ContentType = "text/plain",
+                StatusCode = Status200OK,
+                Content = logs
+            };
+        }
+
+        [HttpGet("/logs")]
+        public ActionResult GetTodaysLogs()
+        {
+            var year = DateTime.Now.Year.ToString();
+            var month = DateTime.Now.Month < 10 ? "0" + DateTime.Now.Month : DateTime.Now.Month.ToString();
+            var day = DateTime.Now.Day< 10 ? "0" + DateTime.Now.Day : DateTime.Now.Day.ToString();
+            
+            return Redirect($"/logs/{day}-{month}-{year}");
+        }
+
         // Displays specific users messages
         [HttpGet("/{username}")]
         public async Task<ActionResult> GetUserAsync([FromRoute] string username)
