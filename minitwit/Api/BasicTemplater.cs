@@ -260,15 +260,19 @@ namespace Api
 
       foreach(string line in logs)
       {
+        if (line.StartsWith("   at")) continue;
         var split = line.Split("|");
+
         sb.Append("<tr>");
         sb.Append($"<td style={tdStyle}\">{split[0].Substring(10)}</td>");
         //sb.Append($"<td style={tdStyle}text-align:center\">{split[1]}</td>");
         sb.Append($"<td style={tdStyle}{LevelCellColor(split[2])}\">{split[2]}</td>");
         sb.Append($"<td style={tdStyle}\">{split[3]}</td>");
         sb.Append($"<td style={tdStyle}\">{split[4]}</td>");
+        if (split.Count() > 5) {
         sb.Append($"<td style={tdStyle}\">{split[5]}</td>");
         sb.Append($"<td style={tdStyle}\">{split[6]}</td>");
+        }
         sb.Append("</tr>");
       }
 

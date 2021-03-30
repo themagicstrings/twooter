@@ -74,7 +74,7 @@ namespace Api.Controllers
                 page = await BasicTemplater.GenerateLogPage($@"./logs/nlog-AspNetCore-{year}-{month}-{day}.log");
             }
             catch (Exception)
-            {
+            {  
                 page = $"<h>No logs avalible for {day}/{month}/{year}</h>";
             }
 
