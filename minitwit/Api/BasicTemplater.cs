@@ -5,6 +5,7 @@ using System.Text;
 using System;
 using System.Security.Cryptography;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Api
 {
@@ -236,6 +237,70 @@ namespace Api
     {
       flashes.Clear();
       errors.Clear();
+    }
+
+    public async static Task<string> GenerateLogPage(string filePath)
+    {
+      var logs = await System.IO.File.ReadAllLinesAsync(filePath);
+
+      var thStyle = "\"text-align:left;border: 1px solid black;";
+      var tdStyle = "\"border: 1px solid black;";
+
+      StringBuilder sb = new StringBuilder();
+      sb.Append("<table style=\"width:100%;border: 1px solid black;border-collapse:collapse;\">");
+      sb.Append("<tr>");
+      sb.Append($"<th style={thStyle}width:5%\">TimeStamp</th>");
+      //sb.Append($"<th style={thStyle}width:2%\">EventID</th>");
+      sb.Append($"<th style={thStyle}width:2%\">Level</th>");
+      sb.Append($"<th style={thStyle}width:10%\">From</th>");
+      sb.Append($"<th style={thStyle}\">Message</th>");
+      sb.Append($"<th style={thStyle}\">URL</th>");
+      sb.Append($"<th style={thStyle}\">Action</th>");
+      sb.Append("</tr>");
+
+      foreach(string line in logs)
+      {
+        var split = line.Split("|");
+        sb.Append("<tr>");
+        sb.Append($"<td style={tdStyle}\">{split[0].Substring(10)}</td>");
+        //sb.Append($"<td style={tdStyle}text-align:center\">{split[1]}</td>");
+        sb.Append($"<td style={tdStyle}{LevelCellColor(split[2])}\">{split[2]}</td>");
+        sb.Append($"<td style={tdStyle}\">{split[3]}</td>");
+        sb.Append($"<td style={tdStyle}\">{split[4]}</td>");
+        sb.Append($"<td style={tdStyle}\">{split[5]}</td>");
+        sb.Append($"<td style={tdStyle}\">{split[6]}</td>");
+        sb.Append("</tr>");
+      }
+
+      sb.Append("</table>");
+      return sb.ToString();
+    }
+
+    private static string LevelCellColor(string level)
+    {
+      string color;
+      switch(level)
+      {
+        case "DEBUG":
+            color = "#B0DFEB";
+            break;
+        case "WARN":
+            color = "#DBCD07";
+            break;
+        case "ERROR":
+            color = "#AD1515";
+            break;
+        case "FATAL":
+            color = "#630404";
+            break;
+        case "TRACE":
+        case "INFO":
+        default:
+            color = "#FFFFFF";
+            break;
+      }
+
+      return $"background-color:{color};";
     }
   }
 

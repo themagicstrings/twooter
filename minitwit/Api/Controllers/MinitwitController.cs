@@ -68,21 +68,21 @@ namespace Api.Controllers
         [HttpGet("/logs/{day}-{month}-{year}")]
         public async Task<ActionResult> GetLogs([FromRoute] string day, [FromRoute] string month, [FromRoute] string year)
         {
-            string logs;
+            string page;
             try
             {
-                logs = await System.IO.File.ReadAllTextAsync($@"./logs/nlog-AspNetCore-{year}-{month}-{day}.log");
+                page = await BasicTemplater.GenerateLogPage($@"./logs/nlog-AspNetCore-{year}-{month}-{day}.log");
             }
             catch (Exception)
             {
-                logs = $"No logs avalible for {day}/{month}/{year}";
+                page = $"<h>No logs avalible for {day}/{month}/{year}</h>";
             }
 
             return new ContentResult
             {
-                ContentType = "text/plain",
+                ContentType = "text/html",
                 StatusCode = Status200OK,
-                Content = logs
+                Content = page
             };
         }
 
