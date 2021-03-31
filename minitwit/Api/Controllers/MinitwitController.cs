@@ -66,12 +66,12 @@ namespace Api.Controllers
         }
 
         [HttpGet("/logs/{day}-{month}-{year}")]
-        public async Task<ActionResult> GetLogs([FromRoute] string day, [FromRoute] string month, [FromRoute] string year)
+        public async Task<ActionResult> GetLogs([FromRoute] string day, [FromRoute] string month, [FromRoute] string year, [FromQuery] bool info)
         {
             string page;
             try
             {
-                page = await BasicTemplater.GenerateLogPage($@"./logs/nlog-AspNetCore-{year}-{month}-{day}.log");
+                page = await BasicTemplater.GenerateLogPage($@"./logs/nlog-AspNetCore-{year}-{month}-{day}.log", info);
             }
             catch (Exception)
             {  
@@ -93,7 +93,7 @@ namespace Api.Controllers
             var month = DateTime.Now.Month < 10 ? "0" + DateTime.Now.Month : DateTime.Now.Month.ToString();
             var day = DateTime.Now.Day< 10 ? "0" + DateTime.Now.Day : DateTime.Now.Day.ToString();
             
-            return Redirect($"/logs/{day}-{month}-{year}");
+            return Redirect($"/logs/{day}-{month}-{year}?info=false");
         }
 
         // Displays specific users messages

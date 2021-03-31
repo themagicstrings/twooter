@@ -239,7 +239,7 @@ namespace Api
       errors.Clear();
     }
 
-    public async static Task<string> GenerateLogPage(string filePath)
+    public async static Task<string> GenerateLogPage(string filePath, bool info)
     {
       var logs = await System.IO.File.ReadAllLinesAsync(filePath);
 
@@ -261,6 +261,7 @@ namespace Api
       {
         if (line.ElementAt(24) != '|') continue;
         var split = line.Split("|");
+        if (!info && split[2] == "INFO") continue;
 
         sb.Append("<tr>");
         sb.Append($"<td style={tdStyle}\">{split[0].Substring(10)}</td>");
