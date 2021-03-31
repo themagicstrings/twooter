@@ -183,7 +183,7 @@ namespace Api.Controllers
             return new ContentResult
             {
                 ContentType = "text/html",
-                StatusCode = (int)Status200OK,
+                StatusCode = Status200OK,
                 Content = BasicTemplater.GenerateRegisterPage()
             };
         }
@@ -236,7 +236,7 @@ namespace Api.Controllers
 
             return new ContentResult {
                 ContentType = "text/html",
-                StatusCode = (int) Status200OK,
+                StatusCode = Status200OK,
                 Content = BasicTemplater.GenerateTimeline(messages: await MessageRepo.ReadAllAsync(MessageLimit), timelineType.PUBLIC, user: user)
             };
         }
@@ -283,7 +283,7 @@ namespace Api.Controllers
 
             return new ContentResult(){
                 Content = BasicTemplater.GenerateLoginPage(),
-                StatusCode = (int) Status200OK,
+                StatusCode = Status200OK,
                 ContentType = "text/html"
             };}
 
@@ -307,7 +307,7 @@ namespace Api.Controllers
             await CheckSessionForUser();
             return new ContentResult {
                 ContentType = "text/html",
-                StatusCode = (int) Status404NotFound,
+                StatusCode = Status404NotFound,
                 Content = BasicTemplater.Generate404Page(user)
             };
         }
