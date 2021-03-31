@@ -8,13 +8,13 @@ using System.Collections.Generic;
 using static Microsoft.AspNetCore.Http.StatusCodes;
 using System.Web;
 using System;
-using Api;
 using static Api.TwooterOptions;
 using static Shared.CreateReturnType;
 using Prometheus;
+using Microsoft.Extensions.Logging;
 
 
-namespace Controllers
+namespace Api.Controllers
 {
     [ApiController]
     [Route("/")]
@@ -23,13 +23,15 @@ namespace Controllers
         private readonly IMessageRepository MessageRepo;
         private readonly IUserRepository UserRepo;
         private readonly SessionHelper sessionHelper;
+        private readonly ILogger<MinitwitController> logger;
         private UserReadDTO user = null;
         public static readonly Gauge TotalUsers = Metrics.CreateGauge("Minitwit_users","Total number of users on the platform");
-        public MinitwitController(IMessageRepository msgrepo, IUserRepository usrrepo)
+        public MinitwitController(IMessageRepository msgrepo, IUserRepository usrrepo, ILogger<MinitwitController> logger)
         {
             this.MessageRepo = msgrepo;
             this.UserRepo = usrrepo;
             this.sessionHelper = new SessionHelper(() => HttpContext.Session);
+            this.logger = logger;
             TotalUsers.IncTo(UserRepo.GetTotalUsers());
         }
      
@@ -37,7 +39,7 @@ namespace Controllers
 
             if (int.TryParse(sessionHelper.GetString("user_id"), out var userid)) {
                 var user = await UserRepo.ReadAsync(userid);
-                if (user is null) await PostLogout();
+                if (user is null) PostLogout();
                 else this.user = user;
             }
         }
@@ -61,6 +63,37 @@ namespace Controllers
                 StatusCode = Status200OK,
                 Content = BasicTemplater.GenerateTimeline(messages, timelineType.SELF, user)
             };
+        }
+
+        [HttpGet("/logs/{day}-{month}-{year}")]
+        public async Task<ActionResult> GetLogs([FromRoute] string day, [FromRoute] string month, [FromRoute] string year)
+        {
+            string page;
+            try
+            {
+                page = await BasicTemplater.GenerateLogPage($@"./logs/nlog-AspNetCore-{year}-{month}-{day}.log");
+            }
+            catch (Exception)
+            {  
+                page = $"<h>No logs avalible for {day}/{month}/{year}</h>";
+            }
+
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = Status200OK,
+                Content = page
+            };
+        }
+
+        [HttpGet("/logs")]
+        public ActionResult GetTodaysLogs()
+        {
+            var year = DateTime.Now.Year.ToString();
+            var month = DateTime.Now.Month < 10 ? "0" + DateTime.Now.Month : DateTime.Now.Month.ToString();
+            var day = DateTime.Now.Day< 10 ? "0" + DateTime.Now.Day : DateTime.Now.Day.ToString();
+            
+            return Redirect($"/logs/{day}-{month}-{year}");
         }
 
         // Displays specific users messages
@@ -145,11 +178,12 @@ namespace Controllers
 
         // Displays register page
         [HttpGet("/sign_up")]
-        public async Task<IActionResult> GetRegisterPage()
+        public IActionResult GetRegisterPage()
         {
-            return new ContentResult {
+            return new ContentResult
+            {
                 ContentType = "text/html",
-                StatusCode = (int) Status200OK,
+                StatusCode = Status200OK,
                 Content = BasicTemplater.GenerateRegisterPage()
             };
         }
@@ -202,7 +236,7 @@ namespace Controllers
 
             return new ContentResult {
                 ContentType = "text/html",
-                StatusCode = (int) Status200OK,
+                StatusCode = Status200OK,
                 Content = BasicTemplater.GenerateTimeline(messages: await MessageRepo.ReadAllAsync(MessageLimit), timelineType.PUBLIC, user: user)
             };
         }
@@ -234,6 +268,7 @@ namespace Controllers
 
             sessionHelper.SetString("user_id", user.user_id.ToString());
             BasicTemplater.flashes.Add("You were logged in");
+            logger.LogInformation(loginDTO.Username + " has logged in");
             return Redirect("/");
         }
 
@@ -248,7 +283,7 @@ namespace Controllers
 
             return new ContentResult(){
                 Content = BasicTemplater.GenerateLoginPage(),
-                StatusCode = (int) Status200OK,
+                StatusCode = Status200OK,
                 ContentType = "text/html"
             };}
 
@@ -259,7 +294,7 @@ namespace Controllers
 
         // Logs out currently logged in user
         [HttpPost("/logout")]
-        public async Task<IActionResult> PostLogout()
+        public IActionResult PostLogout()
         {
             BasicTemplater.flashes.Add("You were logged out");
             HttpContext.Session.Clear();
@@ -272,7 +307,7 @@ namespace Controllers
             await CheckSessionForUser();
             return new ContentResult {
                 ContentType = "text/html",
-                StatusCode = (int) Status404NotFound,
+                StatusCode = Status404NotFound,
                 Content = BasicTemplater.Generate404Page(user)
             };
         }

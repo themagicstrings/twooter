@@ -7,34 +7,34 @@ using Models;
 using Shared;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.AspNetCore.Http.StatusCodes;
 using System.Web;
 using System.Linq;
 using System;
-using Api;
 using System.Text.Json;
 using System.IO;
-using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
 using static Api.TwooterOptions;
 using static Shared.CreateReturnType;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
-namespace Controllers
+namespace Api.Controllers
 {
     public class SimulationController : Controller
     {
         private readonly IMessageRepository MessageRepo;
         private readonly IUserRepository UserRepo;
         private readonly SessionHelper sessionHelper;
-
+        private readonly ILogger<SimulationController> logger;
 
         private readonly string LATEST = "./LATEST.txt";
 
 
-        public SimulationController(IMessageRepository msgrepo, IUserRepository usrrepo)
+        public SimulationController(IMessageRepository msgrepo, IUserRepository usrrepo, ILogger<SimulationController> logger)
         {
             this.MessageRepo = msgrepo;
             this.UserRepo = usrrepo;
             this.sessionHelper = new SessionHelper(() => HttpContext.Session);
+            this.logger = logger;
         }
 
         private async Task<int> get_user_id(string username)
@@ -85,6 +85,7 @@ namespace Controllers
                 result = null;
                 return true;
             }
+            logger.LogWarning("SIMULATION: Non-simulator request to simulation api");
             result = Unauthorized("You are not authorized to use this resource!");
             return false;
         }
@@ -92,7 +93,7 @@ namespace Controllers
         [HttpGet("/latest")]
         public async Task<IActionResult> get_latest()
         {
-             if (!reqFromSimulator(out var result)) return result;
+            if (!reqFromSimulator(out var result)) return result;
             return new ContentResult{
                 ContentType = "text/json",
                 StatusCode = Status200OK,
@@ -105,6 +106,7 @@ namespace Controllers
         [HttpPost("/register")]
         public async Task<IActionResult> register([FromBody] SimulationUserCreateDTO user)
         {
+            logger.LogInformation($"SIMULATION: A user is registering");
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
 
@@ -113,16 +115,22 @@ namespace Controllers
             switch(res)
             {
                 case MISSING_PASSWORD:
+                    logger.LogError("SIMULATION: No password received");
                     return BadRequest("You have to enter a password");
                 case MISSING_USERNAME:
+                    logger.LogError("SIMULATION: No username received");
                     return BadRequest("You have to enter a username");
                 case INVALID_EMAIL:
+                    logger.LogError("SIMULATION: Email is invalid");
                     return BadRequest("You have to enter a valid email address");
                 case PASSWORD_MISMATCH:
+                    logger.LogError("SIMULATION: Password mismatch");
                     return BadRequest("Passwords are not matching");
                 case USERNAME_TAKEN:
+                    logger.LogError("SIMULATION: Username already taken");
                     return BadRequest("The username is already taken");
                 case EMAIL_TAKEN:
+                    logger.LogError("SIMULATION: Email already taken");
                     return BadRequest("The email is already taken");
                 case SUCCES:
                 default:
@@ -169,11 +177,16 @@ namespace Controllers
         [HttpPost("/msgs/{username}")]
         public async Task<IActionResult> user_post_message([FromBody] SimulationMessageCreateDTO message, [FromRoute] string username)
         {
+            logger.LogInformation($"SIMULATION: {username} is posting a message");
             if (!reqFromSimulator(out var result)) return result;
             await write_latest();
 
             var id = await MessageRepo.CreateAsync(message.Content, username);
-            if(id == -1) return BadRequest("Message could not be recorded");
+            if(id == -1) 
+            {
+                logger.LogError($"SIMULATION: {username} does not exist");
+                return BadRequest("Message could not be recorded");
+            }
             return NoContent();
         }
 
