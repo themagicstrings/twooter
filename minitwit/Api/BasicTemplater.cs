@@ -250,7 +250,6 @@ namespace Api
       sb.Append("<table style=\"width:100%;border: 1px solid black;border-collapse:collapse;\">");
       sb.Append("<tr>");
       sb.Append($"<th style={thStyle}width:5%\">TimeStamp</th>");
-      //sb.Append($"<th style={thStyle}width:2%\">EventID</th>");
       sb.Append($"<th style={thStyle}width:2%\">Level</th>");
       sb.Append($"<th style={thStyle}width:10%\">From</th>");
       sb.Append($"<th style={thStyle}\">Message</th>");
@@ -265,11 +264,10 @@ namespace Api
 
         sb.Append("<tr>");
         sb.Append($"<td style={tdStyle}\">{split[0].Substring(10)}</td>");
-        //sb.Append($"<td style={tdStyle}text-align:center\">{split[1]}</td>");
         sb.Append($"<td style={tdStyle}{LevelCellColor(split[2])}\">{split[2]}</td>");
         sb.Append($"<td style={tdStyle}\">{split[3]}</td>");
         sb.Append($"<td style={tdStyle}\">{split[4]}</td>");
-        if (split.Count() > 5) {
+        if (split.Length > 5) {
         sb.Append($"<td style={tdStyle}\">{split[5]}</td>");
         sb.Append($"<td style={tdStyle}\">{split[6]}</td>");
         }
