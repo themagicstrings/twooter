@@ -13,7 +13,7 @@ namespace Api
             var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
-                logger.Debug("init main");
+                logger.Debug("Start up");
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception e)

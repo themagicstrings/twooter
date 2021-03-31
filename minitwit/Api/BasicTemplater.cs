@@ -239,14 +239,15 @@ namespace Api
       errors.Clear();
     }
 
-    public async static Task<string> GenerateLogPage(string filePath, bool info)
+    public async static Task<string> GenerateLogPage(string day, string month, string year, bool info, string host)
     {
-      var logs = await System.IO.File.ReadAllLinesAsync(filePath);
+      var logs = await System.IO.File.ReadAllLinesAsync($@"./logs/nlog-AspNetCore-{year}-{month}-{day}.log");
 
       var thStyle = "\"text-align:left;border: 1px solid black;";
       var tdStyle = "\"border: 1px solid black;";
 
       StringBuilder sb = new StringBuilder();
+      sb.Append($"<a href=http://{host}/logs/{day}-{month}-{year}?info={!info}>Toggle INFO</a>");
       sb.Append("<table style=\"width:100%;border: 1px solid black;border-collapse:collapse;\">");
       sb.Append("<tr>");
       sb.Append($"<th style={thStyle}width:5%\">TimeStamp</th>");

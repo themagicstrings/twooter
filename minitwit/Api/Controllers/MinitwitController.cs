@@ -71,7 +71,7 @@ namespace Api.Controllers
             string page;
             try
             {
-                page = await BasicTemplater.GenerateLogPage($@"./logs/nlog-AspNetCore-{year}-{month}-{day}.log", info);
+                page = await BasicTemplater.GenerateLogPage(day, month, year, info, HttpContext.Request.Host.ToString());
             }
             catch (Exception)
             {  
