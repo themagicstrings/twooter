@@ -257,7 +257,7 @@ namespace Api
       sb.Append($"<th style={thStyle}\">Action</th>");
       sb.Append("</tr>");
 
-      foreach(string line in logs)
+      foreach(string line in logs.Reverse())
       {
         if (line.ElementAt(24) != '|') continue;
         var split = line.Split("|");
