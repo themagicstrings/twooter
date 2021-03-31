@@ -260,7 +260,7 @@ namespace Api
 
       foreach(string line in logs)
       {
-        if (line.StartsWith("   at")) continue;
+        if (line.ElementAt(24) != '|') continue;
         var split = line.Split("|");
 
         sb.Append("<tr>");

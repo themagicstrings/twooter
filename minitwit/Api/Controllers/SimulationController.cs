@@ -85,7 +85,7 @@ namespace Api.Controllers
                 result = null;
                 return true;
             }
-            logger.LogError("SIMULATION: Non-simulator request to simulation api");
+            logger.LogWarning("SIMULATION: Non-simulator request to simulation api");
             result = Unauthorized("You are not authorized to use this resource!");
             return false;
         }
