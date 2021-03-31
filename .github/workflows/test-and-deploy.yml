@@ -103,7 +103,7 @@ jobs:
               -d  \
               -p 443:443 \
               -p 80:80 \
-              --mount 'type=volume,src=twooter-logs,dst=/publish/logs,volume-driver=local' \
+              --mount \'type=volume,src=twooter-logs,dst=/publish/logs,volume-driver=local\' \
               --name twooter-instance \
               -e \"DB_IP=${{ secrets.DB_IP }}\" \
               -e \"DB_PASSWORD=${{ secrets.DB_PASSWORD }}\" \
