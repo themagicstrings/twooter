@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Shared;
 using System.Text;
+using System.Text.RegularExpressions;
 using System;
 using System.Security.Cryptography;
 using System.Linq;
@@ -241,7 +242,7 @@ namespace Api
 
     public async static Task<string> GenerateLogPage(string day, string month, string year, bool info, string host)
     {
-      var logs = await System.IO.File.ReadAllLinesAsync($@"./logs/nlog-AspNetCore-{year}-{month}-{day}.log");
+      var log = await System.IO.File.ReadAllTextAsync($@"./logs/nlog-AspNetCore-{year}-{month}-{day}.log");
 
       var thStyle = "\"text-align:left;border: 1px solid black;";
       var tdStyle = "\"border: 1px solid black;";
@@ -258,21 +259,20 @@ namespace Api
       sb.Append($"<th style={thStyle}\">Action</th>");
       sb.Append("</tr>");
 
-      foreach(string line in logs.Reverse())
+      var pattern = @"\d{4}-\d{2}-\d{2} (.*?)\|(\d)\|(.*?)\|(.*?)\|(.*?)\|url: (.*?)\|action: (.*?)\|.*?\| body: .*?";
+      RegexOptions options = RegexOptions.Singleline;
+
+      foreach(Match m in Regex.Matches(log, pattern, options).Reverse())
       {
-        if (line.ElementAt(24) != '|') continue;
-        var split = line.Split("|");
-        if (!info && split[2] == "INFO") continue;
+        if (m.Groups[3].Value == "INFO" && !info) continue;
 
         sb.Append("<tr>");
-        sb.Append($"<td style={tdStyle}\">{split[0].Substring(10)}</td>");
-        sb.Append($"<td style={tdStyle}{LevelCellColor(split[2])}\">{split[2]}</td>");
-        sb.Append($"<td style={tdStyle}\">{split[3]}</td>");
-        sb.Append($"<td style={tdStyle}\">{split[4]}</td>");
-        if (split.Length > 5) {
-        sb.Append($"<td style={tdStyle}\">{split[5]}</td>");
-        sb.Append($"<td style={tdStyle}\">{split[6]}</td>");
-        }
+        sb.Append($"<td style={tdStyle}\">{m.Groups[1].Value}</td>");
+        sb.Append($"<td style={tdStyle}{LevelCellColor(m.Groups[3].Value)}\">{m.Groups[3].Value}</td>");
+        sb.Append($"<td style={tdStyle}\">{m.Groups[4].Value}</td>");
+        sb.Append($"<td style={tdStyle}\">{m.Groups[5].Value.Substring(0, Math.Min(150, m.Groups[5].Value.Length))} ...</td>");
+        sb.Append($"<td style={tdStyle}\">{m.Groups[6].Value}</td>");
+        sb.Append($"<td style={tdStyle}\">{m.Groups[7].Value}</td>");
         sb.Append("</tr>");
       }
 
