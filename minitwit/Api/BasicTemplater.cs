@@ -259,7 +259,7 @@ namespace Api
       sb.Append($"<th style={thStyle}\">Action</th>");
       sb.Append("</tr>");
 
-      var pattern = @"\d{4}-\d{2}-\d{2} (.*?)\|(\d)\|(.*?)\|(.*?)\|(.*?)\|url: (.*?)\|action: (.*?)\|.*?\| body: .*?";
+      var pattern = @"\d{4}-\d{2}-\d{2} (.*?)\|(\d*?)\|(.*?)\|(.*?)\|(.*?)\|url: (.*?)\|action: (.*?)\|.*?\| body:.*?";
       RegexOptions options = RegexOptions.Singleline;
 
       foreach(Match m in Regex.Matches(log, pattern, options).Reverse())
