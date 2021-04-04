@@ -1,6 +1,8 @@
 # twooter
 Twitter replica for DevOps course.
 
+[![Test and Deploy](https://github.com/themagicstrings/twooter/actions/workflows/test-and-deploy.yml/badge.svg)](https://github.com/themagicstrings/twooter/actions/workflows/test-and-deploy.yml)
+
 - [Week log](LOG.md)
 
 ## Setup
