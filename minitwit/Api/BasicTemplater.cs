@@ -7,6 +7,7 @@ using System;
 using System.Security.Cryptography;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Api
 {
@@ -240,15 +241,34 @@ namespace Api
       errors.Clear();
     }
 
-    public async static Task<string> GenerateLogPage(string day, string month, string year, bool info, string host)
+    public async static Task<string> GenerateLogPage(string hour, string day, string month, string year, bool info, string host)
     {
-      var log = await System.IO.File.ReadAllTextAsync($@"./logs/nlog-AspNetCore-{year}-{month}-{day}.log");
+      string log;
+      try 
+      {
+        log = await System.IO.File.ReadAllTextAsync($@"./logs/nlog-AspNetCore-{year}-{month}-{day}.log");
+      }
+      catch (Exception)
+      {
+        log = "";
+      }
 
       var thStyle = "\"text-align:left;border: 1px solid black;";
       var tdStyle = "\"border: 1px solid black;";
 
       StringBuilder sb = new StringBuilder();
-      sb.Append($"<a href=http://{host}/logs/{day}-{month}-{year}?info={!info}>Toggle INFO</a>");
+
+      int intyear = int.Parse(year);
+      int intmonth = int.Parse(month);
+      int intday = int.Parse(day);
+      int inthour = int.Parse(hour);
+      var date = new DateTime(intyear, intmonth, intday, inthour, 0, 0, CultureInfo.InvariantCulture.Calendar);
+      var prev = date.AddHours(-1.0);
+      var next = date.AddHours(1.0);
+      sb.Append($"<p style=\"text-align:center\"><a href=http://{host}/logs/{generateLogDateString(prev)}?info={info}>Prev hour</a>   ");
+      sb.Append($"<a href=http://{host}/logs/{generateLogDateString(next)}?info={info}>Next hour</a></p>");
+
+      sb.Append($"<a href=http://{host}/logs/{hour}@{day}-{month}-{year}?info={!info}>Toggle INFO</a>");
       sb.Append("<table style=\"width:100%;border: 1px solid black;border-collapse:collapse;\">");
       sb.Append("<tr>");
       sb.Append($"<th style={thStyle}width:5%\">TimeStamp</th>");
@@ -259,7 +279,7 @@ namespace Api
       sb.Append($"<th style={thStyle}\">Action</th>");
       sb.Append("</tr>");
 
-      var pattern = @"\d{4}-\d{2}-\d{2} (.*?)\|(\d*?)\|(.*?)\|(.*?)\|(.*?)\|url: (.*?)\|action: (.*?)\|.*?\| body:.*?";
+      var pattern = @"\d{4}-\d{2}-\d{2} ("+hour+@".*?)\|(\d*?)\|(.*?)\|(.*?)\|(.*?)\|url: (.*?)\|action: (.*?)\|.*?\| body:.*?";
       RegexOptions options = RegexOptions.Singleline;
 
       foreach(Match m in Regex.Matches(log, pattern, options).Reverse())
@@ -277,7 +297,17 @@ namespace Api
       }
 
       sb.Append("</table>");
+
       return sb.ToString();
+    }
+
+    private static string generateLogDateString(DateTime date)
+    {
+      string hour = date.Hour < 10 ? "0" + date.Hour : date.Hour.ToString();
+      string day = date.Day < 10 ? "0" + date.Day : date.Day.ToString();
+      string month = date.Month < 10 ? "0" + date.Month : date.Month.ToString();
+
+      return $"{hour}@{day}-{month}-{date.Year}";
     }
 
     private static string LevelCellColor(string level)
