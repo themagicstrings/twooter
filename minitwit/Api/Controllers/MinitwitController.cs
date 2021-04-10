@@ -73,7 +73,7 @@ namespace Api.Controllers
             {
                 page = await BasicTemplater.GenerateLogPage(hour, day, month, year, info, HttpContext.Request.Host.ToString());
             }
-            catch (Exception e)
+            catch (Exception)
             {  
                 page = $"<h1 style=\"text-align:center\">{hour}@{day}/{month}/{year} is not a valid date</h1><p style=\"text-align:center\">Format: hh@dd-mm-yyyy</p>";
             }
