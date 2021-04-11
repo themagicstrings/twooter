@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using static Api.TwooterOptions;
 using static Shared.CreateReturnType;
 using static Microsoft.AspNetCore.Http.StatusCodes;
+using System.Text.RegularExpressions;
 
 namespace Api.Controllers
 {
@@ -261,23 +262,26 @@ namespace Api.Controllers
         {
             string pattern = @"ERROR|Api.Controllers.SimulationController|SIMULATION: (.*?) does not exist";
             var names = new HashSet<string>();
-            for (var i = 1; i <= 11; i++)
+            for (var k = 3; k <= 4; k++)
             {
-                try {
-                    var filePath = $@"./logs/nlog-AspNetCore-2021-04-{(i < 10 ? "0" : "")}{i}.log";
-
-                    var logs = await System.IO.File.ReadAllTextAsync(filePath);
-
-                    var matches = Regex.Matches(logs, pattern, RegexOptions.Singleline);
-
-                    foreach (Match match in matches)
-                    {
-                        names.Add(match.Groups[1].Value);
-                    }
-                } 
-                catch(Exception)
+                for (var i = 1; i <= 31; i++)
                 {
-                    continue;
+                    try {
+                        var filePath = $@"./logs/nlog-AspNetCore-2021-0{k}-{(i < 10 ? "0" : "")}{i}.log";
+
+                        var logs = await System.IO.File.ReadAllTextAsync(filePath);
+
+                        var matches = Regex.Matches(logs, pattern, RegexOptions.Singleline);
+
+                        foreach (Match match in matches)
+                        {
+                            names.Add(match.Groups[1].Value);
+                        }
+                    } 
+                    catch(Exception)
+                    {
+                        continue;
+                    }
                 }
             }
 
