@@ -277,6 +277,7 @@ namespace Api.Controllers
                         {
                             names.Add(match.Groups[1].Value);
                         }
+                        logger.LogInformation("Loaded " + filePath);
                     } 
                     catch(Exception)
                     {
