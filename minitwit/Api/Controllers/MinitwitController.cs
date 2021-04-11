@@ -34,7 +34,7 @@ namespace Api.Controllers
             this.logger = logger;
             TotalUsers.IncTo(UserRepo.GetTotalUsers());
         }
-     
+
         private async Task CheckSessionForUser() {
 
             if (int.TryParse(sessionHelper.GetString("user_id"), out var userid)) {
@@ -74,7 +74,7 @@ namespace Api.Controllers
                 page = await BasicTemplater.GenerateLogPage(hour, day, month, year, info, HttpContext.Request.Host.ToString());
             }
             catch (Exception)
-            {  
+            {
                 page = $"<h1 style=\"text-align:center\">{hour}@{day}/{month}/{year} is not a valid date</h1><p style=\"text-align:center\">Format: hh@dd-mm-yyyy</p>";
             }
 
@@ -93,7 +93,7 @@ namespace Api.Controllers
             var month = DateTime.Now.Month < 10 ? "0" + DateTime.Now.Month : DateTime.Now.Month.ToString();
             var day = DateTime.Now.Day < 10 ? "0" + DateTime.Now.Day : DateTime.Now.Day.ToString();
             var hour = DateTime.Now.Hour < 10 ? "0" + DateTime.Now.Hour : DateTime.Now.Hour.ToString();
-            
+
             return Redirect($"/logs/{hour}@{day}-{month}-{year}?info=false");
         }
 

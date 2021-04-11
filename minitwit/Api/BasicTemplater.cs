@@ -95,7 +95,7 @@ namespace Api
 
       StringBuilder sb = new StringBuilder();
       if (type == timelineType.PUBLIC) sb.Append("<h2>Public Timeline</h2>");
-      else if (type == timelineType.OTHER) { 
+      else if (type == timelineType.OTHER) {
         sb.Append($"<h2>{otherPersonUsername}'s Timeline</h2>");
         if (user != null) {
           if (otherPersonUsername == user.username) {
@@ -244,7 +244,7 @@ namespace Api
     public async static Task<string> GenerateLogPage(string hour, string day, string month, string year, bool info, string host)
     {
       string log;
-      try 
+      try
       {
         log = await System.IO.File.ReadAllTextAsync($@"./logs/nlog-AspNetCore-{year}-{month}-{day}.log");
       }
@@ -265,10 +265,10 @@ namespace Api
       var date = new DateTime(intyear, intmonth, intday, inthour, 0, 0, CultureInfo.InvariantCulture.Calendar);
       var prev = date.AddHours(-1.0);
       var next = date.AddHours(1.0);
-      sb.Append($"<p style=\"text-align:center\"><a href=http://{host}/logs/{generateLogDateString(prev)}?info={info}>Prev hour</a>   ");
-      sb.Append($"<a href=http://{host}/logs/{generateLogDateString(next)}?info={info}>Next hour</a></p>");
+      sb.Append($"<p style=\"text-align:center\"><a href={generateLogDateString(prev)}?info={info}>Prev hour</a>   ");
+      sb.Append($"<a href={generateLogDateString(next)}?info={info}>Next hour</a></p>");
 
-      sb.Append($"<a href=http://{host}/logs/{hour}@{day}-{month}-{year}?info={!info}>Toggle INFO</a>");
+      sb.Append($"<a href={hour}@{day}-{month}-{year}?info={!info}>Toggle INFO</a>");
       sb.Append("<table style=\"width:100%;border: 1px solid black;border-collapse:collapse;\">");
       sb.Append("<tr>");
       sb.Append($"<th style={thStyle}width:5%\">TimeStamp</th>");
@@ -279,7 +279,7 @@ namespace Api
       sb.Append($"<th style={thStyle}\">Action</th>");
       sb.Append("</tr>");
 
-      var pattern = "("+hour+@":\d{2}:\d{2}\.\d{4})\|(\d*?)\|([A-Z]*?)\|(.*?)\|(.*?)\|url: (.*?)\|action: (.*?)\|";
+      var pattern = "("+Regex.Escape(hour)+@":\d{2}:\d{2}\.\d{4})\|(\d*?)\|([A-Z]*?)\|(.*?)\|(.*?)\|url: (.*?)\|action: (.*?)\|";
       RegexOptions options = RegexOptions.Singleline;
 
       foreach(Match m in Regex.Matches(log, pattern, options).Reverse())
