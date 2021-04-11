@@ -34,7 +34,7 @@ namespace Api
             var dbpassword = System.Environment.GetEnvironmentVariable("DB_PASSWORD");
             var dbip = System.Environment.GetEnvironmentVariable("DB_IP");
             var connectionString = $"Server={dbip};Database=Minitwit;Trusted_Connection=True;Integrated Security=false;User Id=SA;Password={dbpassword}";
-
+            
             services.AddDbContext<MinitwitContext>(o => o.UseSqlServer(connectionString));
             services.AddScoped<IMinitwitContext, MinitwitContext>();
             services.AddScoped<IUserRepository, UserRepository>();

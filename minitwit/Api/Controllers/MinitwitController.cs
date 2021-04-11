@@ -65,17 +65,17 @@ namespace Api.Controllers
             };
         }
 
-        [HttpGet("/logs/{day}-{month}-{year}")]
-        public async Task<ActionResult> GetLogs([FromRoute] string day, [FromRoute] string month, [FromRoute] string year, [FromQuery] bool info)
+        [HttpGet("/logs/{hour}@{day}-{month}-{year}")]
+        public async Task<ActionResult> GetLogs([FromRoute] string hour, [FromRoute] string day, [FromRoute] string month, [FromRoute] string year, [FromQuery] bool info)
         {
             string page;
             try
             {
-                page = await BasicTemplater.GenerateLogPage(day, month, year, info, HttpContext.Request.Host.ToString());
+                page = await BasicTemplater.GenerateLogPage(hour, day, month, year, info, HttpContext.Request.Host.ToString());
             }
             catch (Exception)
             {  
-                page = $"<h>No logs avalible for {day}/{month}/{year}</h>";
+                page = $"<h1 style=\"text-align:center\">{hour}@{day}/{month}/{year} is not a valid date</h1><p style=\"text-align:center\">Format: hh@dd-mm-yyyy</p>";
             }
 
             return new ContentResult
@@ -91,9 +91,10 @@ namespace Api.Controllers
         {
             var year = DateTime.Now.Year.ToString();
             var month = DateTime.Now.Month < 10 ? "0" + DateTime.Now.Month : DateTime.Now.Month.ToString();
-            var day = DateTime.Now.Day< 10 ? "0" + DateTime.Now.Day : DateTime.Now.Day.ToString();
+            var day = DateTime.Now.Day < 10 ? "0" + DateTime.Now.Day : DateTime.Now.Day.ToString();
+            var hour = DateTime.Now.Hour < 10 ? "0" + DateTime.Now.Hour : DateTime.Now.Hour.ToString();
             
-            return Redirect($"/logs/{day}-{month}-{year}?info=false");
+            return Redirect($"/logs/{hour}@{day}-{month}-{year}?info=false");
         }
 
         // Displays specific users messages
