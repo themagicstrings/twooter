@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using static Api.TwooterOptions;
 using static Shared.CreateReturnType;
 using static Microsoft.AspNetCore.Http.StatusCodes;
+using System.Text.RegularExpressions;
 
 namespace Api.Controllers
 {
@@ -254,6 +255,48 @@ namespace Api.Controllers
             if (res != 0) return NotFound();
 
             return NoContent();
+        }
+
+        [HttpGet("/yoink")]
+        public async Task<IActionResult> Yoink()
+        {
+            string pattern = @"ERROR|Api.Controllers.SimulationController|SIMULATION: (.*?) does not exist";
+            var names = new HashSet<string>();
+            for (var i = 1; i <= 11; i++)
+            {
+                try {
+                    var filePath = $@"./logs/nlog-AspNetCore-2021-04-{(i < 10 ? "0" : "")}{i}.log";
+                    
+                    var logs = await System.IO.File.ReadAllTextAsync(filePath);
+                    
+                    var matches = Regex.Matches(logs, pattern, RegexOptions.Singleline);
+                    
+                    foreach (Match match in matches)
+                    {
+                        names.Add(match.Groups[1].Value);
+                    }
+                } 
+                catch(Exception)
+                {
+                    continue;
+                }
+            }
+
+            foreach (var name in names)
+            {
+                Console.WriteLine(name);
+                var password = new Random().Next(1000, 99999);
+                var user = new UserCreateDTO {
+                    Username = name,
+                    Email = name.Replace(" ", "@"),
+                    Password1 = password + "",
+                    Password2 = password + ""
+                };
+                Console.WriteLine(user.Username + " " + user.Email + " " + user.Password1);
+                await UserRepo.CreateAsync(user);
+            }
+            logger.LogInformation("Yoink finished, found " + names.Count + " names");
+            return Ok();
         }
     }
 }
