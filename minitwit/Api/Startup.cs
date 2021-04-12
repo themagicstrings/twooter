@@ -31,11 +31,10 @@ namespace Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var dbpassword = System.Environment.GetEnvironmentVariable("DB_PASSWORD");
-            var dbip = System.Environment.GetEnvironmentVariable("DB_IP");
-            var connectionString = $"Server={dbip};Database=Minitwit;Trusted_Connection=True;Integrated Security=false;User Id=SA;Password={dbpassword}";
-            
-            services.AddDbContext<MinitwitContext>(o => o.UseSqlServer(connectionString));
+            var connectionString = System.Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+
+            services.AddDbContext<MinitwitContext>(o => o.UseNpgsql(connectionString));
+
             services.AddScoped<IMinitwitContext, MinitwitContext>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
