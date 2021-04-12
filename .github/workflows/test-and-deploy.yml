@@ -107,6 +107,5 @@ jobs:
               --name twooter-instance \
               -e \"DB_IP=${{ secrets.DB_IP }}\" \
               -e \"DB_PASSWORD=${{ secrets.DB_PASSWORD }}\" \
-              -e \"DB_CONNECTION_STRING=${{ secrets.DB_CONNECTION_STRING }}\" \
               docker.pkg.github.com/themagicstrings/twooter/twooter:latest
           "
