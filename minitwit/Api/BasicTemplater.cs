@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using Shared;
 using System.Text;
@@ -8,6 +7,7 @@ using System.Security.Cryptography;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Globalization;
+using static System.Web.HttpUtility;
 
 namespace Api
 {
@@ -149,9 +149,9 @@ namespace Api
             <img src=""https://www.gravatar.com/avatar/{gravatarEmailHash}?d=identicon&s=48"">
             <p>
               <strong>
-                <a href=""/{msg.author.username}"">{msg.author.username}</a>
+                <a href=""/{msg.author.username}"">{HtmlEncode(msg.author.username)}</a>
               </strong>
-              {msg.text}
+              {HtmlEncode(msg.text)}
               <small>
                 {reformattedDateTime}
               </small>
