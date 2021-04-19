@@ -41,7 +41,7 @@ namespace Api
     else sb.Append($@"
     <a href=""/"">my timeline</a> |
     <a href=""/public"">public timeline</a> |
-    <form method=post action=/logout  style=""display: inline-block""><button class=nav_a type=submit>sign out [{user.username}]</button></form>");
+    <form method=post action=/logout  style=""display: inline-block""><button class=nav_a type=submit>sign out [{HtmlEncode(user.username)}]</button></form>");
 
       sb.Append(@"</div>");
 
@@ -96,7 +96,7 @@ namespace Api
       StringBuilder sb = new StringBuilder();
       if (type == timelineType.PUBLIC) sb.Append("<h2>Public Timeline</h2>");
       else if (type == timelineType.OTHER) {
-        sb.Append($"<h2>{otherPersonUsername}'s Timeline</h2>");
+        sb.Append($"<h2>{HtmlEncode(otherPersonUsername)}'s Timeline</h2>");
         if (user != null) {
           if (otherPersonUsername == user.username) {
             sb.Append(@"<div class=""followstatus"">This is you!</div>");
@@ -104,12 +104,12 @@ namespace Api
             if (/*userFollows(user, otherPersonUsername)*/ user.following.Contains(otherPersonUsername)) {
               sb.Append($@"<div class=""followstatus"">You are currently following this user.
 
-              <form method=post action=""/{otherPersonUsername}/unfollow""  style=""display: inline-block""><button class=nav_a type=submit>Unfollow user</button></form>
+              <form method=post action=""/{HtmlEncode(otherPersonUsername)}/unfollow""  style=""display: inline-block""><button class=nav_a type=submit>Unfollow user</button></form>
               </div>
               ");
             } else {
               sb.Append($@"<div class=""followstatus"">You are not yet following this user yet.
-              <form method=post action=""/{otherPersonUsername}/follow""  style=""display: inline-block""><button class=nav_a type=submit>Follow user</button></form>
+              <form method=post action=""/{HtmlEncode(otherPersonUsername)}/follow""  style=""display: inline-block""><button class=nav_a type=submit>Follow user</button></form>
               </div>
               ");
             }
@@ -121,7 +121,7 @@ namespace Api
       sb = addNotifications(sb);
 
       if (loggedin && type == timelineType.SELF) sb.Append(
-        $@"<div class=""twitbox""><h3>What's on your mind {user.username}?</h3>
+        $@"<div class=""twitbox""><h3>What's on your mind {HtmlEncode(user.username)}?</h3>
         <form action=""/add_message"" method=""post""><p><input type=""text"" name=""text"" size=""60""><input type=""submit"" value=""Share""></p></form></div>"
         );
       if (messages.Count == 0)
@@ -149,7 +149,7 @@ namespace Api
             <img src=""https://www.gravatar.com/avatar/{gravatarEmailHash}?d=identicon&s=48"">
             <p>
               <strong>
-                <a href=""/{msg.author.username}"">{HtmlEncode(msg.author.username)}</a>
+                <a href=""/{HtmlEncode(msg.author.username)}"">{HtmlEncode(msg.author.username)}</a>
               </strong>
               {HtmlEncode(msg.text)}
               <small>
