@@ -18,7 +18,7 @@ jobs:
         uses: shrink/actions-document-publish@v1
         id: publish-document
         with:
-          sources: 'report/**/*.md'
+          sources: 'report/*.md report/**/*.md'
       - name: Upload Document
         uses: actions/upload-artifact@v2
         id: upload-document
