@@ -1,9 +1,6 @@
 name: Creare Report
 
-on: 
-  push:
-  release:
-    types: [published]
+on: [push]
 env:
   GITHUB_TOKEN: ${{ github.token }}
 
