@@ -19,6 +19,10 @@ jobs:
     - name: Install Coveralls
       run: dotnet tool install --global --add-source https://ci.appveyor.com/nuget/coveralls-net-t37a9a9unhwk coveralls.net
       
+    - name: Restore dependencies
+      run: dotnet restore
+      working-directory: ./minitwit
+      
     - name: Generate Coverage Report
       run: csmacnz.Coveralls
       working-directory: ./minitwit
