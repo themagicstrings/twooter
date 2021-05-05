@@ -20,7 +20,7 @@ jobs:
       run: dotnet tool install --global --add-source https://ci.appveyor.com/nuget/coveralls-net-t37a9a9unhwk coveralls.net
       
     - name: Generate Coverage Report
-      run: dotnet tool run csmacnz.Coveralls
+      run: csmacnz.Coveralls
       working-directory: ./minitwit
 
     - name: Coveralls
