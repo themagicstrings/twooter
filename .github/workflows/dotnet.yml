@@ -17,7 +17,7 @@ jobs:
         dotnet-version: 5.0.x
 
     - name: Install Coveralls
-      run: dotnet tool install --add-source https://ci.appveyor.com/nuget/coveralls-net-t37a9a9unhwk coveralls.net
+      run: dotnet tool install --global --add-source https://ci.appveyor.com/nuget/coveralls-net-t37a9a9unhwk coveralls.net
       
     - name: Generate Coverage Report
       run: dotnet tool run csmacnz.Coveralls
