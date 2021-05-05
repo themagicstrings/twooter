@@ -22,10 +22,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
       working-directory: ./minitwit
-      
-    - name: Generate Coverage Report
-      run: csmacnz.Coveralls
-      working-directory: ./minitwit
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
