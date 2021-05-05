@@ -25,9 +25,9 @@ Everything that is written to console will be logged by NLog. For example, uncau
 
 ## Scaling and high availability strategy
 ### Database
-When we first deployed our system, we used an in-memory database. This was naturally a flawed solution for a system that needs to persist data and will be redeployed with any frequency. We changed to a docker container running a MSSQL Server image, on a separate DigitalOcean droplet server. This solution did not work had some big issues. MSSQL Server will try to keep as much data as it can in memory, to speed up queries. In our case the memory usage would steadily climb, until the container was starved for resources, and any operation would slow to a near halt causing response timeouts. Out attempt to fix this, was simply to not use a docker container, instead running as MSSQL Server directly on a droplet server. This did help, especially after configuring MSSQL Server to the capabilities of the droplet server. This solution is however not scalable. 
+The scalablity of our database is provided by DigitalOcean.
 
-For a scalable database solution, we changed to a postgresql database cluster provided by DigitalOcean. Moving to this solution came with a few benefits. The database management is handled entirely by DigitalOcean, including standby nodes with automatic switch over on failure for high availability. Additionally, we gained the monitoring that DigitalOcean provides and the ability to maintain the database and webserver, from the same interface. 
+~~For a scalable database solution, we use a postgresql database cluster via DigitalOcean. Moving to this solution came with a few benefits. The database management is handled entirely by DigitalOcean, including standby nodes with automatic switch over on failure for high availability. Additionally, we gained the monitoring that DigitalOcean provides and the ability to maintain the database and webserver, from the same interface.~~
 
 ### Webserver
 Our web page is provided by a single DigitalOcean droplet server, accessed via a floating IP. Additionally, we have the DNS-name *twooter.hojelse.com* which points to the floating IP. 
