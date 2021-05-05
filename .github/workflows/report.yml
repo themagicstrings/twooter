@@ -1,4 +1,4 @@
-name: Creare Report
+name: Create Report
 
 on: [push]
 env:
