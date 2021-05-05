@@ -2,7 +2,7 @@
 Twitter replica for DevOps course.
 
 [![Test and Deploy](https://github.com/themagicstrings/twooter/actions/workflows/test-and-deploy.yml/badge.svg)](https://github.com/themagicstrings/twooter/actions/workflows/test-and-deploy.yml)
-
+[![Coverage Status](https://coveralls.io/repos/github/themagicstrings/twooter/badge.svg?branch=main)](https://coveralls.io/github/themagicstrings/twooter?branch=main)
 - [Week log](LOG.md)
 
 ## Setup

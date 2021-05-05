@@ -10,3 +10,4 @@ minitwit/Api/LATEST.txt
 .ionide
 *.log
 internal-nlog-AspNetCore.txt
+coverage.info

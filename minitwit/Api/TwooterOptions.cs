@@ -1,5 +1,7 @@
-namespace Api {
-  public static class TwooterOptions {
+namespace Api
+{
+  public static class TwooterOptions
+  {
     public static readonly int MessageLimit = 100;
   }
 }
