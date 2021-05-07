@@ -1,0 +1,29 @@
+name: Test Coverage
+
+on: ["push", "pull_request", "workflow_dispatch"]
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v1
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+
+    - name: Install Coveralls
+      run: dotnet tool install --global --add-source https://ci.appveyor.com/nuget/coveralls-net-t37a9a9unhwk coveralls.net
+      
+    - name: Restore dependencies
+      run: dotnet restore
+      working-directory: ./minitwit
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
