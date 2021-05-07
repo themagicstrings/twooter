@@ -95,12 +95,9 @@ jobs:
             docker login https://docker.pkg.github.com -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
             docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest
 
-            docker stop twooter-instance || true
-            docker rm twooter-instance || true
-            docker rmi docker.pkg.github.com/themagicstrings/twooter/twooter:latest || true
-
-            docker run \
-              -d  \
+            docker service rm twooter-instance
+            docker service create \
+              --with-registry-auth \
               -p 443:443 \
               -p 80:80 \
               --mount 'type=volume,src=twooter-logs,dst=/publish/logs,volume-driver=local' \
@@ -109,4 +106,5 @@ jobs:
               -e \"DB_PASSWORD=${{ secrets.DB_PASSWORD }}\" \
               -e \"DB_CONNECTION_STRING=${{ secrets.DB_CONNECTION_STRING }}\" \
               docker.pkg.github.com/themagicstrings/twooter/twooter:latest
+            docker service scale twooter-instance=3
           "
