@@ -25,7 +25,7 @@ Everything that is written to console will be logged by NLog. For example, uncau
 
 ## Scaling and high availability strategy
 ### Database
-The scalablity of our database is provided by DigitalOcean.
+The scalability of our database is provided by DigitalOcean.
 
 ~~For a scalable database solution, we use a postgresql database cluster via DigitalOcean. Moving to this solution came with a few benefits. The database management is handled entirely by DigitalOcean, including standby nodes with automatic switch over on failure for high availability. Additionally, we gained the monitoring that DigitalOcean provides and the ability to maintain the database and webserver, from the same interface.~~
 
