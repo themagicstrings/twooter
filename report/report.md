@@ -1,3 +1,50 @@
+# Twooter - Evolving and maintaining a twitter clone with DevOps
+
+An exam report and documentation of an *ITU-MiniTwit* system associated with the ITU DevOps course "DevOps, Software Evolution and Software Maintenance".
+
+Date: May 19th 2021
+
+Course title: DevOps, Software Evolution and Software Maintenance
+
+Course id: BSDSESM1KU
+
+Course material: https://github.com/itu-devops/lecture_notes
+
+### Group k - The Magic Strings
+
+|Name       |ID         |
+|:-:        |:-:        |
+|Kasper     |kaky       |
+|Emil       |emja       |
+|Jonas      |jglr       |
+|Kristoffer |krbh       |
+|Thomas     |thhk       |
+
+<!--
+We should have name and email on the front page according to this
+
+.. But maybe would be annoying to be spammed if a crawler picks it up ¯\_(ツ)_/¯
+
+https://itustudent.itu.dk/study-administration/exams/submitting-written-work
+-->
+
+# Contents
+
+
+# System's Perspective
+
+<!--
+A description and illustration of the:
+  - Design of your _ITU-MiniTwit_ systems
+  - Architecture of your _ITU-MiniTwit_ systems
+  - All dependencies of your _ITU-MiniTwit_ systems on all levels of abstraction and development stages.
+    - That is, list and briefly describe all technologies and tools you applied and depend on.
+  - Important interactions of subsystems
+  - Describe the current state of your systems, for example using results of static analysis and quality assessment systems.
+  - Finally, describe briefly, if the license that you have chosen for your project is actually compatible with the licenses of all your direct dependencies.
+Double check that for all the weekly tasks (those listed in the schedule) you include the corresponding information.
+!-->
+
 # Process' perspective
 <!-- In essence it has to be clear how code or other artifacts come from idea into the running system and everything that happens on the way. !-->
 
@@ -79,7 +126,7 @@ Everything that is written to console will be logged by NLog. For example, uncau
 <!-- - Brief results of the security assessment. -->
 # Security assessment
 
-- Authentication was implemented in the same way as the original MiniTwit. This means that there is a single authorization-token that any request must contain. This is not particularly safe, as all users send the same token, so the user is not really verified. This is related to the second security risk of OWASP [https://owasp.org/www-project-top-ten/]
+- Authentication was implemented in the same way as the original MiniTwit. This means that there is a single authorization-token that any request must contain. This is not particularly safe, as all users send the same token, so the user is not really verified. This is related to the second security risk of OWASP [https://owasp.org/www-project-top-ten/]. However, this is considered a minor problem, as it is just a quirk of how the original MiniTwit was made.
 
 
 <!-- - Applied strategy for scaling and load balancing. -->
@@ -94,3 +141,25 @@ The scalability of the database is provided by DigitalOcean.
 Our web page is provided by a single DigitalOcean droplet server, accessed via a floating IP. Additionally, we have the DNS-name *twooter.hojelse.com* which points to the floating IP.
 
 We did not successfully create a high availability setup for this. We tried to setup a switch over system, using keepalived and the DigitalOcean API.
+
+# Lessons Learned Perspective
+<!--
+Describe the biggest issues, how you solved them, and which are major lessons learned with regards to:
+  - evolution and refactoring
+  - operation, and
+  - maintenance
+of your _ITU-MiniTwit_ systems. Link back to respective commit messages, issues, tickets, etc. to illustrate these.
+Also reflect and describe what was the "DevOps" style of your work. For example, what did you do differently to previous development projects and how did it work?
+!-->
+
+## Evolution of our database solution
+
+When we first deployed our system, we used an in-memory database. This was naturally a flawed solution for any system that needs to persist data and will be redeployed with any frequency.
+
+We changed to a docker container running a MSSQL Server image, on a separate DigitalOcean droplet server. This solution did not work had some big issues. By default, MSSQL Server will try to keep as much data as it can in memory, to speed up queries. In our case the memory usage would steadily climb, until the container was starved for resources, and any operation would slow to a near halt causing response timeouts.
+
+Our attempt to fix this, was simply to not use a docker container, instead running as MSSQL Server directly on a droplet server. This did help reduce the speed at which the database would be starved, although it did still occur. To solve this we read quite a few articles on configuration issues that a MSSQL Server could have. One such issue, was that the default configuration had a maximum memory usage of around 2 TeraBytes, which is more than our server has. After correcting the configuration, it no longer would starve itself.
+
+This solution is however not scalable. Our final solution was a PostgreSQL database cluster provided by DigitalOcean. Moving to this solution came with a few benefits. The database management is handled entirely by DigitalOcean, including standby nodes with automatic switch over on failure for high availability. Additionally, we gained the monitoring that DigitalOcean provides and the ability to maintain the database and webserver, from the same interface.
+
+One additional note, on the transition between different database management systems (i.e. MSSQL & PostgreSQL): Migrating to a new DBMS does provide some issues, as the representation of data may differ. There may exist tools that would be able to transform a snapshot of one database to another. Our solution, however, was simply retrofitting our source code, with a "data siphon" and a connection to the old and the new database, launching the program on our own machines and transferring the data this way.
