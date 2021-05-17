@@ -16,12 +16,13 @@ jobs:
         id: publish-document
         with:
           input_dir: 'report'
+          output_dir: build
+
           images_dir: 'report/images'
           build_html: false
 
       - name: Upload Document
         uses: actions/upload-artifact@v2
-        id: upload-document
         with:
           name: 'report.pdf'
-          path: pdfs
+          path: build
