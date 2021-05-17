@@ -139,7 +139,8 @@ Everything that is written to console will be logged by NLog. For example, uncau
 
 # Security assessment
 
-Authentication was implemented in the same way as the original MiniTwit. This means that there is a single authorization-token that any request must contain. This is not particularly safe, as all users send the same token, so the user is not really verified. This is related to the second security risk of OWASP [https://owasp.org/www-project-top-ten/]. However, this is considered a minor problem, as it is just a quirk of how the original MiniTwit was made.
+Authentication was implemented in the same way as the original MiniTwit. This means that there is a single authorization-token that any request must contain. This is not particularly safe, as all users send the same token, so the user is not really verified. This is related to the second security risk of OWASP [https://owasp.org/www-project-top-ten/]. However in our case, this is considered a minor problem, as it is just a quirk of how the original MiniTwit was made.
+Our logging is also somewhat lacking, which is related to security risk number 10. A lot of information is logged, including thrown exceptions, when users post messages, etc. However, there is no warning about potential attacks, or warnings if it suddenly experiences a sudden spike in errors. This means that we can only find errors if we are looking for them, so a threat can potentially be present for a long time without us noticing.
 
 <!-- - Applied strategy for scaling and load balancing. -->
 
