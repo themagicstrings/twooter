@@ -32,20 +32,46 @@ https://github.com/itu-devops/lecture_notes
 
 </center>
 
+<div style="page-break-after: always"></div>
+
 ---
 
 # System's Perspective
 
+## Design and architecture
+
 <!--
 A description and illustration of the:
   - Design of your _ITU-MiniTwit_ systems
+
   - Architecture of your _ITU-MiniTwit_ systems
-  - All dependencies of your _ITU-MiniTwit_ systems on all levels of abstraction and development stages.
+  -->
+
+## Dependencies
+
+  <!-- - All dependencies of your _ITU-MiniTwit_ systems on all levels of abstraction and development stages.
     - That is, list and briefly describe all technologies and tools you applied and depend on.
-  - Important interactions of subsystems
+    -->
+
+## Interactions of subsystems
+
+ <!--  - Important interactions of subsystems
+
+ -->
+
+## Current state of the system
+
+<!--
   - Describe the current state of your systems, for example using results of static analysis and quality assessment systems.
+  -->
+
+## License
+
+<!--
   - Finally, describe briefly, if the license that you have chosen for your project is actually compatible with the licenses of all your direct dependencies.
-Double check that for all the weekly tasks (those listed in the schedule) you include the corresponding information.
+
+
+Double check that for all the weekly tasks (those listed in the schedule) you include the corresponding information. TODO what?
 !-->
 
 # Process' perspective
@@ -68,6 +94,8 @@ We have not used any project management tools such as Kanban-boards, as we mainl
 
 <!-- - A complete description of stages and tools included in the CI/CD chains.
     -  That is, including deployment and release of your systems. -->
+
+When pushing or merging to the main-branch, five different GitHub Actions are initialized.
 
 ![CI/CD chain](./images/ci-cd-chain.svg)
 
@@ -137,10 +165,12 @@ Everything that is written to console will be logged by NLog. For example, uncau
 
 <!-- - Brief results of the security assessment. -->
 
-# Security assessment
+## Security assessment
 
-Authentication was implemented in the same way as the original MiniTwit. This means that there is a single authorization-token that any request must contain. This is not particularly safe, as all users send the same token, so the user is not really verified. This is related to the second security risk of OWASP [https://owasp.org/www-project-top-ten/]. However in our case, this is considered a minor problem, as it is just a quirk of how the original MiniTwit was made.
+Authentication was implemented in the same way as the original MiniTwit. This means that there is a single authorization-token that any request must contain. This is not particularly safe, as all users send the same token, so the user is not really verified. This is related to the second security risk of OWASP [^1]. However in our case, this is considered a minor problem, as it is just a quirk of how the original MiniTwit was made.
 Our logging is also somewhat lacking, which is related to security risk number 10. A lot of information is logged, including thrown exceptions, when users post messages, etc. However, there is no warning about potential attacks, or warnings if it suddenly experiences a sudden spike in errors. This means that we can only find errors if we are looking for them, so a threat can potentially be present for a long time without us noticing.
+
+[^1]: https://owasp.org/www-project-top-ten/
 
 <!-- - Applied strategy for scaling and load balancing. -->
 
@@ -180,3 +210,13 @@ Our attempt to fix this, was simply to not use a docker container, instead runni
 This solution is however not scalable. Our final solution was a PostgreSQL database cluster provided by DigitalOcean. Moving to this solution came with a few benefits. The database management is handled entirely by DigitalOcean, including standby nodes with automatic switch over on failure for high availability. Additionally, we gained the monitoring that DigitalOcean provides and the ability to maintain the database and webserver, from the same interface.
 
 One additional note, on the transition between different database management systems (i.e. MSSQL & PostgreSQL): Migrating to a new DBMS does provide some issues, as the representation of data may differ. There may exist tools that would be able to transform a snapshot of one database to another. Our solution, however, was simply retrofitting our source code, with a "data siphon" and a connection to the old and the new database, launching the program on our own machines and transferring the data this way.
+
+## Logging of errors over time
+
+The course has a website that shows the number of errors found be the simulator, which is very useful to see which errors are most common in the system. A problem with this, is that is only shows the culmulative number of errors, so it is impossible to know when the errors occured. We tried to work around this by making a scraper that periodically would poll data from the site, and save it with a time-stamp. This turned out to be quite difficult, as pulling the data out of the SVG, was not that easily done. As a replacement, we made a spreadsheet where we manually put in the data every few days. The data gathered can be seen on the following graphs.
+
+![Manual logging](./images/errors.png)
+
+Using this data, we were able to react to sudden spikes in errors, for example the rapid growth in errors of type Follow and Unfollow, caused us to investigate the problem. It turned out that the problem was due to missing users in the database, so we solved it by copying users from another group's database into ours. This is related to what was explained in the previous section. On the graph named _Major Errors_ it can be seen the the red and yellow lines suddenly flatten out, as the problem was resolved.
+Another way we have used the graph, is to identify when the service is down, as this causes a surge in connection errors.
+Ideally this tool would not be necessary, as it has to be updated manually which takes time, and the things that it warns us of, should be covered by either monitoring or logging. However, in this case where our monitoring is a bit lacking, it was a very useful tool.
