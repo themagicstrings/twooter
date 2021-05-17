@@ -11,3 +11,4 @@ A description and illustration of the:
   - Finally, describe briefly, if the license that you have chosen for your project is actually compatible with the licenses of all your direct dependencies.
 Double check that for all the weekly tasks (those listed in the schedule) you include the corresponding information.
 !-->
+
