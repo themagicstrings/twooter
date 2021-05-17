@@ -19,7 +19,7 @@ jobs:
           output_dir: build
 
           images_dir: 'report/images'
-          image_import: './'
+          image_import: './images'
           build_html: false
 
       - name: Upload Document
