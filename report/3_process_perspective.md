@@ -14,7 +14,7 @@ We have not used any project management tools such as Kanban-boards, as we mainl
 <!-- - A complete description of stages and tools included in the CI/CD chains.
     -  That is, including deployment and release of your systems. -->
 
-![CI/CD chain](images/ci-cd-chain.svg)
+![CI/CD chain](./images/ci-cd-chain.svg)
 
 Notes: The initial trigger is triggered either from
 1) Pushes (merges) into main
