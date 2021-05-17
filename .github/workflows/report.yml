@@ -16,10 +16,10 @@ jobs:
         id: publish-document
         with:
           sources: 'report/*.md report/**/*.md'
+          images_dir: 'report/images'
       - name: Upload Document
         uses: actions/upload-artifact@v2
         id: upload-document
         with:
           name: 'report.pdf'
           path: ${{ steps.publish-document.outputs.pdf }}
-          images_dir: 'report/images'
