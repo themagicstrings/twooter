@@ -22,3 +22,4 @@ jobs:
         with:
           name: 'report.pdf'
           path: ${{ steps.publish-document.outputs.pdf }}
+          images_dir: 'report/images'
