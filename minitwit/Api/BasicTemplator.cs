@@ -11,7 +11,7 @@ using static System.Web.HttpUtility;
 
 namespace Api
 {
-  public class BasicTemplater
+  public class BasicTemplator
   {
     public static List<string> flashes = new List<string>();
     public static List<string> errors = new List<string>();

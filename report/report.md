@@ -22,7 +22,6 @@ https://github.com/itu-devops/lecture_notes
 
 ### Group k - The Magic Strings
 
-
 <div style="display: grid; place-items: center">
 <style>
 table {
@@ -43,7 +42,6 @@ table {
 
 <div style="page-break-after: always"></div>
 
-
 # System's Perspective
 
 ## Design and Architecture
@@ -54,45 +52,46 @@ The following subsections describes the Twooter system from different viewpoints
 
 ### Module Viewpoint
 
-The structure of the modules can be seen on the following figure. It contains the these modules (Test-classes and some misc. files omitted):
-- API
-  - The main console app with the Program and Startup classes, as well as the controllers for the web API. Also in this module is BasicTemplater.
-- Entities
-  - Objects for the database, as well as the database context.
-- Models
-  - Repositories for the messages and the users.
-- Shared
-  - Contains data transfer objects (DTO's) that are used to pass data between other classes and the database.
+The structure of the modules can be seen on _Figure 1_. It contains the these modules (Test-classes and some misc. files omitted):
+
+| Module   | Purpose                                                                                                                                       |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| API      | The main console app with the Program and Startup classes, as well as the controllers for the web API. BasicTemplator is also situated in this module. |
+| Entities | Objects for the database, as well as the database context.                                                                                    |
+| Models   | Repositories for the messages and the users.                                                                                                  |
+| Shared   | Contains data transfer objects (DTO's) that are used to pass data between other classes and the database.                                     |
 
 ![class-diagram.svg](./images/class-diagram.svg)
 
 _**Figure 1:** Class Diagram_
 
-TODO write stuff about class diagram
+As seen on _Figure 2_, web requests are handled by two controllers. The `SimulationController` has to adhere to a strict specification set by the simulator, which differs a lot from how a user might want the same information presented.
+
+For example, where the `SimulatorController` might just return a BadRequest, the `MinitwitController` would return an HTML-page containing an error message.
+
+For this reason MinitwitController handles all user oriented web requests that returns the information wrapped in a pretty UI.
 
 ![module-diagram.svg](./images/module-diagram.svg)
 
 _**Figure 2:** Module Diagram_
 
-Two controllers are handling the web requests. The SimulationController has to adhere to a strict specification set by the simulator, which differs a lot from how a user might want the same information presented.
-
-For example, where the SimulatorController might just return a BadRequest, the MinitwitController would return an HTML-page containing an error message.
-
-For this reason MinitwitController handles all user oriented web requests that returns the information wrapped in a pretty UI.
-
 ### Component and Connector Viewpoint
+
+_Figure 3_ shows the sequence of subsystem interactions, that occur in the case that a user accesses the /public endpoint. Nearly all use cases for the system follow this same structure.
+
+> 1. A method is called on a Controller object
+> 2. The Controller object checks if the user is logged in
+> 3. The Controller object calls some methods on its repositories
+> 4. The repositories execute the methods and returns some result to the controller
+> > 5A. In the case of the MinitwitController, the result from the repositories is send to the BasicTemplator to generate HTML, or a redirect is issued \
+> > 5B. In the case of the SimulationController, the result from the repositories is formatted to adhere to the simulator
+> 6. The result is returned to the User
 
 ![sequence-diagram.svg](./images/sequence-diagram.svg)
 
 _**Figure 3:** Sequence Diagram of a GetPublicTimeline request_
 
-The User sends a GetPublicTimeline request. The request is handled by the MinitwitController by first........... TODO
-
 ### Deployment Viewpoint
-
-![deployment-diagram.svg](./images/deployment-diagram.svg)
-
-_**Figure 4:** Deployment Diagram_
 
 From a browser running on any device, you can access Twooter by making a web request to the IP of the Virtual Machine running the Swarm Manager. If you don't know the IP you can ask a DNS provider with the url [http://twooter.hojelse.com](http://twooter.hojelse.com).
 
@@ -102,50 +101,46 @@ The PostgreSQL database runs in a "Database Cluster" provided by Digital Ocean. 
 
 Prometheus and Grafana, tools for monitoring, runs on a Virtual Machine exposing a web api on ports 9090 and 3000 respectively. Prometheus gathers monitoring data by accessing the normal Swarm Manager IP. Grafana is configured with two data sources 1. prometheus, by accessing the web api that it exposes and 2. the PostgreSQL database with a PostgreSQL connection string and normal SQL queries.
 
+An overview of the deployed system can be seen on _Figure 4_.
+
+![deployment-diagram.svg](./images/deployment-diagram.svg)
+
+_**Figure 4:** Deployment Diagram_
+
 ## Dependencies
+
 <!--
 - All dependencies of your _ITU-MiniTwit_ systems on all levels of abstraction and development stages.
   - That is, list and briefly describe all technologies and tools you applied and depend on.
 -->
 
-The dependencies of the program can be seen on figure 5. Parts with grey background are external dependencies that we are using, while those on white background are classes or namespaces that we have made. Notably not present on the graph is the use of .Net 5.0, as this is so all-encompassing that we did not put it on the graph to make it more readable.
+The dependencies of the program can be seen on _Figure 5_. Parts with grey background are external dependencies that we are using, while those on white background are classes or namespaces that we have made. Notably not present on the graph is the use of .Net 5.0, as this is so all-encompassing that we did not put it on the graph to make it more readable.
 
 ![Dependency graph](./images/dependencies.png)
 
 _**Figure 5:** Dependency graph for the program. Nodes marked with grey are external dependencies._
 
-This graph is quite simplified, as not all dependencies are listed, in order to improve readability. To get a look at the full list of dependencies, we used NDepend to generate a dependency matrix, which can be seen on the following figure. The horizontal axis represents our namespaces Api, Models, Shared and Entities, and then along the vertical axis then dependencies are listed. Cells with numbers on them, mean that the first one has that many references to the other.
+This graph is quite simplified, as not all dependencies are listed, in order to improve readability. To get a look at the full list of dependencies, we used NDepend to generate a dependency matrix, which can be seen on _Figure 6_. The horizontal axis represents our namespaces Api, Models, Shared and Entities, and then along the vertical axis then dependencies are listed. Cells with numbers on them, mean that the first one has that many references to the other.
 
 ![Dependency matrix](./images/dependency-matrix.png)
 
 _**Figure 6:** Dependency matrix. Each cell with a number represents the number of references from one namespace to the other._
-
-
-## Interactions of subsystems
-
-The program is built using the repository pattern
-
-
-<!-- TODO -->
-
-
-<!-- Important interactions of subsystems -->
 
 ## Current state of the system
 
 <!--
   - Describe the current state of your systems, for example using results of static analysis and quality assessment systems.
   -->
-Taking a look at SonarCloud, we can see that it detects two vulnerabilities, two security hotspots and 52 code smells. The main reason that these were not resolved, is that we were not aware of these, as we did not fully utilize the possibilities of Sonar Cloud. The code smells are primarily related to using less strict access modifiers than what is possible, which is of little importance. The vulnerabilities is about the application redirecting to pages based on the user's input. This could be an issue, but should not be a major security issue.
+
+Taking a look at SonarCloud on _Figure 7_, we can see that it detects two vulnerabilities, two security hotspots and 52 code smells. The main reason that these were not resolved, is that we were not aware of these, as we did not fully utilize the possibilities of Sonar Cloud. The code smells are primarily related to using less strict access modifiers than what is possible, which is of little importance. The vulnerabilities is about the application redirecting to pages based on the user's input. This could be an issue, but should not be a major security issue.
 In terms of technical debt, it estimates 5 hours of technical debt, which is not that much considering the project has been running for about three months.
 
 ![SonarCloud Dashboard](./images/sonarcloud.png)
 
 _**Figure 7:** Information from the Sonar Cloud dashboard. The 0.0% test coverage is because it has not been configured correctly, since we use another service for code coverage._
 
-
-
 ## License
+
 <!--
 Finally, describe briefly, if the license that you have chosen for your project is actually compatible with the licenses of all your direct dependencies.
 
@@ -174,8 +169,7 @@ The licenses for the dependencies are listed below. We assume that each dependen
 [npgsql license]: https://github.com/npgsql/npgsql/blob/main/LICENSE
 [postgresql license]: https://www.postgresql.org/about/licence/
 [nlog license]: https://github.com/NLog/NLog/blob/dev/LICENSE.txt
-[.NET license]: https://github.com/dotnet/runtime/blob/main/LICENSE.TXT
-
+[.net license]: https://github.com/dotnet/runtime/blob/main/LICENSE.TXT
 
 # Process' perspective
 
@@ -202,11 +196,7 @@ Stricter organization might have been beneficial as we were unable to meet physi
 
 When pushing or merging to the main-branch, five different GitHub Actions are initialized. Three of these are intended to be used to improve code-quality, one tests and deploys the project, and one generates this report. They are visualized on the following figure.
 
-![CI/CD chain](./images/ci-cd-chain.svg)
-
-_**Figure 8:** Graph showing the GitHub Actions configured for the project._
-
-**Note:** The initial trigger is triggered either from pushes to branches that have an open pull requests to main branch, or from a push (or merge) to the main branch.
+For an overview of the CI/CD chain, see _Figure 8_.
 
 ## Coverage workflow
 
@@ -224,6 +214,12 @@ Sonar Cloud is a static analysis tool that detects bugs, vulnerabilities and bad
 ## Test and deploy workflow
 
 The test and deploy workflow is responsible for running tests and optionally deploying the system to production. If this workflows is triggered by a merge or push to the main branch, the Test and Deploy workflow continues beyond the test execution and also deploys the system. The deployment step of the work flow connects to the VM containing the swarm manager, pulls down the docker image of the application and spins up the service on all VM's.
+
+![CI/CD chain](./images/ci-cd-chain.svg)
+
+_**Figure 8:** Graph showing the GitHub Actions configured for the project._
+
+**Note:** The initial trigger is triggered either from pushes to branches that have an open pull requests to main branch, or from a push (or merge) to the main branch.
 
 # Repository organization
 
@@ -266,13 +262,13 @@ All servers and the database cluster, are provided by DigitalOcean. This gives u
 
 All other metrics, that are not machine level, are available on a Grafana dashboard. Grafana is able to have many different sources of metrics to be displayed, and is therefore a fine choice.
 
-![Grafana screenshot](./images/twooter-dashboard.png)
-
-_**Figure ???:** The Grafana monitoring dashboard used in the project_
-
 For the web servers, these metrics are generated by the Prometheus library for C#, and then collected and stored by a Prometheus instance running on the server. The only metric displayed on the dashboard is the amount of requests for each action and HTTP response code.
 
 For the database server, Grafana is able to make queries to the database to collect metrics. As of this report the collected metrics are relation sizes both in amount of rows and in MB.
+
+![Grafana screenshot](./images/twooter-dashboard.png)
+
+_**Figure 9:** The Grafana monitoring dashboard used in the project_
 
 <!-- - What do you log in your systems and how do you aggregate logs? -->
 
@@ -333,16 +329,21 @@ One additional note, on the transition between different database management sys
 
 ## Logging of simulator errors over time
 
-The course has a website that shows the number of errors found be the simulator, which is very useful to see which errors are most common in the system. A problem with this, is that is only shows the cumulative number of errors, so it is impossible to know when the errors occured. We tried to work around this by making a scraper that periodically would poll data from the site, and save it with a time-stamp. This turned out to be quite difficult, as pulling the data out of the SVG, was not that easily done. As a replacement, we made a spreadsheet where we manually put in the data every few days. The data gathered can be seen on the following graphs.
+The course has a website that shows the number of errors found be the simulator, which is very useful to see which errors are most common in the system. A problem with this, is that is only shows the cumulative number of errors, so it is impossible to know when the errors occured. We tried to work around this by making a scraper that periodically would poll data from the site, and save it with a time-stamp. This turned out to be quite difficult, as pulling the data out of the SVG, was not that easily done. As a replacement, we made a spreadsheet where we manually put in the data every few days, as seen on _Figure 10_.
+
 <center>
 <img alt="Manual logging" src="./images/errors.png" style="width: 70%;">
 </center>
 
-_**Figure ???:** Graphs made in Google Sheets displaying the errors from the simulator over time. The data was recorded manually._
+_**Figure 10:** Graphs made in Google Sheets displaying the errors from the simulator over time. The data was recorded manually._
 
 Using this data, we were able to react to sudden spikes in errors, for example the rapid growth in errors of type Follow and Unfollow, caused us to investigate the problem. It turned out that the problem was due to missing users in the database, so we solved it by copying users from another group's database into ours. On the graph named _Major Errors_ it can be seen that the the red and yellow lines suddenly flatten out, as the problem was resolved.
 Another way we have used the graph, is to identify when the service is down, as this causes a surge in connection errors.
 Ideally this tool would not be necessary, as it has to be updated manually which takes time, and the things that it warns us of, should be covered by either monitoring or logging. However, in this case where our monitoring is a bit lacking, it was a very useful tool.
+
+## GitHub Actions has no debugging mode
+
+When creating a GitHub Actions script you will never get it perfect the first time. Figuring out why the script is not behaving like it should, is without auxiliary programs a process of repeatedly pushing a new commit to GitHub, waiting for their service to run the script, and finally reading the console output on the website. A time consuming process which we never got around to making better. 3rd party tools are available to run GitHub Actions scripts locally, which should speed this process up a lot. It was a minor inconvenience which could have been avoided with a little prelimiary research.
 
 # Links
 
