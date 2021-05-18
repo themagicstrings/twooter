@@ -1,4 +1,4 @@
-# Twooter - Evolving and maintaining a twitter clone with DevOps
+# Twooter - Evolving and maintaining a Twitter clone with DevOps
 
 <center>
 
@@ -22,6 +22,14 @@ https://github.com/itu-devops/lecture_notes
 
 ### Group k - The Magic Strings
 
+
+<div style="display: grid; place-items: center">
+<style>
+table {
+  width: auto;
+}
+</style>
+
 |         Name          |       E-mail       |
 | :-------------------: | :----------------: |
 |    Kasper S. Kyhl     | kaky&commat;itu.dk |
@@ -30,6 +38,7 @@ https://github.com/itu-devops/lecture_notes
 | Kristoffer B. Højelse | krbh&commat;itu.dk |
 |   Thomas H. Kilbak    | thhk&commat;itu.dk |
 
+</div>
 </center>
 
 <div style="page-break-after: always"></div>
@@ -57,7 +66,7 @@ The structure of the modules can be seen on the following figure. It contains th
 
 ![module-diagram.svg](./images/module-diagram.svg)
 
-_**Figure ???:** WRITE SOMETHING HERE_ TODO
+_**Figure ???:** Module Diagram_
 
 Two controllers are handling the web requests. The SimulationController has to adhere to a strict specification set by the simulator, which differs a lot from how a user might want the same information presented.
 
@@ -69,13 +78,15 @@ For this reason MinitwitController handles all user oriented web requests that r
 
 ![sequence-diagram.svg](./images/sequence-diagram.svg)
 
-_**Figure ???:** WRITE SOMETHING HERE_ TODO
+_**Figure ???:** Sequence Diagram of a GetPublicTimeline request_
+
+The User sends a GetPublicTimeline request. The request is handled by the MinitwitController by first........... TODO
 
 ### Deployment Viewpoint
 
 ![deployment-diagram.svg](./images/deployment-diagram.svg)
 
-_**Figure ???:** WRITE SOMETHING HERE_ TODO
+_**Figure ???:** Deployment Diagram_
 
 From a browser running on any device, you can access Twooter by making a web request to the IP of the Virtual Machine running the Swarm Manager. If you don't know the IP you can ask a DNS provider with the url [http://twooter.hojelse.com](http://twooter.hojelse.com).
 
@@ -317,8 +328,9 @@ One additional note, on the transition between different database management sys
 ## Logging of simulator errors over time
 
 The course has a website that shows the number of errors found be the simulator, which is very useful to see which errors are most common in the system. A problem with this, is that is only shows the cumulative number of errors, so it is impossible to know when the errors occured. We tried to work around this by making a scraper that periodically would poll data from the site, and save it with a time-stamp. This turned out to be quite difficult, as pulling the data out of the SVG, was not that easily done. As a replacement, we made a spreadsheet where we manually put in the data every few days. The data gathered can be seen on the following graphs.
-
-![Manual logging](./images/errors.png)
+<center>
+<img alt="Manual logging" src="./images/errors.png" style="width: 70%;">
+</center>
 
 _**Figure ???:** Graphs made in Google Sheets displaying the errors from the simulator over time. The data was recorded manually._
 
