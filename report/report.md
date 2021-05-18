@@ -46,7 +46,7 @@ table {
 
 ## Design and Architecture
 
-The Twooter system is a Social Media platform composed of a .NET Web Api, a PostgreSQL database and a HTML-templator serving server-rendered content. The templator is not particularly advanced, and somewhat hinders the expandability of the system. Using a modern front-end framework would have been more fitting for expandability, however the templator made it simple to recreate the design of the original MiniTwit, hence why it was chosen.
+The Twooter system is a Social Media platform composed of a .NET Web Api, a PostgreSQL database and a HTML-templater serving server-rendered content. The templater is not particularly advanced, and somewhat hinders the expandability of the system. Using a modern front-end framework would have been more fitting for expandability, however the templater made it simple to recreate the design of the original MiniTwit, hence why it was chosen.
 
 The following subsections describes the Twooter system from different viewpoints in the style of Christensen's 3+1 Architectural Viewpoints.
 
@@ -56,7 +56,7 @@ The structure of the modules can be seen on _Figure 1_. It contains the these mo
 
 | Module   | Purpose                                                                                                                                       |
 | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| API      | The main console app with the Program and Startup classes, as well as the controllers for the web API. BasicTemplator is also situated in this module. |
+| API      | The main console app with the Program and Startup classes, as well as the controllers for the web API. BasicTemplater is also situated in this module. |
 | Entities | Objects for the database, as well as the database context.                                                                                    |
 | Models   | Repositories for the messages and the users.                                                                                                  |
 | Shared   | Contains data transfer objects (DTO's) that are used to pass data between other classes and the database.                                     |
@@ -83,7 +83,7 @@ _Figure 3_ shows the sequence of subsystem interactions, that occur in the case 
 > 2. The Controller object checks if the user is logged in
 > 3. The Controller object calls some methods on its repositories
 > 4. The repositories execute the methods and returns some result to the controller
-> > 5A. In the case of the MinitwitController, the result from the repositories is send to the BasicTemplator to generate HTML, or a redirect is issued \
+> > 5A. In the case of the MinitwitController, the result from the repositories is send to the BasicTemplater to generate HTML, or a redirect is issued \
 > > 5B. In the case of the SimulationController, the result from the repositories is formatted to adhere to the simulator
 > 6. The result is returned to the User
 

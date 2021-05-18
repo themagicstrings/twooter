@@ -61,7 +61,7 @@ namespace Api.Controllers
             {
                 ContentType = "text/html",
                 StatusCode = Status200OK,
-                Content = BasicTemplator.GenerateTimeline(messages, timelineType.SELF, user)
+                Content = BasicTemplater.GenerateTimeline(messages, timelineType.SELF, user)
             };
         }
 
@@ -71,7 +71,7 @@ namespace Api.Controllers
             string page;
             try
             {
-                page = await BasicTemplator.GenerateLogPage(hour, day, month, year, info, HttpContext.Request.Host.ToString());
+                page = await BasicTemplater.GenerateLogPage(hour, day, month, year, info, HttpContext.Request.Host.ToString());
             }
             catch (Exception)
             {
@@ -111,7 +111,7 @@ namespace Api.Controllers
             {
                 ContentType = "text/html",
                 StatusCode = Status200OK,
-                Content = BasicTemplator.GenerateTimeline(searchedUser.messages,timelineType.OTHER, user: user, otherPersonUsername: searchedUser.username)
+                Content = BasicTemplater.GenerateTimeline(searchedUser.messages,timelineType.OTHER, user: user, otherPersonUsername: searchedUser.username)
             };
         }
 
@@ -149,7 +149,7 @@ namespace Api.Controllers
                     return generateBadRequestRegister("The email is already taken");
                 case SUCCESS:
                 default:
-                    BasicTemplator.flashes.Add("You were successfully registered and can login now");
+                    BasicTemplater.flashes.Add("You were successfully registered and can login now");
                     TotalUsers.IncTo(UserRepo.GetTotalUsers());
                     return Redirect("/login");
             }
@@ -157,22 +157,22 @@ namespace Api.Controllers
 
         private static ContentResult generateBadRequestRegister(string message)
         {
-            BasicTemplator.errors.Add(message);
+            BasicTemplater.errors.Add(message);
                 var toReturn = new ContentResult {
                     ContentType = "text/html",
                     StatusCode = Status400BadRequest,
-                    Content = BasicTemplator.GenerateRegisterPage()
+                    Content = BasicTemplater.GenerateRegisterPage()
                 };
             return toReturn;
         }
 
         private static ContentResult generateBadRequestLogin(string message)
         {
-            BasicTemplator.errors.Add(message);
+            BasicTemplater.errors.Add(message);
                 var toReturn = new ContentResult {
                     ContentType = "text/html",
                     StatusCode = Status400BadRequest,
-                    Content = BasicTemplator.GenerateLoginPage()
+                    Content = BasicTemplater.GenerateLoginPage()
                 };
             return toReturn;
         }
@@ -185,7 +185,7 @@ namespace Api.Controllers
             {
                 ContentType = "text/html",
                 StatusCode = Status200OK,
-                Content = BasicTemplator.GenerateRegisterPage()
+                Content = BasicTemplater.GenerateRegisterPage()
             };
         }
 
@@ -211,7 +211,7 @@ namespace Api.Controllers
             var res = await UserRepo.FollowAsync(user.username, username);
 
             if (res != 0) return BadRequest();
-            BasicTemplator.flashes.Add($@"You are now following ""{username}""");
+            BasicTemplater.flashes.Add($@"You are now following ""{username}""");
             return Redirect($"/{username}");
         }
 
@@ -225,7 +225,7 @@ namespace Api.Controllers
 
             if (res == -3) return (ActionResult)await Get404Page();
             if (res != 0) return BadRequest();
-            BasicTemplator.flashes.Add($@"You are no longer following ""{username}""");
+            BasicTemplater.flashes.Add($@"You are no longer following ""{username}""");
             return Redirect($"/{username}");
         }
 
@@ -238,7 +238,7 @@ namespace Api.Controllers
             return new ContentResult {
                 ContentType = "text/html",
                 StatusCode = Status200OK,
-                Content = BasicTemplator.GenerateTimeline(messages: await MessageRepo.ReadAllAsync(MessageLimit), timelineType.PUBLIC, user: user)
+                Content = BasicTemplater.GenerateTimeline(messages: await MessageRepo.ReadAllAsync(MessageLimit), timelineType.PUBLIC, user: user)
             };
         }
 
@@ -268,7 +268,7 @@ namespace Api.Controllers
             var user = await UserRepo.ReadAsync(loginDTO.Username);
 
             sessionHelper.SetString("user_id", user.user_id.ToString());
-            BasicTemplator.flashes.Add("You were logged in");
+            BasicTemplater.flashes.Add("You were logged in");
             logger.LogInformation(loginDTO.Username + " has logged in");
             return Redirect("/");
         }
@@ -283,7 +283,7 @@ namespace Api.Controllers
             if (user == null) {
 
             return new ContentResult(){
-                Content = BasicTemplator.GenerateLoginPage(),
+                Content = BasicTemplater.GenerateLoginPage(),
                 StatusCode = Status200OK,
                 ContentType = "text/html"
             };}
@@ -297,7 +297,7 @@ namespace Api.Controllers
         [HttpPost("/logout")]
         public IActionResult PostLogout()
         {
-            BasicTemplator.flashes.Add("You were logged out");
+            BasicTemplater.flashes.Add("You were logged out");
             HttpContext.Session.Clear();
             return Redirect("~/public");
         }
@@ -309,7 +309,7 @@ namespace Api.Controllers
             return new ContentResult {
                 ContentType = "text/html",
                 StatusCode = Status404NotFound,
-                Content = BasicTemplator.Generate404Page(user)
+                Content = BasicTemplater.Generate404Page(user)
             };
         }
     }
