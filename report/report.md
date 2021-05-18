@@ -64,7 +64,8 @@ The structure of the modules can be seen on the following figure. It contains th
 - Shared
   - Contains data transfer objects (DTO's) that are used to pass data between other classes and the database.
 
-![module-diagram.svg](./images/module-diagram.svg)
+<!-- ![module-diagram.svg](./images/module-diagram.svg) -->
+<img alt="Module diagram" src="./images/module-diagram.svg" style="width: 100%">
 
 _**Figure ???:** Module Diagram_
 
@@ -116,6 +117,10 @@ _**Figure ???:** Dependency matrix. Each cell with a number represents the numbe
 
 
 ## Interactions of subsystems
+
+The program is built using the repository pattern
+
+
 <!-- TODO -->
 
 
