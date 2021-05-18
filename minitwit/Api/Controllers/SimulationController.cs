@@ -112,7 +112,7 @@ namespace Api.Controllers
             await write_latest();
 
             var res = await UserRepo.CreateAsync(new UserCreateDTO {Username = user.Username, Email = user.Email, Password1 = user.Pwd, Password2 = user.Pwd});
-            
+
             switch(res)
             {
                 case MISSING_PASSWORD:
@@ -133,7 +133,7 @@ namespace Api.Controllers
                 case EMAIL_TAKEN:
                     logger.LogError("SIMULATION: Email already taken");
                     return BadRequest("The email is already taken");
-                case SUCCES:
+                case SUCCESS:
                 default:
                     MinitwitController.TotalUsers.IncTo(UserRepo.GetTotalUsers());
                     return NoContent();
@@ -183,7 +183,7 @@ namespace Api.Controllers
             await write_latest();
 
             var id = await MessageRepo.CreateAsync(message.Content, username);
-            if(id == -1) 
+            if(id == -1)
             {
                 logger.LogError($"SIMULATION: {username} does not exist");
                 return BadRequest("Message could not be recorded");
@@ -247,7 +247,7 @@ namespace Api.Controllers
             {
                 res = await UserRepo.FollowAsync(username, body.follow);
             }
-            else 
+            else
             {
                 return BadRequest("Not a supported method");
             }

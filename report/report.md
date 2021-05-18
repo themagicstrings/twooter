@@ -40,30 +40,29 @@ https://github.com/itu-devops/lecture_notes
 
 ## Design and Architecture
 
-<!--
-A description and illustration of the:
-  - Design of your _ITU-MiniTwit_ systems
+The Twooter system is a Social Media platform composed of a .NET Web Api, a PostgreSQL database and a HTML-templator serving static server-rendered content. The templator is not particularly advanced, and somewhat hinders the expandability of the system. Using a modern front-end framework would have been more fitting for expandability, however the templator made it simple to recreate the design of the original MiniTwit, hence why it was chosen.
 
-  - Architecture of your _ITU-MiniTwit_ systems
--->
+### Design
 
-The Twooter system is a Social Media platform composed of a .NET WebApi, a PostgreSQL database and a HTML templater serving static server rendered content.
+<!-- TODO: Skriv noget om design? -->
 
-## 3+1 Architectural Viewpoints
+### 3+1 Architectural Viewpoints
 
-### Module Viewpoint
+#### Module Viewpoint
 
 ![module-diagram.svg](./images/module-diagram.svg)
 
-### Component and Connector Viewpoint
+#### Component and Connector Viewpoint
 
 ![component-and-connector-diagram.svg](./images/component-and-connector-diagram.svg)
 
-### Deployment Viewpoint
+<!-- TODO: Add this diagram -->
+
+#### Deployment Viewpoint
 
 ![deployment-diagram.svg](./images/deployment-diagram.svg)
 
-From a browser running on any device, you access Twooter by making a web request with the ip of the Virtual Machine running the Swarm Manager. If you don't know the ip you can ask a DNS provider with the url _twooter.hojelse.com_.
+From a browser running on any device, you can access Twooter by making a web request to the IP of the Virtual Machine running the Swarm Manager. If you don't know the IP you can ask a DNS provider with the url [http://twooter.hojelse.com](http://twooter.hojelse.com).
 
 The Swarm manager is a Docker container assigned as manager in the Docker Swarm configuration. The swarm manager has a load balancer which routes the web request to one of the three Docker containers each running a Twooter instance from a Docker Image. Each Docker container is running on a separate Virtual Machine. Each Docker container has been configured with a Docker Volume, a data repository, mounted by the docker container.
 
@@ -77,13 +76,13 @@ The dependencies of the program can be seen on figure ???. Parts with grey backg
 
 ![Dependency graph](./images/dependencies.png)
 
-**_Figure ???: Dependency graph for the program. Those marked grey are external dependencies._**
+_**Figure ???:** Dependency graph for the program. Those marked grey are external dependencies._
 
 This graph is quite simplified, as not all dependencies are listed, in order to improve readability. To get a look at the full list of dependencies, we used NDepend to generate a dependency matrix, which can be seen on the following figure. The horizontal axis represents our namespaces Api, Models, Shared and Entities, and then along the vertical axis then dependencies are listed. Cells with numbers on them, mean that the first one has that many references to the other.
 
-![Dependency matrix](./images/dependencymatrix.png)
+![Dependency matrix](./images/dependency-matrix.png)
 
-**_Figure ???: Dependancy matrix. Each cell with a number represents the number of references from one namespace to the other._**
+_**Figure ???:** Dependency matrix. Each cell with a number represents the number of references from one namespace to the other._
 
   <!--
   - All dependencies of your _ITU-MiniTwit_ systems on all levels of abstraction and development stages.
@@ -96,9 +95,12 @@ This graph is quite simplified, as not all dependencies are listed, in order to 
 
 ## Current state of the system
 
-Taking a look at Sonar Cloud, we can see that it detects 2 vulnerabilities, 2 security hotspots and 52 code smells. The main reason that these were not resolved, is that we werenotaware
+Taking a look at Sonar Cloud, we can see that it detects 2 vulnerabilities, 2 security hotspots and 52 code smells. The main reason that these were not resolved, is that we were not aware of these, as we did not fully utilize the possibilities of Sonar Cloud. The code smells are primarily related to using less strict access modifiers than what is possible, which is of little importance. The vulnerabilities is about the application redirecting to pages based on the user's input. This could be an issue, but should not be a major security issue.
+In terms of technical debt, it estimates 5 hours of technical debt, which is not that much considering the project has been running for about three months.
 
 ![Sonar Cloud Dashboard](./images/sonarcloud.png)
+
+_\*\*Figure ???:_\*\* Information from the Sonar Cloud dashboard. The 0.0% test coverage is because it has not been configured correctly.
 
 <!--
   - Describe the current state of your systems, for example using results of static analysis and quality assessment systems.
@@ -111,21 +113,21 @@ The dependencies used all have permissive licenses that allow them to be used wi
 
 The licenses for the dependencies are listed below. We assume that each dependency also complies to the licenses of its sub-dependencies.
 
-- Prometheus: Apache License 2.0[^Prometheus license]
-- Grafana: GNU Affero General Public License v3.0 [^Grafana license]
-- Entity Framework Core: Apache License 2.0[^EFCore license]
-- AspNetCore: Apache License 2.0[^aspnetcore license]
-- Npgsql: PostgreSQL License (BSD-style)[^Npgsql license]
-- PostgreSQL: PostgreSQL License (BSD-style)[^PostgreSQL license]
-- NLog: BSD 3-Clause "New" or "Revised" License[^NLog license]
+- Prometheus: Apache License 2.0 [Prometheus license]
+- Grafana: GNU Affero General Public License v3.0 [Grafana license]
+- Entity Framework Core: Apache License 2.0 [EFCore license]
+- AspNetCore: Apache License 2.0 [aspnetcore license]
+- Npgsql: PostgreSQL License (BSD-style) [Npgsql license]
+- PostgreSQL: PostgreSQL License (BSD-style) [PostgreSQL license]
+- NLog: BSD 3-Clause "New" or "Revised" License [NLog license]
 
-[^Prometheus license]: https://github.com/prometheus/prometheus/blob/main/LICENSE
-[^Grafana license]: https://github.com/grafana/grafana/blob/main/LICENSE
-[^EFCore license]: https://github.com/dotnet/efcore/blob/main/LICENSE.txt
-[^aspnetcore license]: https://github.com/dotnet/aspnetcore/blob/main/LICENSE.txt
-[^Npgsql license]: https://github.com/npgsql/npgsql/blob/main/LICENSE
-[^PostgreSQL license]: https://www.postgresql.org/about/licence/
-[^NLog license]: https://github.com/NLog/NLog/blob/dev/LICENSE.txt
+[prometheus license]: https://github.com/prometheus/prometheus/blob/main/LICENSE
+[grafana license]: https://github.com/grafana/grafana/blob/main/LICENSE
+[efcore license]: https://github.com/dotnet/efcore/blob/main/LICENSE.txt
+[aspnetcore license]: https://github.com/dotnet/aspnetcore/blob/main/LICENSE.txt
+[npgsql license]: https://github.com/npgsql/npgsql/blob/main/LICENSE
+[postgresql license]: https://www.postgresql.org/about/licence/
+[nlog license]: https://github.com/NLog/NLog/blob/dev/LICENSE.txt
 
 <!--
 Finally, describe briefly, if the license that you have chosen for your project is actually compatible with the licenses of all your direct dependencies.
@@ -152,7 +154,7 @@ Because of the course having weekly goals, we sort of worked in weekly sprints t
 Other than that, the team was not very strictly organized, as it is a quite small team, and the members all had a very similar way of working. That being a fairly relaxed atmosphere where work can be done whenever we feel like it, as long the goal is reached.
 Stricter organization might have been beneficial as we were unable to meet physically.
 
-# Tools in the CI/CD chain(s)
+## Tools in the CI/CD chain(s)
 
 <!-- - A complete description of stages and tools included in the CI/CD chains.
     -  That is, including deployment and release of your systems. -->
@@ -262,17 +264,21 @@ However, in other projects we have used the Kanban-board on GitHub, which is han
 
 ### DigitalOcean
 
-All webservers and the database cluster, are provided by DigitalOcean. This gives us a fixed monitoring solution for each server/cluster. The metrics for the webservers are, CPU usage, memory usage, disk I/O, disk usage and bandwidth. For the cluster, the metrics are amount of connections, index/sequential scans and throughput.
+All servers and the database cluster, are provided by DigitalOcean. This gives us a fixed monitoring solution for each server/cluster. The metrics for the web servers are, CPU usage, memory usage, disk I/O, disk usage and bandwidth. For the cluster, the metrics are amount of connections, index/sequential scans and throughput.
+
+![Digital Ocean dashboard](./images/digital-ocean.png)
+
+_**Figure ???:** Digital Ocean dashboard_
 
 ### Grafana
 
-All other metrics, that are not machine level, are available on a Grafana dashboard. Grafana is able to have many diffrent sources of metrics to be displayed, and is therefor a fine choice.
+All other metrics, that are not machine level, are available on a Grafana dashboard. Grafana is able to have many different sources of metrics to be displayed, and is therefore a fine choice.
 
-![Grafana screenshot](./images/TwooterDashboard.png)
+![Grafana screenshot](./images/twooter-dashboard.png)
 
-**_Figure ???: The Grafana monitoring dashboard used in the project_**
+_**Figure ???:** The Grafana monitoring dashboard used in the project_
 
-For the webservers, these metrics are generated by the Prometheus library for C#, and then collected and stored by a Prometheus instance running on the server. The only metric displayed on the dashboard is the amount of requests for each action and HTTP response code.
+For the web servers, these metrics are generated by the Prometheus library for C#, and then collected and stored by a Prometheus instance running on the server. The only metric displayed on the dashboard is the amount of requests for each action and HTTP response code.
 
 For the database server, Grafana is able to make queries to the database to collect metrics. As of this report the collected metrics are relation sizes both in amount of rows and in MB.
 
@@ -284,14 +290,19 @@ The solution uses a logging tool for ASP.NET Core called NLog. This allows us to
 
 Everything that is written to console will be logged by NLog. For example, uncaught exceptions will be logged as ERROR or FATAL, and the information printed when starting an ASP.NET Core application, is logged as INFO. In addition to what is automatically a part of the logging, the system writes an ERROR level log, whenever some request fails, containing information on why it failed. INFO level logs are also written when a request to post a message is received.
 
-<!-- - Brief results of the security assessment. -->
-
 ## Security assessment
 
-Authentication was implemented in the same way as the original MiniTwit. This means that there is a single authorization-token that any request must contain. This is not particularly safe, as all users send the same token, so the user is not really verified. This is related to the second security risk of OWASP [^1]. However in our case, this is considered a minor problem, as it is just a quirk of how the original MiniTwit was made.
+The application is protected against XSS, as all user input is sanitized using HtmlEncode from the HttpUtility package. This ensures that even if a malicious request includes JavaScript or other HTML code, it will not be executed.
+
+Since we use Object-Relational Mapping, we do not write SQL statements directly and the system is therefore protected against SQL injection attacks.
+
+The most critical attack that could occur, would be if someone got access to our database. In addition to the database having a strong password stored in GitHub Secrets, this is prevented with a whitelist of IP's that are allowed to connect to the database. In order to gain access to the database cluster, one would need to either gain access to our DigitalOcean account and whitelist their own ip, or compromise one of the whitelisted computers and obtain the database credentials.
+
+Authentication was implemented in the same way as the original MiniTwit. This means that there is a single authorization-token that any request must contain. This is not particularly safe, as all users send the same token, so the user is not really verified. This is related to the second security risk of OWASP [OWASP Top Ten]. However in our case, this is considered a minor problem, as it is just a quirk of how the original MiniTwit was made.
+
 Our logging is also somewhat lacking, which is related to security risk number 10. A lot of information is logged, including thrown exceptions, when users post messages, etc. However, there is no warning about potential attacks, or warnings if it suddenly experiences a sudden spike in errors. This means that we can only find errors if we are looking for them, so a threat can potentially be present for a long time without us noticing.
 
-[^1]: https://owasp.org/www-project-top-ten/
+[owasp top ten]: https://owasp.org/www-project-top-ten/
 
 <!-- - Applied strategy for scaling and load balancing. -->
 
@@ -299,7 +310,7 @@ Our logging is also somewhat lacking, which is related to security risk number 1
 
 ### Database
 
-For a scalable database solution, we use a PostgreSQL database cluster via DigitalOcean, with one standby node. This solution is fully managed by DigitalOcean, which includes daily backups and automatic switchover, should the primary node fail. Should the service require scaling, read-only nodes can be added to datacenters across the world, making the solution horizontaliy scalable.
+For a scalable database solution, we use a PostgreSQL database cluster via DigitalOcean, with one standby node. This solution is fully managed by DigitalOcean, which includes daily backups and automatic switchover, should the primary node fail. Should the service require scaling, read-only nodes can be added to data centers across the world, making the solution horizontally scalable.
 
 ### Webserver
 
@@ -330,12 +341,42 @@ One additional note, on the transition between different database management sys
 
 ## Logging of errors over time
 
-The course has a website that shows the number of errors found be the simulator, which is very useful to see which errors are most common in the system. A problem with this, is that is only shows the culmulative number of errors, so it is impossible to know when the errors occured. We tried to work around this by making a scraper that periodically would poll data from the site, and save it with a time-stamp. This turned out to be quite difficult, as pulling the data out of the SVG, was not that easily done. As a replacement, we made a spreadsheet where we manually put in the data every few days. The data gathered can be seen on the following graphs.
+The course has a website that shows the number of errors found be the simulator, which is very useful to see which errors are most common in the system. A problem with this, is that is only shows the cumulative number of errors, so it is impossible to know when the errors occured. We tried to work around this by making a scraper that periodically would poll data from the site, and save it with a time-stamp. This turned out to be quite difficult, as pulling the data out of the SVG, was not that easily done. As a replacement, we made a spreadsheet where we manually put in the data every few days. The data gathered can be seen on the following graphs.
 
 ![Manual logging](./images/errors.png)
 
-**_Figure ???: Graphs made in Google Sheets displaying the errors from the simulator over time. The data was recorded manually._**
+_**Figure ???:** Graphs made in Google Sheets displaying the errors from the simulator over time. The data was recorded manually._
 
 Using this data, we were able to react to sudden spikes in errors, for example the rapid growth in errors of type Follow and Unfollow, caused us to investigate the problem. It turned out that the problem was due to missing users in the database, so we solved it by copying users from another group's database into ours. This is related to what was explained in the previous section. On the graph named _Major Errors_ it can be seen the the red and yellow lines suddenly flatten out, as the problem was resolved.
 Another way we have used the graph, is to identify when the service is down, as this causes a surge in connection errors.
 Ideally this tool would not be necessary, as it has to be updated manually which takes time, and the things that it warns us of, should be covered by either monitoring or logging. However, in this case where our monitoring is a bit lacking, it was a very useful tool.
+
+# Links
+
+- [Main repository](https://github.com/themagicstrings/twooter) - https://github.com/themagicstrings/twooter
+
+  Contains the entire project.
+
+- [Twooter](http://twooter.hojelse.com) - http://twooter.hojelse.com
+
+  This is the link to the minitwit service itself. Includes both Minitwit and Simulator API.
+
+- [Twooter logs](http://twooter.hojelse.com/logs) - http://twooter.hojelse.com/logs
+
+  Link to the logging solution.
+
+- [Grafana](http://188.166.113.237:3000/) - http://188.166.113.237:3000/
+
+  Grafana monitoring dashboard. The username and password is 'admin'.
+
+- [Prometheus](http://188.166.113.237:9090/) - http://188.166.113.237:9090/
+
+  Prometheus metrics page. Contains all metrics for the web servers.
+
+- [Twooter API Spec](http://twooter.hojelse.com/swagger/index.html) - http://twooter.hojelse.com/swagger/index.html
+
+  Automatically generated API specification.
+
+- [SonarCloud](https://sonarcloud.io/dashboard?id=themagicstrings_twooter) - https://sonarcloud.io/dashboard?id=themagicstrings_twooter
+
+  Reports of code quality and code security.
