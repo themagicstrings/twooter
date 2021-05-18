@@ -10,7 +10,7 @@
   "devDependencies": {},
   "scripts": {
     "start": "nodemon --exec \"npm run make\" report.md",
-    "make": "md-to-pdf report.md report.pdf"
+    "make": "md-to-pdf report.md build/report.pdf"
   },
   "keywords": [],
   "author": "",

@@ -64,10 +64,15 @@ The structure of the modules can be seen on the following figure. It contains th
 - Shared
   - Contains data transfer objects (DTO's) that are used to pass data between other classes and the database.
 
-<!-- ![module-diagram.svg](./images/module-diagram.svg) -->
-<img alt="Module diagram" src="./images/module-diagram.svg" style="width: 100%">
+![class-diagram.svg](./images/class-diagram.svg)
 
-_**Figure ???:** Module Diagram_
+_**Figure 1:** Class Diagram_
+
+TODO write stuff about class diagram
+
+![module-diagram.svg](./images/module-diagram.svg)
+
+_**Figure 2:** Module Diagram_
 
 Two controllers are handling the web requests. The SimulationController has to adhere to a strict specification set by the simulator, which differs a lot from how a user might want the same information presented.
 
@@ -79,7 +84,7 @@ For this reason MinitwitController handles all user oriented web requests that r
 
 ![sequence-diagram.svg](./images/sequence-diagram.svg)
 
-_**Figure ???:** Sequence Diagram of a GetPublicTimeline request_
+_**Figure 3:** Sequence Diagram of a GetPublicTimeline request_
 
 The User sends a GetPublicTimeline request. The request is handled by the MinitwitController by first........... TODO
 
@@ -87,7 +92,7 @@ The User sends a GetPublicTimeline request. The request is handled by the Minitw
 
 ![deployment-diagram.svg](./images/deployment-diagram.svg)
 
-_**Figure ???:** Deployment Diagram_
+_**Figure 4:** Deployment Diagram_
 
 From a browser running on any device, you can access Twooter by making a web request to the IP of the Virtual Machine running the Swarm Manager. If you don't know the IP you can ask a DNS provider with the url [http://twooter.hojelse.com](http://twooter.hojelse.com).
 
@@ -103,17 +108,17 @@ Prometheus and Grafana, tools for monitoring, runs on a Virtual Machine exposing
   - That is, list and briefly describe all technologies and tools you applied and depend on.
 -->
 
-The dependencies of the program can be seen on figure ???. Parts with grey background are external dependencies that we are using, while those on white background are classes or namespaces that we have made. Notably not present on the graph is the use of .Net 5.0, as this is so all-encompassing that we did not put it on the graph to make it more readable.
+The dependencies of the program can be seen on figure 5. Parts with grey background are external dependencies that we are using, while those on white background are classes or namespaces that we have made. Notably not present on the graph is the use of .Net 5.0, as this is so all-encompassing that we did not put it on the graph to make it more readable.
 
 ![Dependency graph](./images/dependencies.png)
 
-_**Figure ???:** Dependency graph for the program. Nodes marked with grey are external dependencies._
+_**Figure 5:** Dependency graph for the program. Nodes marked with grey are external dependencies._
 
 This graph is quite simplified, as not all dependencies are listed, in order to improve readability. To get a look at the full list of dependencies, we used NDepend to generate a dependency matrix, which can be seen on the following figure. The horizontal axis represents our namespaces Api, Models, Shared and Entities, and then along the vertical axis then dependencies are listed. Cells with numbers on them, mean that the first one has that many references to the other.
 
 ![Dependency matrix](./images/dependency-matrix.png)
 
-_**Figure ???:** Dependency matrix. Each cell with a number represents the number of references from one namespace to the other._
+_**Figure 6:** Dependency matrix. Each cell with a number represents the number of references from one namespace to the other._
 
 
 ## Interactions of subsystems
@@ -124,7 +129,7 @@ The program is built using the repository pattern
 <!-- TODO -->
 
 
- <!-- Important interactions of subsystems -->
+<!-- Important interactions of subsystems -->
 
 ## Current state of the system
 
@@ -136,7 +141,7 @@ In terms of technical debt, it estimates 5 hours of technical debt, which is not
 
 ![SonarCloud Dashboard](./images/sonarcloud.png)
 
-_**Figure ???:** Information from the Sonar Cloud dashboard. The 0.0% test coverage is because it has not been configured correctly, since we use another service for code coverage._
+_**Figure 7:** Information from the Sonar Cloud dashboard. The 0.0% test coverage is because it has not been configured correctly, since we use another service for code coverage._
 
 
 
@@ -199,7 +204,7 @@ When pushing or merging to the main-branch, five different GitHub Actions are in
 
 ![CI/CD chain](./images/ci-cd-chain.svg)
 
-_**Figure ???:** Graph showing the GitHub Actions configured for the project._
+_**Figure 8:** Graph showing the GitHub Actions configured for the project._
 
 **Note:** The initial trigger is triggered either from pushes to branches that have an open pull requests to main branch, or from a push (or merge) to the main branch.
 
@@ -256,10 +261,6 @@ However, in other projects we have used the Kanban-board on GitHub, which is han
 ### DigitalOcean
 
 All servers and the database cluster, are provided by DigitalOcean. This gives us a fixed monitoring solution for each server/cluster. The metrics for the web servers are: CPU usage, memory usage, disk I/O, disk usage and bandwidth. For the cluster, the metrics are amount of connections, index/sequential scans and throughput.
-
-<!-- ![Digital Ocean dashboard](./images/digital-ocean.png)
-
-_**Figure ???:** Digital Ocean dashboard_ -->
 
 ### Grafana
 
