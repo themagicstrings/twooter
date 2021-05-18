@@ -38,7 +38,11 @@ https://github.com/itu-devops/lecture_notes
 
 # System's Perspective
 
-## Design and architecture
+## Design and Architecture
+
+The Twooter system is a Social Media platform composed of a .NET WebApi, a PostgreSQL database and a HTML templater serving static server rendered content.
+
+## 3+1 Architectural Viewpoints
 
 <!--
 A description and illustration of the:
@@ -49,15 +53,22 @@ A description and illustration of the:
 
 ## Dependencies
 
-  <!-- - All dependencies of your _ITU-MiniTwit_ systems on all levels of abstraction and development stages.
+The dependencies of the program can be seen on the following figure. Parts with grey background are external dependencies that we are using, while those on white background are classes or namespaces that we have made.
+
+![Dependency graph](./images/dependencies.png)
+
+This graph is quite simplified, as not all dependencies are listed, in order to improve readability. To get a look at the full list of dependencies, we used NDepend to generate a dependency matrix, which can be seen on the following figure. The horizontal axis represents our namespaces Api, Models, Shared and Entities, and then along the vertical axis then dependencies are listed. Cells with numbers on them, mean that the first one has that many references to the other.
+
+![Dependency matrix](./images/dependencymatrix.png)
+
+  <!-- 
+  - All dependencies of your _ITU-MiniTwit_ systems on all levels of abstraction and development stages.
     - That is, list and briefly describe all technologies and tools you applied and depend on.
-    -->
+  -->
 
 ## Interactions of subsystems
 
- <!--  - Important interactions of subsystems
-
- -->
+ <!-- Important interactions of subsystems -->
 
 ## Current state of the system
 
@@ -68,7 +79,7 @@ A description and illustration of the:
 ## License
 
 <!--
-  - Finally, describe briefly, if the license that you have chosen for your project is actually compatible with the licenses of all your direct dependencies.
+Finally, describe briefly, if the license that you have chosen for your project is actually compatible with the licenses of all your direct dependencies.
 
 
 Double check that for all the weekly tasks (those listed in the schedule) you include the corresponding information. TODO what?

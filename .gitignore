@@ -10,3 +10,6 @@ minitwit/Api/LATEST.txt
 .ionide
 *.log
 internal-nlog-AspNetCore.txt
+.vs
+*.ndproj
+NDependOut
