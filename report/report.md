@@ -343,7 +343,7 @@ Ideally this tool would not be necessary, as it has to be updated manually which
 
 ## GitHub Actions has no debugging mode
 
-When creating a GitHub Actions script you will never get it perfect the first time. Figuring out why the script is not behaving like it should, is without auxiliary programs a process of repeatedly pushing a new commit to GitHub, waiting for their service to run the script, and finally reading the console output on the website. A time consuming process which we never got around to making better. 3rd party tools are available to run GitHub Actions scripts locally, which should speed this process up a lot. It was a minor inconvenience which could have been avoided with a little prelimiary research.
+When creating a GitHub Actions script you will never get it perfect the first time. Figuring out why the script is not behaving like it should, is without auxiliary programs a process of repeatedly pushing a new commit to GitHub, waiting for their service to run the script, and finally reading the console output on the website. A time consuming process which we never got around to making better. 3rd party tools are available to run GitHub Actions scripts locally, which should speed this process up a lot. It was a minor inconvenience which could have been avoided with a little preliminary research.
 
 # Links
 
