@@ -63,7 +63,13 @@ The Twooter system is a Social Media platform composed of a .NET WebApi, a Postg
 
 ![deployment-diagram.svg](./images/deployment-diagram.svg)
 
-From a browser running on any device, you access Twooter by making a web request to the ip of the 
+From a browser running on any device, you access Twooter by making a web request with the ip of the Virtual Machine running the Swarm Manager. If you don't know the ip you can ask a DNS provider with the url _twooter.hojelse.com_.
+
+The Swarm manager is a Docker container assigned as manager in the Docker Swarm configuration. The swarm manager has a load balancer which routes the web request to one of the three Docker containers each running a Twooter instance from a Docker Image. Each Docker container is running on a separate Virtual Machine. Each Docker container has been configured with a Docker Volume, a data repository, mounted by the docker container.
+
+The PostgreSQL database runs in a "Database Cluster" provided by Digital Ocean. The primary database is replicated by the secondary database, such that queries can be rerouted, in the event that the primary database is unresponsive.
+
+Prometheus and Grafana, tools for monitoring, runs on a Virtual Machine exposing a web api on ports 9090 and 3000 respectively. Prometheus gathers monitoring data by accessing the normal Swarm Manager IP. Grafana is configured with two data sources 1. prometheus, by accessing the web api that it exposes and 2. the PostgreSQL database with a PostgreSQL connection string and normal SQL queries.
 
 ## Dependencies
 
@@ -89,6 +95,10 @@ This graph is quite simplified, as not all dependencies are listed, in order to 
  <!-- Important interactions of subsystems -->
 
 ## Current state of the system
+
+Taking a look at Sonar Cloud, we can see that it detects 2 vulnerabilities, 2 security hotspots and 52 code smells. The main reason that these were not resolved, is that we werenotaware
+
+![Sonar Cloud Dashboard](./images/sonarcloud.png)
 
 <!--
   - Describe the current state of your systems, for example using results of static analysis and quality assessment systems.
@@ -175,42 +185,47 @@ The test and deploy workflow is responsible for running tests and optionally dep
 Here is a snippet from the workflow:
 
 ```bash
-  deploy:
-    needs: publish-docker-image
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Configure SSH
-        run: |
-        ...
+1     deploy:
+2       needs: publish-docker-image
+3       runs-on: ubuntu-latest
+4       if: github.ref == 'refs/heads/main'
+5       steps:
+6         - name: Configure SSH
+7           run: |
+8           ...
+9
+10        - name: Pull and run docker image with SSH
+11          # Run ssh with config file and script
+12          # Script will install docker, login to github packages and pull new image, stop and clean up old deployment, run the new image in a new container
+13          run: |
+14            ssh staging "
+15              apt update
+16              apt install -y docker.io
+17
+18              docker login https://docker.pkg.github.com
+                  -u ${{ github.actor }}
+                  -p ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Pull and run docker image with SSH
-        # Run ssh with config file and script
-        # Script will install docker, login to github packages and pull new image, stop and clean up old deployment, run the new image in a new container
-        run: |
-          ssh staging "
-            apt update
-            apt install -y docker.io
-
-            docker login https://docker.pkg.github.com -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
-            docker pull docker.pkg.github.com/themagicstrings/twooter/twooter:latest
-
-            docker service rm twooter-instance
-            docker service create \
-              --with-registry-auth \
-              -p 443:443 \
-              -p 80:80 \
-              --mount 'type=volume,src=twooter-logs,dst=/publish/logs,volume-driver=local' \
-              --name twooter-instance \
-              -e \"DB_IP=${{ secrets.DB_IP }}\" \
-              -e \"DB_PASSWORD=${{ secrets.DB_PASSWORD }}\" \
-              -e \"DB_CONNECTION_STRING=${{ secrets.DB_CONNECTION_STRING }}\" \
-              docker.pkg.github.com/themagicstrings/twooter/twooter:latest
-            docker service scale twooter-instance=3
-          "
+19              docker pull
+                  docker.pkg.github.com/themagicstrings/twooter/twooter:latest
+20
+21              docker service rm twooter-instance
+22              docker service create \
+23                --with-registry-auth \
+24                -p 443:443 \
+25                -p 80:80 \
+26                --mount 'type=volume,src=twooter-logs,
+                    dst=/publish/logs,volume-driver=local' \
+27                --name twooter-instance \
+28                -e \"DB_IP=${{ secrets.DB_IP }}\" \
+29                -e \"DB_PASSWORD=${{ secrets.DB_PASSWORD }}\" \
+30                -e \"DB_CONNECTION_STRING=${{ secrets.DB_CONNECTION_STRING }}\" \
+31                docker.pkg.github.com/themagicstrings/twooter/twooter:latest
+32              docker service scale twooter-instance=3
+33            "
 ```
 
-As you can see from the snippet, the
+As you can see from the snippet, the workflow
 
 # Repository organization
 
@@ -236,6 +251,8 @@ We have also practiced rebasing our branches before merging them, in order to te
 
 We have not used any project management tools such as Kanban-boards, as we mainly stuck to the course-schedule, and because we are a quite small team, so it was fairly simple to distribute tasks. GitHub issues were used to some degree in cases where we knew about a problem, but were unable to fix it at that time. Only 6 issues were opened in total, because we strived to fix problems when they came up, as resolving problems quickly was one of the main tasks in the course.
 
+However, in other projects we have used the Kanban-board on GitHub, which is handy as each story can be associated with an issue. If this project had a bigger scope, that would probably have been the chosen tool.
+
 <!-- - Applied development process and tools supporting it
   - For example, how did you use issues, Kanban boards, etc. to organize open tasks -->
 
@@ -251,7 +268,7 @@ All webservers and the database cluster, are provided by DigitalOcean. This give
 
 All other metrics, that are not machine level, are available on a Grafana dashboard. Grafana is able to have many diffrent sources of metrics to be displayed, and is therefor a fine choice.
 
-![Grafana screenshot](./images/TwooterDashboard.PNG)
+![Grafana screenshot](./images/TwooterDashboard.png)
 
 **_Figure ???: The Grafana monitoring dashboard used in the project_**
 
@@ -317,7 +334,7 @@ The course has a website that shows the number of errors found be the simulator,
 
 ![Manual logging](./images/errors.png)
 
-**_Figure ???: Graphs made in Google Sheets displaying the errors from the simulator over time. This data was input manually._**
+**_Figure ???: Graphs made in Google Sheets displaying the errors from the simulator over time. The data was recorded manually._**
 
 Using this data, we were able to react to sudden spikes in errors, for example the rapid growth in errors of type Follow and Unfollow, caused us to investigate the problem. It turned out that the problem was due to missing users in the database, so we solved it by copying users from another group's database into ours. This is related to what was explained in the previous section. On the graph named _Major Errors_ it can be seen the the red and yellow lines suddenly flatten out, as the problem was resolved.
 Another way we have used the graph, is to identify when the service is down, as this causes a surge in connection errors.
