@@ -147,7 +147,7 @@ namespace Api.Controllers
                     return generateBadRequestRegister("The username is already taken");
                 case EMAIL_TAKEN:
                     return generateBadRequestRegister("The email is already taken");
-                case SUCCES:
+                case SUCCESS:
                 default:
                     BasicTemplater.flashes.Add("You were successfully registered and can login now");
                     TotalUsers.IncTo(UserRepo.GetTotalUsers());
@@ -202,7 +202,7 @@ namespace Api.Controllers
         }
 
 
-        // Attemps to follow a user
+        // Attempts to follow a user
         [HttpPost("/{username}/follow")]
         public async Task<IActionResult> FollowUserAsync([FromRoute] string username)
         {

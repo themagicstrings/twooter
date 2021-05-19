@@ -1,7 +1,7 @@
 using Xunit;
 using System;
 
-namespace Api.Test 
+namespace Api.Test
 {
 
     public class BasicTemplaterTests

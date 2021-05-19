@@ -1,0 +1,87 @@
+
+digraph G {
+  subgraph cluster_Test_Coverage {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white];
+    "Setup\n.NET" -> 
+    "Collect\ntest\ncoverage" ->
+    "Generate\ncoverage\nreport" ->
+    "Upload\ncoverage\ninfo\nto Coveralls";
+    label = "Test coverage";
+  }
+  
+  subgraph cluster_Infer {
+      style=filled;
+      color=lightgrey;
+      node [style=filled,color=white];
+      "Setup\n.NET " ->
+      "Run\nchecks" -> 
+      "Print\nanalysis\nresults";
+      label = "Infer#"
+  }
+  
+  subgraph cluster_SonarCloud {
+      style=filled;
+      color=lightgrey;
+      node [style=filled,color=white];
+      "Install\nSonarCloud\nscanner" ->
+      "Build\nand\nAnalyze";
+      label = "Sonar Cloud"
+  }
+  
+  subgraph cluster_TestAndDeploy {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white];
+    "Setup\n.NET  " ->
+    "Run\ntests" ->
+    "Branch = main" ->
+    "Publish\nDocker\nImage" ->
+    "Download\nimage\non\ndroplets" ->
+    "Start\ndocker\ncontainer"
+    
+    "Branch = main" [shape=diamond]
+    
+    label = "Test and Deploy"
+  }
+  
+  subgraph cluster_Report {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white];
+    "Generate\nPDF" ->
+    "Upload as artifact"
+    label = "Report"
+  }
+
+
+  rankdir=LR
+  "Run\ntests" -> "Merge\nbutton\nenabled"
+
+  "Upload\ncoverage\ninfo\nto Coveralls" ->
+  "Merge\nbutton\nenabled"
+  
+  "Print\nanalysis\nresults" ->
+  "Merge\nbutton\nenabled"
+  
+  "Build\nand\nAnalyze" ->
+  "Merge\nbutton\nenabled"
+  
+  "Peer review" -> "Merge\nbutton\nenabled"
+  
+  "Push or PR" -> "Generate\nPDF"
+  
+  "Push or PR" -> "Setup\n.NET";
+//   "PR" -> "Setup\n.NET";
+  
+  "Push or PR" -> "Setup\n.NET ";
+//   "PR" -> "Setup\n.NET ";
+  
+  "Push or PR" -> "Install\nSonarCloud\nscanner";
+//   "PR" -> "Install\nSonarCloud\nscanner";
+
+  "Push or PR" -> "Setup\n.NET  "
+
+  "Push or PR" [shape=circle];
+}

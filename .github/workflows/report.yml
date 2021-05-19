@@ -1,0 +1,29 @@
+name: Create Report
+
+on: [push]
+env:
+  GITHUB_TOKEN: ${{ github.token }}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    name: Publish Document
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Publish PDF Document
+        uses: baileyjm02/markdown-to-pdf@v1
+        id: publish-document
+        with:
+          input_dir: 'report'
+          output_dir: build
+
+          images_dir: 'report/images'
+          image_import: './images'
+          build_html: false
+
+      - name: Upload Document
+        uses: actions/upload-artifact@v2
+        with:
+          name: 'report.pdf'
+          path: build

@@ -44,7 +44,7 @@ namespace Models
             await context.users.AddAsync(newUser);
             await context.SaveChangesAsync();
 
-            return CreateReturnType.SUCCES;
+            return CreateReturnType.SUCCESS;
         }
 
         public string HashPassword(string password)
@@ -164,7 +164,7 @@ namespace Models
     public int GetTotalUsers()
     {
         var query = (from u in context.users select  u.user_id).Count();
-        return query;    
+        return query;
     }
     public async Task<UserReadDTO> ReadAsync(int id, int noOfMessages = int.MaxValue)
     {
