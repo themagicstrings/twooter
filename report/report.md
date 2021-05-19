@@ -366,7 +366,7 @@ When creating a GitHub Actions script you will never get it perfect the first ti
 Compared to previous projects, in this project we have focused on having as much uptime of the service as possible, automating as many processes as possible, and improving our Git-workflow as a team.
 Improving our Git-workflow to incorporate reviews and static analysis, is critical to also having high uptime. This is because if we merge faulty code to the main branch, then the deployment might fail, causing the service to go offline.
 
-Automization of for example running tests and deployment has been a great learning experience for us. the things we ha
+Automation of, for example, running tests and deployment has been a great learning experience for us. The things we have learned in this course, has made us start to use similar tools in other projects (such as the Second Year Project on SWU). Thinking of continuous deployment from day 1 ties very well into the Scrum framework's focus on incremental user value.
 
 
 <!--TODO Link back to respective commit messages, issues, tickets, etc. to illustrate these.
